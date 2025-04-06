@@ -7,7 +7,7 @@ import 'jspdf-autotable';
 import autoTable from 'jspdf-autotable';
 import { FaArrowLeft, FaSave, FaDownload } from 'react-icons/fa';
 import backgroundImage from '../../assets/background.png';
-import logoImage from '../../assets/background.png';
+import logoImage from '/logo.png';
 
 const EmergencyDetails = () => {
     const { id } = useParams();
