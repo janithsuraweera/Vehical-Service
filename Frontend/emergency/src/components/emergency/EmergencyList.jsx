@@ -142,17 +142,25 @@ const EmergencyList = () => {
                     <table className="min-w-full bg-white rounded-lg shadow-md">
                         <thead>
                             <tr className="bg-gray-100">
-                                {[
-                                    'Name', 'Contact Number', 'Address', 'Vehicle Type', 'Vehicle Color',
-                                    'Emergency Type', 'Description', 'Status', 'Vehicle Number', 'Date', 'Time', 'Actions'
-                                ].map((header, i) => (
-                                    <th key={i} className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">{header}</th>
-                                ))}
+                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Request No</th>
+                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Name</th>
+                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Contact Number</th>
+                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Address</th>
+                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Vehicle Type</th>
+                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Vehicle Color</th>
+                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Emergency Type</th>
+                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Description</th>
+                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Status</th>
+                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Vehicle Number</th>
+                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Date</th>
+                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Time</th>
+                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredEmergencies.map((emergency) => (
                                 <tr key={emergency._id} className="hover:bg-red-50">
+                                    <td className="py-4 px-6 border-b">{emergency.emergencyRequestNo}</td>
                                     <td className="py-4 px-6 border-b">
                                         <Link to={`/emergency/${emergency._id}`} className="text-black-600 hover:none">
                                             {emergency.name}
