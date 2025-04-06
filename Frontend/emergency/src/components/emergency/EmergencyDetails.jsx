@@ -47,13 +47,27 @@ const EmergencyDetails = () => {
         const doc = new jsPDF();
         const logo = new Image();
         logo.src = logoImage;
-        logo.onload = () => {
-            doc.addImage(logo, 'PNG', 10, 10, 30, 30);
-            doc.setFontSize(18);
-            doc.text('Emergency Details Report', 50, 25);
 
+        logo.onload = () => {
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            const now = new Date();
+            const dateStr = now.toLocaleString();
+
+            // Header
+            doc.addImage(logo, 'PNG', 10, 10, 20, 20);
+            doc.setFontSize(16);
+            doc.setTextColor(40);
+            doc.text('Emergency Details Report', pageWidth / 2, 20, { align: 'center' });
+
+            // Sub header
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text(`Generated on: ${dateStr}`, 10, 35);
+
+            // Table
             autoTable(doc, {
-                startY: 50,
+                startY: 45,
                 head: [['Field', 'Value']],
                 body: [
                     ['Name', emergency.name],
@@ -65,9 +79,20 @@ const EmergencyDetails = () => {
                     ['Description', emergency.description],
                     ['Status', status],
                 ],
+                theme: 'striped',
+                styles: { fontSize: 10 },
+                didDrawPage: (data) => {
+                    // Footer
+                    const pageStr = `Page ${doc.internal.getNumberOfPages()}`;
+                    doc.setFontSize(10);
+                    doc.setTextColor(150);
+                    doc.text(pageStr, pageWidth - 20, pageHeight - 10);
+                    doc.text("© 2025 Emergency Services", 10, pageHeight - 10);
+                }
             });
 
-            doc.save('emergency_details.pdf');
+            const fileName = `${emergency.name.replace(/\s+/g, '_')}_Emergency_Details.pdf`;
+            doc.save(fileName);
         };
     };
 
