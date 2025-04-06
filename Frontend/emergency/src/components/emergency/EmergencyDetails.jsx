@@ -55,10 +55,10 @@ const EmergencyDetails = () => {
             const dateStr = now.toLocaleString();
 
             // Header
-            doc.addImage(logo, 'PNG', 10, 10, 20, 20);
-            doc.setFontSize(16);
+            doc.addImage(logo, 'PNG', 10, 10, 30, 30);
+            doc.setFontSize(18);
             doc.setTextColor(40);
-            doc.text('Emergency Details Report', pageWidth / 2, 20, { align: 'center' });
+            doc.text('Emergency Detail Report', pageWidth / 2, 20, { align: 'center' });
 
             // Sub header
             doc.setFontSize(10);
