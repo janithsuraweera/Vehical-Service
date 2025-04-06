@@ -139,8 +139,8 @@ const EmergencyForm = () => {
         }
 
         try {
-            await axios.post('http://localhost:5000/api/emergency', formData);
-            toast.success('Emergency request submitted successfully!');
+            const response = await axios.post('http://localhost:5000/api/emergency', formData);
+            toast.success(`Emergency request submitted successfully! Emergency Request No: ${response.data.emergencyRequestNo}`);
             resetForm();
         } catch (error) {
             if (error.response && error.response.data && error.response.data.errors) {
@@ -252,37 +252,21 @@ const EmergencyForm = () => {
                         </select>
                     </div>
 
-
-                    {/* <div>
+                    <div>
                         <label htmlFor="vehicleColor" className="block font-medium mb-1">Vehicle Color</label>
-                        <input
-                            type="text"
-                            id="vehicleColor"
-                            name="vehicleColor"
-                            value={formData.vehicleColor}
-                            onChange={handleChange}
-                            className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                            placeholder="Enter vehicle color"
-                        />
+                        <div className="flex items-center space-x-4">
+                            <input
+                                type="color"
+                                id="vehicleColor"
+                                name="vehicleColor"
+                                value={formData.vehicleColor}
+                                onChange={handleChange}
+                                className="border w-16 h-12 rounded-lg shadow-sm cursor-pointer"
+                            />
+                            <span className="text-gray-700">{formData.vehicleColor || '#000000'}</span>
+                        </div>
                         {errors.vehicleColor && <p className="text-red-500 text-sm mt-1">{errors.vehicleColor}</p>}
-                    </div> */}
-
-<div>
-    <label htmlFor="vehicleColor" className="block font-medium mb-1">Vehicle Color</label>
-    <div className="flex items-center space-x-4">
-        <input
-            type="color"
-            id="vehicleColor"
-            name="vehicleColor"
-            value={formData.vehicleColor}
-            onChange={handleChange}
-            className="border w-16 h-12 rounded-lg shadow-sm cursor-pointer"
-        />
-        <span className="text-gray-700">{formData.vehicleColor || '#000000'}</span>
-    </div>
-    {errors.vehicleColor && <p className="text-red-500 text-sm mt-1">{errors.vehicleColor}</p>}
-</div>
-
+                    </div>
 
                     <div>
                         <label htmlFor="emergencyType" className="block font-medium mb-1">Emergency Type</label>

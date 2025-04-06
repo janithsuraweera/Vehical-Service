@@ -58,7 +58,8 @@ const emergencyRequestSchema = new mongoose.Schema({
     },
     vehicleNumber: {
         type: String,
-        sparse: true, // Optional field 
+        sparse: true, 
+        // required: true,
     },
     date: {
         type: Date,
