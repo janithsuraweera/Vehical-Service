@@ -2,7 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
+
+
 import backgroundImage from '../../assets/background.png';
+import logoImage from '../../assets/background.png';// ✅ Add your logo image here
 
 const EmergencyDetails = () => {
     const { id } = useParams();
@@ -26,17 +32,46 @@ const EmergencyDetails = () => {
     }, [id]);
 
     const handleBack = () => {
-        navigate('/list'); // Navigate to the emergency list page
+        navigate('/list');
     };
 
     const handleOk = async () => {
         try {
             await axios.put(`http://localhost:5000/api/emergency/${id}`, { status: status });
-            navigate('/list'); // Navigate back to the emergency list after saving
+            navigate('/list');
         } catch (error) {
             console.error("Error updating status:", error);
         }
     };
+
+    const handleDownload = () => {
+        const doc = new jsPDF();
+        const logo = new Image();
+        logo.src = logoImage;
+        logo.onload = () => {
+            doc.addImage(logo, 'PNG', 10, 10, 30, 30);
+            doc.setFontSize(18);
+            doc.text('Emergency Details Report', 50, 25);
+    
+            autoTable(doc, {
+                startY: 50,
+                head: [['Field', 'Value']],
+                body: [
+                    ['Name', emergency.name],
+                    ['Contact Number', emergency.contactNumber],
+                    ['Address', emergency.location.address],
+                    ['Vehicle Type', emergency.vehicleType],
+                    ['Vehicle Color', emergency.vehicleColor],
+                    ['Emergency Type', emergency.emergencyType],
+                    ['Description', emergency.description],
+                    ['Status', status],
+                ]
+            });
+    
+            doc.save('emergency_details.pdf');
+        };
+    };
+    
 
     if (!emergency) {
         return (
@@ -44,12 +79,7 @@ const EmergencyDetails = () => {
                 className="min-h-screen bg-cover bg-center flex justify-center items-center"
                 style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', opacity: 0.9 }}
             >
-                <motion.div
-                    className="w-full max-w-md p-8 bg-white bg-opacity-90 rounded-2xl shadow-2xl mx-auto"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                >
+                <motion.div className="w-full max-w-md p-8 bg-white bg-opacity-90 rounded-2xl shadow-2xl mx-auto">
                     Loading...
                 </motion.div>
             </div>
@@ -91,17 +121,14 @@ const EmergencyDetails = () => {
                         </select>
                     </div>
                     <div className="flex justify-between mt-6">
-                        <button
-                            onClick={handleBack}
-                            className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-                        >
+                        <button onClick={handleBack} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                             Back
                         </button>
-                        <button
-                            onClick={handleOk}
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        >
+                        <button onClick={handleOk} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                             OK
+                        </button>
+                        <button onClick={handleDownload} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                            Download Report
                         </button>
                     </div>
                 </div>
