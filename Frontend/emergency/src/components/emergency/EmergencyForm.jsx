@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import backgroundImage from '../assets/background.png';
+import backgroundImage from '../../assets/background.png';
 import { FaMapMarkerAlt, FaArrowLeft } from 'react-icons/fa';
 
 const EmergencyForm = () => {
