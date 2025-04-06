@@ -101,7 +101,7 @@ const EmergencyList = () => {
                         placeholder="Search by Vehicle Number or Name"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="p-3 border border-gray-300 rounded-lg"
+                        className="p-3 border border-gray-300 rounded-lg "
                     />
                 </div>
 
