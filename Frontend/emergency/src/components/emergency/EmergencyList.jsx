@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { FaEdit, FaTrash, FaArrowLeft, FaDownload } from 'react-icons/fa';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 
 const EmergencyList = () => {
     const [emergencies, setEmergencies] = useState([]);
@@ -60,20 +59,54 @@ const EmergencyList = () => {
 
     const handleDownload = () => {
         const doc = new jsPDF();
-        doc.autoTable({
-            head: [['Name', 'Contact Number', 'Address', 'Vehicle Type', 'Vehicle Color', 'Emergency Type', 'Description', 'Status', 'Vehicle Number', 'Date', 'Time']],//table headers
-            body: filteredEmergencies.map(emergency => [
-                emergency.name, emergency.contactNumber, emergency.location.address, emergency.vehicleType,
-                emergency.vehicleColor, emergency.emergencyType, emergency.description, emergency.status,
-                emergency.vehicleNumber, emergency.date ? new Date(emergency.date).toLocaleDateString() : 'N/A', emergency.time
-            ]),
-        });
-        doc.save('emergency_report.pdf');
+        const img = new Image();
+        img.src = '/logo.png'; 
+        img.onload = () => {
+            doc.addImage(img, 'PNG', 10, 10, 30, 30);
+            doc.setFontSize(18);
+            doc.text('Emergency Report', 50, 25);
+            doc.setFontSize(10);
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, 50, 32);
+
+            autoTable(doc, {
+                startY: 45,
+                head: [[
+                    'Name', 'Contact Number', 'Address', 'Vehicle Type',
+                    'Vehicle Color', 'Emergency Type', 'Description', 'Status',
+                    'Vehicle Number', 'Date', 'Time'
+                ]],
+                body: filteredEmergencies.map(emergency => [
+                    emergency.name,
+                    emergency.contactNumber,
+                    emergency.location?.address || 'N/A',
+                    emergency.vehicleType,
+                    emergency.vehicleColor,
+                    emergency.emergencyType,
+                    emergency.description,
+                    emergency.status,
+                    emergency.vehicleNumber,
+                    emergency.date ? new Date(emergency.date).toLocaleDateString() : 'N/A',
+                    emergency.time
+                ]),
+                theme: 'striped',
+                styles: { fontSize: 8 },
+                didDrawPage: (data) => {
+                    const pageCount = doc.internal.getNumberOfPages();
+                    doc.setFontSize(9);
+                    doc.text(
+                        `Page ${doc.internal.getCurrentPageInfo().pageNumber} of ${pageCount}`,
+                        data.settings.margin.left,
+                        doc.internal.pageSize.height - 10
+                    );
+                }
+            });
+
+            doc.save('emergency_report.pdf');
+        };
     };
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-purple-400 via-indigo-500 to-blue-600">
-            
             <div className="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-7xl">
                 <h2 className="text-4xl font-bold mb-10 text-center text-indigo-700">Emergency List</h2>
 
@@ -101,7 +134,7 @@ const EmergencyList = () => {
                         placeholder="Search by Vehicle Number or Name"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="p-3 border border-gray-300 rounded-lg "
+                        className="p-3 border border-gray-300 rounded-lg"
                     />
                 </div>
 
@@ -109,18 +142,12 @@ const EmergencyList = () => {
                     <table className="min-w-full bg-white rounded-lg shadow-md">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Name</th>
-                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Contact Number</th>
-                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Address</th>
-                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Vehicle Type</th>
-                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Vehicle Color</th>
-                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Emergency Type</th>
-                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Description</th>
-                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Status</th>
-                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Vehicle Number</th>
-                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Date</th>
-                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Time</th>
-                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Actions</th>
+                                {[
+                                    'Name', 'Contact Number', 'Address', 'Vehicle Type', 'Vehicle Color',
+                                    'Emergency Type', 'Description', 'Status', 'Vehicle Number', 'Date', 'Time', 'Actions'
+                                ].map((header, i) => (
+                                    <th key={i} className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">{header}</th>
+                                ))}
                             </tr>
                         </thead>
                         <tbody>
@@ -132,7 +159,7 @@ const EmergencyList = () => {
                                         </Link>
                                     </td>
                                     <td className="py-4 px-6 border-b">{emergency.contactNumber}</td>
-                                    <td className="py-4 px-6 border-b">{emergency.location.address}</td>
+                                    <td className="py-4 px-6 border-b">{emergency.location?.address}</td>
                                     <td className="py-4 px-6 border-b">{emergency.vehicleType}</td>
                                     <td className="py-4 px-6 border-b">{emergency.vehicleColor}</td>
                                     <td className="py-4 px-6 border-b">{emergency.emergencyType}</td>
@@ -140,19 +167,12 @@ const EmergencyList = () => {
                                     <td className="py-4 px-6 border-b">{emergency.status}</td>
                                     <td className="py-4 px-6 border-b">{emergency.vehicleNumber}</td>
                                     <td className="py-4 px-6 border-b">{emergency.date ? new Date(emergency.date).toLocaleDateString() : 'N/A'}</td>
-                                    <td className="py-4 px-6 border-b">{emergency.time}
-                                    </td>
+                                    <td className="py-4 px-6 border-b">{emergency.time}</td>
                                     <td className="py-4 px-6 border-b flex space-x-2">
-                                        <button
-                                            onClick={() => handleUpdate(emergency._id)}
-                                            className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-3 rounded"
-                                        >
+                                        <button onClick={() => handleUpdate(emergency._id)} className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-3 rounded">
                                             <FaEdit className="inline-block mr-1" /> Update
                                         </button>
-                                        <button
-                                            onClick={() => handleDelete(emergency._id)}
-                                            className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-3 rounded"
-                                        >
+                                        <button onClick={() => handleDelete(emergency._id)} className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-3 rounded">
                                             <FaTrash className="inline-block mr-1" /> Delete
                                         </button>
                                     </td>
@@ -163,10 +183,10 @@ const EmergencyList = () => {
                 </div>
 
                 <div className="flex justify-between mt-6">
-                    <button onClick={handleBack} className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline">
+                    <button onClick={handleBack} className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg">
                         <FaArrowLeft className="mr-2" /> Back to Login
                     </button>
-                    <button onClick={handleDownload} className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline">
+                    <button onClick={handleDownload} className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg">
                         <FaDownload className="mr-2" /> Download Report
                     </button>
                 </div>
