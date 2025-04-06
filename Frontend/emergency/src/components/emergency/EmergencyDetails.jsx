@@ -5,10 +5,9 @@ import { motion } from 'framer-motion';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import autoTable from 'jspdf-autotable';
-
-
+import { FaArrowLeft, FaSave, FaDownload } from 'react-icons/fa';
 import backgroundImage from '../../assets/background.png';
-import logoImage from '../../assets/background.png';// ✅ Add your logo image here
+import logoImage from '../../assets/background.png';
 
 const EmergencyDetails = () => {
     const { id } = useParams();
@@ -52,7 +51,7 @@ const EmergencyDetails = () => {
             doc.addImage(logo, 'PNG', 10, 10, 30, 30);
             doc.setFontSize(18);
             doc.text('Emergency Details Report', 50, 25);
-    
+
             autoTable(doc, {
                 startY: 50,
                 head: [['Field', 'Value']],
@@ -65,13 +64,12 @@ const EmergencyDetails = () => {
                     ['Emergency Type', emergency.emergencyType],
                     ['Description', emergency.description],
                     ['Status', status],
-                ]
+                ],
             });
-    
+
             doc.save('emergency_details.pdf');
         };
     };
-    
 
     if (!emergency) {
         return (
@@ -120,15 +118,24 @@ const EmergencyDetails = () => {
                             <option value="Completed">Completed</option>
                         </select>
                     </div>
-                    <div className="flex justify-between mt-6">
-                        <button onClick={handleBack} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                            Back
+                    <div className="flex justify-end space-x-4 mt-6">
+                        <button
+                            onClick={handleBack}
+                            className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-300 flex items-center"
+                        >
+                            <FaArrowLeft className="mr-2" /> Back
                         </button>
-                        <button onClick={handleOk} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            OK
+                        <button
+                            onClick={handleOk}
+                            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300 flex items-center"
+                        >
+                            <FaSave className="mr-2" /> Save
                         </button>
-                        <button onClick={handleDownload} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                            Download Report
+                        <button
+                            onClick={handleDownload}
+                            className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300 flex items-center"
+                        >
+                            <FaDownload className="mr-2" /> Download Report
                         </button>
                     </div>
                 </div>
