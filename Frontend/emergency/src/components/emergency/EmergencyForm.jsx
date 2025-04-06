@@ -251,7 +251,9 @@ const EmergencyForm = () => {
                             <option value="other">Other</option>
                         </select>
                     </div>
-                    <div>
+
+
+                    {/* <div>
                         <label htmlFor="vehicleColor" className="block font-medium mb-1">Vehicle Color</label>
                         <input
                             type="text"
@@ -263,7 +265,25 @@ const EmergencyForm = () => {
                             placeholder="Enter vehicle color"
                         />
                         {errors.vehicleColor && <p className="text-red-500 text-sm mt-1">{errors.vehicleColor}</p>}
-                    </div>
+                    </div> */}
+
+<div>
+    <label htmlFor="vehicleColor" className="block font-medium mb-1">Vehicle Color</label>
+    <div className="flex items-center space-x-4">
+        <input
+            type="color"
+            id="vehicleColor"
+            name="vehicleColor"
+            value={formData.vehicleColor}
+            onChange={handleChange}
+            className="border w-16 h-12 rounded-lg shadow-sm cursor-pointer"
+        />
+        <span className="text-gray-700">{formData.vehicleColor || '#000000'}</span>
+    </div>
+    {errors.vehicleColor && <p className="text-red-500 text-sm mt-1">{errors.vehicleColor}</p>}
+</div>
+
+
                     <div>
                         <label htmlFor="emergencyType" className="block font-medium mb-1">Emergency Type</label>
                         <select

@@ -169,7 +169,19 @@ const EmergencyList = () => {
                                     <td className="py-4 px-6 border-b">{emergency.contactNumber}</td>
                                     <td className="py-4 px-6 border-b">{emergency.location?.address}</td>
                                     <td className="py-4 px-6 border-b">{emergency.vehicleType}</td>
-                                    <td className="py-4 px-6 border-b">{emergency.vehicleColor}</td>
+                                    {/* <td className="py-4 px-6 border-b">{emergency.vehicleColor}</td> */}
+
+                                    <td className="py-4 px-6 border-b">
+
+    <div
+        className="w-8 h-8 rounded-full"
+        style={{
+            backgroundColor: emergency.vehicleColor, 
+            border: '1px solid #ccc', 
+        }}
+    ></div>
+</td>
+
                                     <td className="py-4 px-6 border-b">{emergency.emergencyType}</td>
                                     <td className="py-4 px-6 border-b">{emergency.description}</td>
                                     <td className="py-4 px-6 border-b">{emergency.status}</td>

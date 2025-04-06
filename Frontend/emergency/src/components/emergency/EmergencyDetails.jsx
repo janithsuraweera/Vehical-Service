@@ -128,7 +128,8 @@ const EmergencyDetails = () => {
                     <p><strong>Tel:</strong> {emergency.contactNumber}</p>
                     <p><strong>Address:</strong> {emergency.location.address}</p>
                     <p><strong>Vehicle Type:</strong> {emergency.vehicleType}</p>
-                    <p><strong>Vehicle Color:</strong> {emergency.vehicleColor}</p>
+                    <p><strong>Vehicle Color:</strong>{emergency.vehicleColor}</p>
+                    <p><strong>Vehicle Number:</strong> {emergency.vehicleNumber}</p>   
                     <p><strong>Emergency Type:</strong> {emergency.emergencyType}</p>
                     <p><strong>Description:</strong> {emergency.description}</p>
                     <div className="flex items-center">
