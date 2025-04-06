@@ -93,6 +93,27 @@ router.delete('/:id', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+  
+});
+// Get requests by contact number
+router.get('/history/:contactNumber', async (req, res) => {
+  try {
+    const requests = await EmergencyRequest.find({ contactNumber: req.params.contactNumber });
+    res.status(200).json(requests);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching history', error: err.message });
+  }
+});
+
+// Update specific emergency request by ID
+router.put('/:id', async (req, res) => {
+  try {
+    const updated = await EmergencyRequest.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updated) return res.status(404).json({ message: 'Request not found' });
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(500).json({ message: 'Error updating request', error: err.message });
+  }
 });
 
 module.exports = router;
