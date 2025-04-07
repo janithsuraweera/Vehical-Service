@@ -290,7 +290,7 @@ const EmergencyForm = () => {
                             <option value="flat_tire">Flat Tire</option>
                             <option value="other">Other</option>
                         </select>
-                        {errors.emergencyType && <p className="text-red-500 text-sm mt-1">{errors.emergencyType}</p>} // Add error message
+                        {errors.emergencyType && <p className="text-red-500 text-sm mt-1">{errors.emergencyType}</p>}
                     </div>
                     <div>
                         <label htmlFor="description" className="block font-medium mb-1">Description</label>
