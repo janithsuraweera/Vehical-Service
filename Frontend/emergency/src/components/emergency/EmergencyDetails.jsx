@@ -81,6 +81,15 @@ const EmergencyDetails = () => {
                 ],
                 theme: 'striped',
                 styles: { fontSize: 10 },
+                columnStyles: {
+                    1: { cellWidth: 40 },
+                },
+                didCell: (data) => {
+                    if (data.column.index === 1 && data.row.index === 5) {
+                        doc.setFillColor(emergency.vehicleColor);
+                        doc.rect(data.cell.x + 2, data.cell.y + 2, 16, 16, 'F');
+                    }
+                },
                 didDrawPage: (data) => {
                     // Footer
                     const pageStr = `Page ${doc.internal.getNumberOfPages()}`;
@@ -125,11 +134,14 @@ const EmergencyDetails = () => {
                 </h2>
                 <div className="space-y-4">
                     <p><strong>Name:</strong> {emergency.name}</p>
-                    <p><strong>Tel:</strong> {emergency.contactNumber}</p>
+                    <p><strong>Contact Number:</strong> {emergency.contactNumber}</p>
                     <p><strong>Address:</strong> {emergency.location.address}</p>
                     <p><strong>Vehicle Type:</strong> {emergency.vehicleType}</p>
-                    <p><strong>Vehicle Color:</strong>{emergency.vehicleColor}</p>
-                    <p><strong>Vehicle Number:</strong> {emergency.vehicleNumber}</p>   
+                    <p>
+                        <strong>Vehicle Color:</strong>
+                        <div style={{ display: 'inline-block', width: '20px', height: '20px', backgroundColor: emergency.vehicleColor, marginLeft: '7px' }}></div>
+                    </p>
+                    <p><strong>Vehicle Number:</strong> {emergency.vehicleNumber}</p>
                     <p><strong>Emergency Type:</strong> {emergency.emergencyType}</p>
                     <p><strong>Description:</strong> {emergency.description}</p>
                     <div className="flex items-center">
