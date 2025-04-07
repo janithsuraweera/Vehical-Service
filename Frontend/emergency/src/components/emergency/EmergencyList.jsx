@@ -151,7 +151,7 @@ const EmergencyList = () => {
                             doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
                             doc.rect(cell.x, cell.y, cell.width, cell.height, 'F');
 
-                            const squareSize = 6;
+                            const squareSize = 10;
                             const rectX = cell.x + (cell.width - squareSize) / 2;
                             const rectY = cell.y + (cell.height - squareSize) / 2;
                             try {
