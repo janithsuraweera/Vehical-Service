@@ -331,13 +331,21 @@ const EmergencyList = () => {
                                         <td className="py-2 px-4 md:py-4 md:px-6 border-b">
                                             {/* Action Buttons */}
                                             <div className="flex flex-col md:flex-row gap-1 md:space-x-2">
-                                                <button onClick={() => handleUpdate(emergency._id)} className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-1 px-2 md:py-2 md:px-3 rounded text-xs md:text-sm flex items-center justify-center">
-                                                    <FaEdit className="inline-block mr-1" /> Update
-                                                </button>
-                                                <button onClick={() => handleDelete(emergency._id)} className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 md:py-2 md:px-3 rounded text-xs md:text-sm flex items-center justify-center">
-                                                    <FaTrash className="inline-block mr-1" /> Delete
-                                                </button>
-                                            </div>
+    <button
+        onClick={() => handleUpdate(emergency._id)}
+        className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-1 px-2 md:py-5 md:px-5 rounded text-xs md:text-sm flex items-center justify-center"
+        title="Update" // Tooltip Update
+    >
+        <FaEdit />
+    </button>
+    <button
+        onClick={() => handleDelete(emergency._id)}
+        className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 md:py-5 md:px-5 rounded text-xs md:text-sm flex items-center justify-center"
+        title="Delete" // Tooltip Delete
+    >
+        <FaTrash />
+    </button>
+</div>
                                         </td>
                                     </tr>
                                 ))
@@ -357,14 +365,14 @@ const EmergencyList = () => {
     <button
         onClick={handleBack}
         className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 md:py-3 md:px-6 rounded-lg flex items-center justify-center"
-        title="Back to Login" // Tooltip
+        title="Back to Login" // Tooltip Back to Login
     >
         <FaArrowLeft />
     </button>
     <button
         onClick={handleDownload}
         className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 md:py-3 md:px-6 rounded-lg flex items-center justify-center"
-        title="Downlod" // Tooltip
+        title="Download" // Tooltip Download
     >
         <FaDownload />
     </button>
