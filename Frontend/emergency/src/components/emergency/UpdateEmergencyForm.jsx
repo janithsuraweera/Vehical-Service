@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaMapMarkerAlt, FaArrowLeft } from 'react-icons/fa';
+import backgroundImage from '../../assets/background.png';
+import { motion } from 'framer-motion';
 
 const UpdateEmergencyForm = () => {
     const { id } = useParams();
@@ -11,14 +13,15 @@ const UpdateEmergencyForm = () => {
     const [formData, setFormData] = useState({
         name: '',
         contactNumber: '',
+        vehicleNumber: '',
         location: {
             type: 'Point',
             coordinates: [0, 0],
             address: '',
         },
-        vehicleType: 'car',
+        vehicleType: '',
         vehicleColor: '',
-        emergencyType: 'breakdown',
+        emergencyType: '',
         description: '',
     });
     const [errors, setErrors] = useState({});
@@ -39,7 +42,10 @@ const UpdateEmergencyForm = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        if (name === 'location.address') {
+        if (name === 'contactNumber') {
+            const numericValue = value.replace(/[^0-9]/g, '');
+            setFormData({ ...formData, [name]: numericValue.slice(0, 10) });
+        } else if (name === 'location.address') {
             setFormData({
                 ...formData,
                 location: {
@@ -47,6 +53,8 @@ const UpdateEmergencyForm = () => {
                     address: value,
                 },
             });
+        } else if (name === 'vehicleNumber') {
+            setFormData({ ...formData, [name]: value.slice(0, 7) });
         } else {
             setFormData({ ...formData, [name]: value });
         }
@@ -97,8 +105,13 @@ const UpdateEmergencyForm = () => {
         if (!formData.contactNumber.trim()) {
             formErrors.contactNumber = 'Contact number is required.';
             isValid = false;
-        } else if (!/^\d{10}$/.test(formData.contactNumber)) {
+        } else if (formData.contactNumber.length !== 10) {
             formErrors.contactNumber = 'Contact number should be 10 digits.';
+            isValid = false;
+        }
+
+        if (!formData.vehicleNumber.trim()) {
+            formErrors.vehicleNumber = 'Vehicle number is required.';
             isValid = false;
         }
 
@@ -114,6 +127,16 @@ const UpdateEmergencyForm = () => {
 
         if (!formData.description.trim()) {
             formErrors.description = 'Description is required.';
+            isValid = false;
+        }
+
+        if (!formData.vehicleType) {
+            formErrors.vehicleType = 'Vehicle type is required.';
+            isValid = false;
+        }
+
+        if (!formData.emergencyType) {
+            formErrors.emergencyType = 'Emergency type is required.';
             isValid = false;
         }
 
@@ -142,9 +165,19 @@ const UpdateEmergencyForm = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-purple-400 via-indigo-500 to-blue-600">
-            <div className="w-full max-w-4xl p-8 bg-white bg-opacity-90 rounded-2xl shadow-2xl mx-auto">
-                <h2 className="text-3xl font-bold mb-8 text-center text-indigo-700">Update Emergency Request</h2>
+        <div
+            className="min-h-screen bg-cover bg-center flex justify-center items-center"
+            style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', opacity: 0.9 }}
+        >
+            <motion.div
+                className="w-full max-w-4xl p-8 bg-white bg-opacity-90 rounded-2xl shadow-lg mx-auto"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+            >
+                <h2 className="text-4xl font-bold mb-8 text-center text-blue-700">
+                    Update Emergency Request
+                </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label htmlFor="name" className="block font-medium mb-1">Name</label>
@@ -159,7 +192,6 @@ const UpdateEmergencyForm = () => {
                         />
                         {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                     </div>
-
                     <div>
                         <label htmlFor="contactNumber" className="block font-medium mb-1">Contact Number</label>
                         <input
@@ -173,7 +205,19 @@ const UpdateEmergencyForm = () => {
                         />
                         {errors.contactNumber && <p className="text-red-500 text-sm mt-1">{errors.contactNumber}</p>}
                     </div>
-
+                    <div>
+                        <label htmlFor="vehicleNumber" className="block font-medium mb-1">Vehicle Number</label>
+                        <input
+                            type="text"
+                            id="vehicleNumber"
+                            name="vehicleNumber"
+                            value={formData.vehicleNumber}
+                            onChange={handleChange}
+                            className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+                            placeholder="Enter vehicle number (max 6 characters)"
+                        />
+                        {errors.vehicleNumber && <p className="text-red-500 text-sm mt-1">{errors.vehicleNumber}</p>}
+                    </div>
                     <div className="relative">
                         <label htmlFor="address" className="block font-medium mb-1">Address</label>
                         <input
@@ -195,7 +239,6 @@ const UpdateEmergencyForm = () => {
                         </button>
                         {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location}</p>}
                     </div>
-
                     <div>
                         <label htmlFor="vehicleType" className="block font-medium mb-1">Vehicle Type</label>
                         <select
@@ -205,6 +248,7 @@ const UpdateEmergencyForm = () => {
                             onChange={handleChange}
                             className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
                         >
+                            <option value="">Select Vehicle Type</option>
                             <option value="car">Car</option>
                             <option value="motorcycle">Motorcycle</option>
                             <option value="bus">Bus</option>
@@ -212,22 +256,23 @@ const UpdateEmergencyForm = () => {
                             <option value="van">Van</option>
                             <option value="other">Other</option>
                         </select>
+                        {errors.vehicleType && <p className="text-red-500 text-sm mt-1">{errors.vehicleType}</p>}
                     </div>
-
                     <div>
                         <label htmlFor="vehicleColor" className="block font-medium mb-1">Vehicle Color</label>
-                        <input
-                            type="text"
-                            id="vehicleColor"
-                            name="vehicleColor"
-                            value={formData.vehicleColor}
-                            onChange={handleChange}
-                            className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                            placeholder="Enter vehicle color"
+                        <div className="flex items-center space-x-4">
+                            <input
+                                type="color"
+                                id="vehicleColor"
+                                name="vehicleColor"
+                                value={formData.vehicleColor}
+                                onChange={handleChange}
+                                className="border w-16 h-12 rounded-lg shadow-sm cursor-pointer"
                             />
+                            <span className="text-gray-700">{formData.vehicleColor || '#000000'}</span>
+                        </div>
                         {errors.vehicleColor && <p className="text-red-500 text-sm mt-1">{errors.vehicleColor}</p>}
                     </div>
-
                     <div>
                         <label htmlFor="emergencyType" className="block font-medium mb-1">Emergency Type</label>
                         <select
@@ -237,13 +282,14 @@ const UpdateEmergencyForm = () => {
                             onChange={handleChange}
                             className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
                         >
+                            <option value="">Select Emergency Type</option>
                             <option value="breakdown">Breakdown</option>
                             <option value="accident">Accident</option>
                             <option value="flat_tire">Flat Tire</option>
                             <option value="other">Other</option>
                         </select>
+                        {errors.emergencyType && <p className="text-red-500 text-sm mt-1">{errors.emergencyType}</p>}
                     </div>
-
                     <div>
                         <label htmlFor="description" className="block font-medium mb-1">Description</label>
                         <textarea
@@ -256,14 +302,12 @@ const UpdateEmergencyForm = () => {
                         ></textarea>
                         {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
                     </div>
-
                     <button
                         type="submit"
                         className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg w-full transition-colors duration-300"
                     >
                         Update
                     </button>
-
                     <button
                         type="button"
                         onClick={handleBack}
@@ -272,7 +316,7 @@ const UpdateEmergencyForm = () => {
                         <FaArrowLeft className="mr-2" /> Back
                     </button>
                 </form>
-            </div>
+            </motion.div>
         </div>
     );
 };
