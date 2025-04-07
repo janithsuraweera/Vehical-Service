@@ -18,7 +18,7 @@ const EmergencyForm = () => {
             coordinates: [0, 0],
             address: '',
         },
-        vehicleType: 'car',
+        vehicleType: '',
         vehicleColor: '',
         emergencyType: 'breakdown',
         description: '',
@@ -39,6 +39,8 @@ const EmergencyForm = () => {
                     address: value,
                 },
             });
+        } else if (name === 'vehicleNumber') {
+            setFormData({ ...formData, [name]: value.slice(0, 6) });
         } else {
             setFormData({ ...formData, [name]: value });
         }
@@ -83,7 +85,7 @@ const EmergencyForm = () => {
                 coordinates: [0, 0],
                 address: '',
             },
-            vehicleType: 'car',
+            vehicleType: '',
             vehicleColor: '',
             emergencyType: 'breakdown',
             description: '',
@@ -129,6 +131,11 @@ const EmergencyForm = () => {
 
         if (!formData.description.trim()) {
             formErrors.description = 'Description is required.';
+            isValid = false;
+        }
+
+        if (!formData.vehicleType) {
+            formErrors.vehicleType = 'Vehicle type is required.';
             isValid = false;
         }
 
@@ -209,7 +216,7 @@ const EmergencyForm = () => {
                             value={formData.vehicleNumber}
                             onChange={handleChange}
                             className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                            placeholder="Enter vehicle number"
+                            placeholder="Enter vehicle number (max 6 characters)"
                         />
                         {errors.vehicleNumber && <p className="text-red-500 text-sm mt-1">{errors.vehicleNumber}</p>}
                     </div>
@@ -243,6 +250,7 @@ const EmergencyForm = () => {
                             onChange={handleChange}
                             className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
                         >
+                            <option value="">Select Vehicle Type</option>
                             <option value="car">Car</option>
                             <option value="motorcycle">Motorcycle</option>
                             <option value="bus">Bus</option>
@@ -250,8 +258,8 @@ const EmergencyForm = () => {
                             <option value="van">Van</option>
                             <option value="other">Other</option>
                         </select>
+                        {errors.vehicleType && <p className="text-red-500 text-sm mt-1">{errors.vehicleType}</p>}
                     </div>
-
                     <div>
                         <label htmlFor="vehicleColor" className="block font-medium mb-1">Vehicle Color</label>
                         <div className="flex items-center space-x-4">
@@ -267,7 +275,6 @@ const EmergencyForm = () => {
                         </div>
                         {errors.vehicleColor && <p className="text-red-500 text-sm mt-1">{errors.vehicleColor}</p>}
                     </div>
-
                     <div>
                         <label htmlFor="emergencyType" className="block font-medium mb-1">Emergency Type</label>
                         <select
