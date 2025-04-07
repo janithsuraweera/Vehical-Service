@@ -38,6 +38,7 @@ const emergencyRequestSchema = new mongoose.Schema({
     vehicleColor: {
         type: String,
         required: true,
+        match: /^#([0-9A-F]{3}){1,2}$/i, // valid hex code only
     },
     emergencyType: {
         type: String,
@@ -57,7 +58,8 @@ const emergencyRequestSchema = new mongoose.Schema({
     },
     vehicleNumber: {
         type: String,
-        sparse: true, // Optional field 
+        sparse: true, 
+        // required: true,
     },
     date: {
         type: Date,
