@@ -3,14 +3,14 @@ import { ToastContainer } from 'react-toastify';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css'
 
-import EmergencyForm from './components/EmergencyForm'
-import EmergencyList from './components/EmergencyList'
-import EmergencyDetails from './components/EmergencyDetails';
-import UpdateEmergencyForm from './components/UpdateEmergencyForm';
-import HomePage from './components/HomePage';
-import LoginForm from './components/LoginForm';
-import SignupForm from './components/SignupForm';
-import Dashboard from './components/Dashboard';
+import EmergencyForm from './components/emergency/EmergencyForm'
+import EmergencyList from './components/emergency/EmergencyList'
+import EmergencyDetails from './components/emergency/EmergencyDetails';
+import UpdateEmergencyForm from './components/emergency/UpdateEmergencyForm';
+import HomePage from './components/emergency/HomePage';
+import LoginForm from './components/emergency/LoginForm';
+import SignupForm from './components/emergency/SignupForm';
+import Dashboard from './components/emergency/Dashboard';
 
 function App() {
   return (
