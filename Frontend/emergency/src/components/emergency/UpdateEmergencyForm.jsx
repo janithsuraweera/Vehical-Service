@@ -11,6 +11,7 @@ const UpdateEmergencyForm = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
+        _id: id,
         name: '',
         contactNumber: '',
         vehicleNumber: '',
@@ -54,7 +55,7 @@ const UpdateEmergencyForm = () => {
                 },
             });
         } else if (name === 'vehicleNumber') {
-            setFormData({ ...formData, [name]: value.slice(0, 7) });
+            setFormData({ ...formData, [name]: value.slice(0, 6) });
         } else {
             setFormData({ ...formData, [name]: value });
         }
@@ -179,6 +180,17 @@ const UpdateEmergencyForm = () => {
                     Update Emergency Request
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                        <label htmlFor="_id" className="block font-medium mb-1">ID</label>
+                        <input
+                            type="text"
+                            id="_id"
+                            name="_id"
+                            value={formData._id}
+                            disabled
+                            className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+                        />
+                    </div>
                     <div>
                         <label htmlFor="name" className="block font-medium mb-1">Name</label>
                         <input
