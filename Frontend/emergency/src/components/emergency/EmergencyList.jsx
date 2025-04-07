@@ -120,7 +120,12 @@ const EmergencyList = () => {
                     doc.text(`Page ${doc.internal.getCurrentPageInfo().pageNumber} of ${pageCount}`, data.settings.margin.left, doc.internal.pageSize.height - 10);
                 }
             });
-            doc.save('emergency_report.pdf');
+            // Generate the filename with date
+        const today = new Date();
+        const formattedDate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+        const fileName = `Emergency Report (${formattedDate}).pdf`;
+
+        doc.save(fileName);
         };
 
         img.onerror = () => {
