@@ -14,5 +14,5 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
-// Connect to MongoDB
+
 module.exports = connectDB; // Export the function
