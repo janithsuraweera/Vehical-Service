@@ -20,7 +20,7 @@ const EmergencyForm = () => {
         },
         vehicleType: '',
         vehicleColor: '',
-        emergencyType: 'breakdown',
+        emergencyType: '', // Initial value changed to empty string
         description: '',
     });
     const [errors, setErrors] = useState({});
@@ -40,7 +40,7 @@ const EmergencyForm = () => {
                 },
             });
         } else if (name === 'vehicleNumber') {
-            setFormData({ ...formData, [name]: value.slice(0, 6) });
+            setFormData({ ...formData, [name]: value.slice(0, 7) });
         } else {
             setFormData({ ...formData, [name]: value });
         }
@@ -87,7 +87,7 @@ const EmergencyForm = () => {
             },
             vehicleType: '',
             vehicleColor: '',
-            emergencyType: 'breakdown',
+            emergencyType: '',
             description: '',
         });
         setErrors({});
@@ -136,6 +136,11 @@ const EmergencyForm = () => {
 
         if (!formData.vehicleType) {
             formErrors.vehicleType = 'Vehicle type is required.';
+            isValid = false;
+        }
+
+        if (!formData.emergencyType) {
+            formErrors.emergencyType = 'Emergency type is required.';
             isValid = false;
         }
 
@@ -216,7 +221,7 @@ const EmergencyForm = () => {
                             value={formData.vehicleNumber}
                             onChange={handleChange}
                             className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                            placeholder="Enter vehicle number (max 6 characters)"
+                            placeholder="Enter vehicle number (max 7 characters)"
                         />
                         {errors.vehicleNumber && <p className="text-red-500 text-sm mt-1">{errors.vehicleNumber}</p>}
                     </div>
