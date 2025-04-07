@@ -79,7 +79,7 @@ const EmergencyList = () => {
                 head: head,
                 body: body,
                 theme: 'striped',
-                styles: { fontSize: 8, cellPadding: 2 },
+                styles: { fontSize: 7, cellPadding: 2 },
                 didDrawCell: (data) => {
                     if (data.section === 'body' && data.column.index === 4) {
                         const color = data.cell.raw;
