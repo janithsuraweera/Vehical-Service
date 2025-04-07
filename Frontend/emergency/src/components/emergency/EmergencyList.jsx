@@ -354,14 +354,21 @@ const EmergencyList = () => {
 
                 {/* Bottom Buttons */}
                 <div className="flex flex-col md:flex-row justify-between mt-6 gap-4">
-                    {/* Restored original button classes */}
-                    <button onClick={handleBack} className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 md:py-3 md:px-6 rounded-lg flex items-center justify-center">
-                        <FaArrowLeft className="mr-2" /> Back to Login
-                    </button>
-                    <button onClick={handleDownload} className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 md:py-3 md:px-6 rounded-lg flex items-center justify-center">
-                        <FaDownload className="mr-2" /> Download Report
-                    </button>
-                </div>
+    <button
+        onClick={handleBack}
+        className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 md:py-3 md:px-6 rounded-lg flex items-center justify-center"
+        title="Back to Login" // Tooltip
+    >
+        <FaArrowLeft />
+    </button>
+    <button
+        onClick={handleDownload}
+        className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 md:py-3 md:px-6 rounded-lg flex items-center justify-center"
+        title="Downlod" // Tooltip
+    >
+        <FaDownload />
+    </button>
+</div>
             </div>
         </div>
     );
