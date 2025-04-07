@@ -59,13 +59,7 @@ const EmergencyList = () => {
         const img = new Image();
         img.src = '/logo.png';
 
-        img.onload = () => {
-            try {
-                doc.addImage(img, 'PNG', 10, 10, 30, 30);
-            } catch (e) {
-                console.error("Error adding image to PDF:", e);
-                toast.warn("Could not add logo to the report.");
-            }
+        const generatePdf = () => {
             doc.setFontSize(18);
             doc.text('Emergency Report', 50, 25);
             doc.setFontSize(10);
@@ -120,71 +114,30 @@ const EmergencyList = () => {
                     doc.text(`Page ${doc.internal.getCurrentPageInfo().pageNumber} of ${pageCount}`, data.settings.margin.left, doc.internal.pageSize.height - 10);
                 }
             });
-            // Generate the filename with date
-        const today = new Date();
-        const formattedDate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-        const fileName = `Emergency Report (${formattedDate}).pdf`;
+        };
 
-        doc.save(fileName);
+        img.onload = () => {
+            try {
+                doc.addImage(img, 'PNG', 10, 10, 30, 30);
+            } catch (e) {
+                console.error("Error adding image to PDF:", e);
+                toast.warn("Could not add logo to the report.");
+            }
+            generatePdf();
         };
 
         img.onerror = () => {
             console.error("Logo image could not be loaded for PDF generation.");
             toast.error("Failed to load logo. Report will be generated without it.");
-
-            doc.setFontSize(18);
-            doc.text('Emergency Report', 10, 25);
-            doc.setFontSize(10);
-            doc.text(`Date: ${new Date().toLocaleDateString()}`, 10, 32);
-
-            const head = [['Name', 'Contact Number', 'Address', 'Vehicle Type', 'Vehicle Color', 'Emergency Type', 'Description', 'Status', 'Vehicle Number', 'Date', 'Time']];
-            const body = filteredEmergencies.map(emergency => [emergency.name, emergency.contactNumber, emergency.location?.address || 'N/A', emergency.vehicleType, emergency.vehicleColor, emergency.emergencyType, emergency.description, emergency.status, emergency.vehicleNumber, emergency.date ? new Date(emergency.date).toLocaleDateString() : 'N/A', emergency.time]);
-
-            autoTable(doc, {
-                startY: 40,
-                head: head,
-                body: body,
-                theme: 'striped',
-                styles: { fontSize: 8, cellPadding: 2 },
-                didDrawCell: (data) => {
-                    if (data.section === 'body' && data.column.index === 4) {
-                        const color = data.cell.raw;
-                        const cell = data.cell;
-                        const doc = data.doc;
-                        if (color && typeof color === 'string') {
-                            const bgColor = data.row.index % 2 === 0 ? [255, 255, 255] : [245, 245, 245];
-                            doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
-                            doc.rect(cell.x, cell.y, cell.width, cell.height, 'F');
-
-                            const squareSize = 10;
-                            const rectX = cell.x + (cell.width - squareSize) / 2;
-                            const rectY = cell.y + (cell.height - squareSize) / 2;
-                            try {
-                                doc.setFillColor(color);
-                                doc.rect(rectX, rectY, squareSize, squareSize, 'F');
-                                doc.setDrawColor(0); doc.setLineWidth(0.1);
-                                doc.rect(rectX, rectY, squareSize, squareSize, 'S');
-                            } catch (e) {
-                                doc.setTextColor(150); doc.setFontSize(6);
-                                doc.text('?', cell.x + cell.width / 2, cell.y + cell.height / 2, { align: 'center', baseline: 'middle' });
-                                doc.setTextColor(0);
-                            }
-                            doc.setDrawColor(0);
-                        } else {
-                            const bgColor = data.row.index % 2 === 0 ? [255, 255, 255] : [245, 245, 245];
-                            doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
-                            doc.rect(cell.x, cell.y, cell.width, cell.height, 'F');
-                        }
-                    }
-                },
-                didDrawPage: (data) => {
-                    const pageCount = doc.internal.getNumberOfPages();
-                    doc.setFontSize(9);
-                    doc.text(`Page ${doc.internal.getCurrentPageInfo().pageNumber} of ${pageCount}`, data.settings.margin.left, doc.internal.pageSize.height - 10);
-                }
-            });
-            doc.save('emergency_report.pdf');
+            generatePdf();
         };
+
+        const today = new Date();
+        const formattedDate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+        const fileName = `Emergency Report (${formattedDate}).pdf`;
+
+        img.onload();
+        doc.save(fileName);
     };
 
     const filteredEmergencies = emergencies.filter(emergency => {
