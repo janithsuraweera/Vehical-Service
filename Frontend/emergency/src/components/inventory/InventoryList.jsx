@@ -59,7 +59,7 @@ const InventoryList = () => {
     const handleDownload = () => {
         const doc = new jsPDF();
         doc.autoTable({
-            head: [['Product ID', 'Product Name', 'Price', 'Quantity', 'Description']],
+            head: [['Product ID', 'Product Name', 'Price', 'Quantity', 'Description','productImage']],
             body: filteredInventoryItems.map(item => [
                 item.productId, item.productName, item.productPrice, item.productQuantity, item.productDescription
             ]),
@@ -89,7 +89,7 @@ const InventoryList = () => {
                         placeholder="Search by Product ID or Name"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="p-3 border border-gray-300 rounded-lg"
+                        className="p-3 border border-gray-300 rounded-lg w-72 "
                     />
                 </div>
 
@@ -102,6 +102,7 @@ const InventoryList = () => {
                                 <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Price</th>
                                 <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Quantity</th>
                                 <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Description</th>
+                                <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Image</th>
                                 <th className="py-3 px-6 border-b text-left text-lg font-semibold text-gray-700">Actions</th>
                             </tr>
                         </thead>
@@ -117,6 +118,12 @@ const InventoryList = () => {
                                     <td className="py-4 px-6 border-b">{item.productPrice}</td>
                                     <td className="py-4 px-6 border-b">{item.productQuantity}</td>
                                     <td className="py-4 px-6 border-b">{item.productDescription}</td>
+                                    
+                                     <img src={item.productImage}
+                                     alt={item.productName}
+                                     className="w-20 h-20 object-cover rounded"
+                                     />
+                                     
                                     <td className="py-4 px-6 border-b flex space-x-2">
                                         <button onClick={() => handleUpdate(item._id)} className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-3 rounded">
                                             <FaEdit className="inline-block mr-1" /> Update

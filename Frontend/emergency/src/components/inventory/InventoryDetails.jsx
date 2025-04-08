@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import backgroundImage from '../assets/background.png';
+// import backgroundImage from '../assets/background.png';
 
 const InventoryDetails = () => {
     const { id } = useParams();
@@ -63,7 +63,10 @@ const InventoryDetails = () => {
                     <p><strong>Price:</strong> {item.productPrice}</p>
                     <p><strong>Quantity:</strong> {item.productQuantity}</p>
                     <p><strong>Description:</strong> {item.productDescription}</p>
-                    <p><strong>Category:</strong> {item.category}</p>
+                    {/* <p><strong>Category:</strong> {item.category}</p> */}
+
+                    <p><strong>Image:</strong>{item.backgroundImage}</p>
+
                     <div className="flex justify-center mt-6">
                         <button
                             onClick={handleBack}
