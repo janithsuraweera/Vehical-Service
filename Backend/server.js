@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const connectDB = require('./config/db');
-const emergencyRoutes = require('./routes/emergencyRoutes');
 const bodyParser = require('body-parser');//authorizes the server to accept JSON data in a POST request
 const inventoryRoutes = require('./routes/inventoryRoutes');
 
