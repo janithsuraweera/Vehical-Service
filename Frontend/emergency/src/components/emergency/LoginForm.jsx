@@ -13,6 +13,8 @@ const LoginForm = () => {
         console.log('Login submitted', { email, password });
     };
 
+    //
+
     const handleBack = () => {
         navigate('/'); // Navigate back to the home page or previous page
     };
