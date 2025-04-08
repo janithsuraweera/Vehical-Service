@@ -179,7 +179,7 @@ const EmergencyList = () => {
                             placeholder="Search by Vehicle Number or Name"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="p-3 border border-gray-300 rounded-lg w-full pr-10 transition-shadow duration-300 focus:ring focus:ring-indigo-200 focus:shadow-md"
+                            className="p-3 border border-gray-300 rounded-lg w-full pr-20 transition-shadow duration-300 focus:ring focus:ring-indigo-200 focus:shadow-md"
                         />
                         <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                             <FaSearch className="h-5 w-5 text-gray-400" />
