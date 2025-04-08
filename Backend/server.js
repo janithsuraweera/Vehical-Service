@@ -16,7 +16,6 @@ app.use(express.json());
 connectDB(); // Connect to MongoDB
 
 
-app.use('/api/emergency', emergencyRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.get('/', (req, res) => {res.send('Hello World!');
 });
