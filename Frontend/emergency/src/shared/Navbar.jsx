@@ -13,7 +13,7 @@ const Navbar = () => {
         <a href="/" className="hover:text-gray-400">Home</a>
         <a href="/inventory" className="hover:text-gray-400">Store</a>
         <a href="/emergency" className="hover:text-gray-400">Emergency</a>
-        <a href="#" className="hover:text-gray-400">About Us</a>
+        <a href="/aboutus" className="hover:text-gray-400">About Us</a>
       </div>
       <div className="nav-buttons space-x-4">
         <button

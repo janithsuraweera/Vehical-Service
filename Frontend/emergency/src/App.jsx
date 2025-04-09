@@ -17,6 +17,7 @@ import EmergencyHomePage from './components/emergency/EmergencyHomePage';
 import EmergencyList from './components/emergency/EmergencyList';
 import UpdateEmergencyForm from './components/emergency/UpdateEmergencyForm';
 import EmergencyDetails from './components/emergency/EmergencyDetails';
+import About from './otherfolders/About';
 
 function App() {
   return (
@@ -28,7 +29,7 @@ function App() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignupForm />} />
-
+        <Route path="/aboutus" element={<About/>} />
         {/* //Emergency Routes */}
         <Route path="/emergency" element={<EmergencyHomePage />} />
         <Route path="/emergencyform" element={<EmergencyForm/>}/>
