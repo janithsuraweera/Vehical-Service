@@ -28,14 +28,13 @@ function App() {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignupForm />} />
 
+
         //Emergency Routes
         <Route path="/emergency" element={<EmergencyHomePage />} />
         <Route path="/emergencyform" element={<EmergencyForm/>}/>
-        <Route path="/emergencylist" element={<EmergencyList/>}/>
-        <Route path="/update-emergency/:id" element={<UpdateEmergencyForm/>}/>
-//emergency
-
-
+        <Route path="/emergencylist" element={<EmergencyForm/>}/>
+        <Route path="/emergencyform/:id" element={<EmergencyForm/>}/>
+        <Route path="/emergencylist/:id" element={<EmergencyForm/>}/>
 
 
 {/* 
