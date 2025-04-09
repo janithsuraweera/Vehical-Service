@@ -4,7 +4,10 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import backgroundImage from '../../assets/background.png';
+
+import backgroundImage from '../../assets/background.png'; 
+
+
 import { FaMapMarkerAlt, FaArrowLeft } from 'react-icons/fa';
 
 const EmergencyForm = () => {
@@ -20,7 +23,7 @@ const EmergencyForm = () => {
         },
         vehicleType: '',
         vehicleColor: '',
-        emergencyType: 'breakdown',
+        emergencyType: '', // Initial value changed to empty string
         description: '',
     });
     const [errors, setErrors] = useState({});
@@ -40,7 +43,7 @@ const EmergencyForm = () => {
                 },
             });
         } else if (name === 'vehicleNumber') {
-            setFormData({ ...formData, [name]: value.slice(0, 6) });
+            setFormData({ ...formData, [name]: value.slice(0, 7) });
         } else {
             setFormData({ ...formData, [name]: value });
         }
@@ -87,7 +90,7 @@ const EmergencyForm = () => {
             },
             vehicleType: '',
             vehicleColor: '',
-            emergencyType: 'breakdown',
+            emergencyType: '',
             description: '',
         });
         setErrors({});
@@ -136,6 +139,11 @@ const EmergencyForm = () => {
 
         if (!formData.vehicleType) {
             formErrors.vehicleType = 'Vehicle type is required.';
+            isValid = false;
+        }
+
+        if (!formData.emergencyType) {
+            formErrors.emergencyType = 'Emergency type is required.';
             isValid = false;
         }
 
@@ -216,7 +224,7 @@ const EmergencyForm = () => {
                             value={formData.vehicleNumber}
                             onChange={handleChange}
                             className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                            placeholder="Enter vehicle number (max 6 characters)"
+                            placeholder="Enter vehicle number (max 7 characters)"
                         />
                         {errors.vehicleNumber && <p className="text-red-500 text-sm mt-1">{errors.vehicleNumber}</p>}
                     </div>
@@ -284,11 +292,13 @@ const EmergencyForm = () => {
                             onChange={handleChange}
                             className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
                         >
+                            <option value="">Select Emergency Type</option>
                             <option value="breakdown">Breakdown</option>
                             <option value="accident">Accident</option>
                             <option value="flat_tire">Flat Tire</option>
                             <option value="other">Other</option>
                         </select>
+                        {errors.emergencyType && <p className="text-red-500 text-sm mt-1">{errors.emergencyType}</p>}
                     </div>
                     <div>
                         <label htmlFor="description" className="block font-medium mb-1">Description</label>

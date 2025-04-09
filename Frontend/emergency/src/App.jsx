@@ -25,8 +25,8 @@ function App() {
 
         //Home Page Route
         <Route path="/" element={<Dashboard />} />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/signup" element={<SignupForm />} />
+        {/* <Route path="/login" element={<LoginForm />} />
+        <Route path="/signup" element={<SignupForm />} /> */}
 
         //Emergency Routes
         <Route path="/emergency" element={<EmergencyHomePage />} />
