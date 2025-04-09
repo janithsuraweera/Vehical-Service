@@ -75,4 +75,3 @@ const emergencyRequestSchema = new mongoose.Schema({
 }, { timestamps: false }); // timestamps option is set to false to disable createdAt and updatedAt fields
 
 module.exports = mongoose.model('EmergencyRequest', emergencyRequestSchema);
-// module.exports = emergencyRequestSchema; // Export the schema if needed for other purposes
