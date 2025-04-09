@@ -3,8 +3,6 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-import backgroundImage from '../../assets/background.png'; 
-
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import autoTable from 'jspdf-autotable';
@@ -35,13 +33,13 @@ const EmergencyDetails = () => {
     }, [id]);
 
     const handleBack = () => {
-        navigate('/list');
+        navigate('/emergencylist');
     };
 
     const handleOk = async () => {
         try {
             await axios.put(`http://localhost:5000/api/emergency/${id}`, { status: status });
-            navigate('/list');
+            navigate('/emergencylist');
         } catch (error) {
             console.error("Error updating status:", error);
         }
