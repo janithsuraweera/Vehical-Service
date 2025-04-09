@@ -15,6 +15,8 @@ import LoginForm from './shared/LoginForm';
 import InventoryHomePage from './components/inventory/InventoryHomePage';
 import SignupForm from './shared/SignupForm';
 import EmergencyHomePage from './components/emergency/EmergencyHomePage';
+import UpdateEmergencyForm from './components/emergency/UpdateEmergencyForm';
+import EmergencyList from './components/emergency/EmergencyList';
 
 function App() {
   return (
@@ -30,9 +32,9 @@ function App() {
         //Emergency Routes
         <Route path="/emergency" element={<EmergencyHomePage />} />
         <Route path="/emergencyform" element={<EmergencyForm/>}/>
-        <Route path="/emergencylist" element={<EmergencyForm/>}/>
-        <Route path="/emergencyform/:id" element={<EmergencyForm/>}/>
-        <Route path="/emergencylist/:id" element={<EmergencyForm/>}/>
+        <Route path="/emergencylist" element={<EmergencyList/>}/>
+        <Route path="/emergencyform/:id" element={<UpdateEmergencyForm/>}/>
+        {/* <Route path="/emergencylist/:id" element={<UpdateEmergencyForm/>}/> */}
 
 
         //Inventory Routes

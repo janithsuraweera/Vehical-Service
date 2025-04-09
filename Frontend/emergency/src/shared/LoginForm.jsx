@@ -70,7 +70,7 @@ const LoginForm = () => {
                         Back
                     </button>
                     <Link
-                        to="/list" // Replace with your EmergencyList route
+                        to="/emergencylist" // Replace with your EmergencyList route
                          className="mt-4  bg-green-500  hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline w-full flex items-center justify-center"
                         // className="mt-4 bg-gradient-to-r from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline w-full flex items-center justify-center"
                     >
