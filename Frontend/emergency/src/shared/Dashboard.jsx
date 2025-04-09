@@ -24,7 +24,7 @@ function Dashboard() {
     <div className="dashboard">
       <Navbar />
 
-      <div className="car-image mt-12">
+      <div className="car-image mt-0">
         <motion.img
           key={currentImageIndex}
           src={images[currentImageIndex]}
@@ -32,7 +32,7 @@ function Dashboard() {
           className="mx-auto max-w-full h-auto rounded-xl shadow-lg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
+          transition={{ duration: 1, ease: 'easeInOut' }}
         />
       </div>
 
@@ -41,7 +41,7 @@ function Dashboard() {
           className="hero-section max-w-4xl mx-auto"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
+          transition={{ duration: 4, ease: 'easeInOut' }}
         >
           <h1 className="text-4xl md:text-6xl font-bold text-gray-800">28 Years of Excellence</h1>
           <p className="text-lg md:text-xl text-gray-600 mt-4">Since 1994</p>
