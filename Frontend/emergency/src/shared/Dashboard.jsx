@@ -21,6 +21,7 @@ function Dashboard() {
   }, [images.length]);
 
   return (
+    
     <div className="dashboard">
       <Navbar />
 
@@ -28,8 +29,8 @@ function Dashboard() {
         <motion.img
           key={currentImageIndex}
           src={images[currentImageIndex]}
-          alt=""
-          className="mx-auto max-w-full h-auto rounded-xl shadow-lg"
+          alt="Slidshow Image"
+          className="mx-auto w-[100%] h-[20px] md:h-[100%] object-cover rounded-xl shadow-lg" // Custom Height & Responsive Width
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, ease: 'easeInOut' }}
