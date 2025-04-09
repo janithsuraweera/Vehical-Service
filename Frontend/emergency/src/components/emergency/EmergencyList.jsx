@@ -51,7 +51,7 @@ const EmergencyList = () => {
     };
 
     const handleBack = () => {
-        navigate('/login');
+        navigate('/dashboard');
     };
 
     const handleDownload = () => {

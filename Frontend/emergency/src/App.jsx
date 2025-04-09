@@ -32,8 +32,8 @@ function App() {
         <Route path="/emergency" element={<EmergencyHomePage />} />
         <Route path="/emergencyform" element={<EmergencyForm/>}/>
         <Route path="/emergencylist" element={<EmergencyList/>}/>
-        <Route path="/emergencylist/:id" element={<UpdateEmergencyForm/>}/>
-
+        <Route path="/update-emergency/:id" element={<UpdateEmergencyForm/>}/>
+//emergency
 
 
 
