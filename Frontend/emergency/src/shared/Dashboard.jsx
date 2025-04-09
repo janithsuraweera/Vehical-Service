@@ -11,7 +11,7 @@ function Dashboard() {
         <div className="nav-items hidden md:flex space-x-6">
           <a href="dashboard" className="hover:text-gray-400">Home</a>
           <a href="#" className="hover:text-gray-400">Store</a>
-          <a href="#" className="hover:text-gray-400">Services</a>
+          <a href="/emergencyform" className="hover:text-gray-400">Emergency</a>
           <a href="#" className="hover:text-gray-400">About Us</a>
         </div>
 
