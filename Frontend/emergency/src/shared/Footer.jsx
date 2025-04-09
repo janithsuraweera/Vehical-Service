@@ -18,29 +18,30 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="text-sm text-gray-400 space-y-2">
-              <li><a href="/" className="hover:text-white">Home</a></li>
-              <li><a href="/about" className="hover:text-white">About Us</a></li>
-              <li><a href="/services" className="hover:text-white">Services</a></li>
-              <li><a href="/contact" className="hover:text-white">Contact</a></li>
+              <li><a href="/" className="hover:text-white">Home</a></li>              
+              <li><a href="/contact" className="hover:text-white">Store</a></li>
+              <li><a href="/emergency" className="hover:text-white">Emergency</a></li>
+              <li><a href="/aboutus" className="hover:text-white">About Us</a></li>
+              <li><a href="/aboutus" className="hover:text-white">Contact</a></li>
             </ul>
           </div>
 
           {/* Column 3: Contact Info */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
-            <p className="text-sm text-gray-400">123 Main Street, City, Country</p>
+            <p className="text-sm text-gray-400">15 Eramudugaha Junction,Unawatuna</p>
             <p className="text-sm text-gray-400">Email: info@motron.com</p>
-            <p className="text-sm text-gray-400">Phone: +1 123 456 7890</p>
+            <p className="text-sm text-gray-400">Phone: +94 76 206 0052</p>
           </div>
 
           {/* Column 4: Social Media */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white"><FaFacebook size={20} /></a>
-              <a href="#" className="text-gray-400 hover:text-white"><FaTwitter size={20} /></a>
-              <a href="#" className="text-gray-400 hover:text-white"><FaInstagram size={20} /></a>
-              <a href="#" className="text-gray-400 hover:text-white"><FaLinkedin size={20} /></a>
+              <a href="www.facebook.com" className="text-gray-400 hover:text-white"><FaFacebook size={20} /></a>
+              <a href="www.twitter.com" className="text-gray-400 hover:text-white"><FaTwitter size={20} /></a>
+              <a href="www.instagram.com" className="text-gray-400 hover:text-white"><FaInstagram size={20} /></a>
+              <a href="www.linkedin.com" className="text-gray-400 hover:text-white"><FaLinkedin size={20} /></a>
             </div>
           </div>
         </div>

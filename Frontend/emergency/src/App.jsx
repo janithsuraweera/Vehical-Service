@@ -29,7 +29,8 @@ function App() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignupForm />} />
-        <Route path="/aboutus" element={<About/>} />
+        <Route path="/aboutus" element={<About />} />
+
         {/* //Emergency Routes */}
         <Route path="/emergency" element={<EmergencyHomePage />} />
         <Route path="/emergencyform" element={<EmergencyForm/>}/>
@@ -42,7 +43,8 @@ function App() {
 
 
        {/* //Inventory Routes */}
-        <Route path="/inventory" element={<InventoryHomePage />} />
+        <Route path="/inventory" element={<InventoryHomePage />} /> 
+
         <Route path="/inventory-form" element={<InventoryForm/>} />
         <Route path="/inventory-list" element={<InventoryList/>}/>
         <Route path="/update-inventory/:id" element={<UpdateInventoryForm/>}/>
