@@ -21,16 +21,16 @@ function Dashboard() {
   }, [images.length]);
 
   return (
-    
     <div className="dashboard">
+      {/* Keep Navbar outside the animated section */}
       <Navbar />
 
       <div className="car-image mt-0">
         <motion.img
           key={currentImageIndex}
           src={images[currentImageIndex]}
-          alt="Slidshow Image"
-          className="mx-auto w-[100%] h-[20px] md:h-[100%] object-cover rounded-xl shadow-lg" // Custom Height & Responsive Width
+          alt="Slideshow Image"
+          className="mx-auto w-[100%] h-[250px] md:h-[600px] object-cover shadow-lg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, ease: 'easeInOut' }}
