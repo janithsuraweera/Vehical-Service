@@ -7,7 +7,7 @@ function Dashboard() {
     const imageData = [
         {
             image: './background.png',
-            title: 'Expert Vehicle Maintenance',            
+            title: 'Expert Vehicle Maintenance',         
             description: 'Guaranteed 100% Satisfaction',
         },
         {
@@ -32,8 +32,7 @@ function Dashboard() {
     useEffect(() => {
         const intervalId = setInterval(() => {
             setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageData.length);
-        }, 9000);
-
+        }, 10000); 
         return () => clearInterval(intervalId);
     }, [imageData.length]);
 
@@ -57,18 +56,31 @@ function Dashboard() {
                           className="mx-auto w-full h-[250px] md:h-[600px] object-cover shadow-lg"
                       />
                       <motion.div
-                          initial={{ opacity: 0, y: 50 }}
-                          animate={{ opacity: 1, y: 0 }}
+                          initial={{ opacity: 0, y: 200 }}
+                          animate={{ opacity: 1, y: 5 }}
                           exit={{ opacity: 0, y: -50 }}
                           transition={{ duration: 0.5, ease: 'easeInOut' }}
-                          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white p-6 bg-black bg-opacity-50 rounded-lg" // පෙට්ටියක් වගේ පෙන්වන්න style එකක් දැම්මා
+
+                          // className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white p-10 bg-black bg-opacity-50 rounded-lg" 
+                          //  className="absolute top-1/2 left-10 transform -translate-y-1/2 text-left text-white p-10 bg-black bg-opacity-50 rounded-lg"//Center-Lef
+                           // className="absolute bottom-10 left-10 text-left text-white p-10 bg-black bg-opacity-50 rounded-lg" // Top-Right Corner
+                           
+                          className="absolute top-10 left-10 text-left text-white p-3 bg-black bg-opacity-50 rounded-lg" // Top-Left Corner
+
+                         
                       >
+                          
+                         
                           <h2 className="text-2xl md:text-4xl font-bold mb-2">
                               {imageData[currentImageIndex].title}
+
                           </h2>
                           <p className="text-lg md:text-xl">
                               {imageData[currentImageIndex].description}
                           </p>
+
+
+
                       </motion.div>
                   </motion.div>
               </AnimatePresence>
@@ -85,6 +97,8 @@ function Dashboard() {
                   <p className="text-lg md:text-xl text-gray-600 mt-4">Since 1994</p>
                   <p className="text-lg md:text-xl text-gray-600">Guaranteed 100% Satisfaction</p>
                   <p className="text-lg md:text-xl text-gray-600">Leads with 40 Centres in Sri Lanka</p>
+                  
+                  
                   <motion.button
                       className="mt-6 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded shadow-md"
                       whileHover={{ scale: 1.1 }}
