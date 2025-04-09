@@ -9,7 +9,7 @@ const InventoryHomePage = () => {
                 <div className="space-y-6 mb-10">
                     <Link
                         to="/inventory-list"
-                        className="block w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg"
+                        className="block w-full py-4 px-6 bg-blue-600 hover:bg-blue-800 text-white font-semibold rounded-lg"
                     >
                         View Inventory
                     </Link>
