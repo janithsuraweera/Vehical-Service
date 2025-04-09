@@ -1,31 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
 function Dashboard() {
+  const images = [
+    './background.png',
+    './test2.png',
+    './test3.png',
+    './test4.png',
+  ];
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, [images.length]);
+
   return (
     <div className="dashboard">
-      <nav className="flex justify-between items-center bg-gray-800 text-white px-6 py-4">
-        <div className="logo">
-      
-          <img src="./logo.png" alt="Motron Logo" className="h-14" />
-        </div>
-        <div className="nav-items hidden md:flex space-x-6">
-          <a href="/" className="hover:text-gray-400">Home</a>
-          <a href="/inventory" className="hover:text-gray-400">Store</a>
-          <a href="/emergency" className="hover:text-gray-400">Emergency</a>
-          <a href="#" className="hover:text-gray-400">About Us</a>
-        </div>
+      <Navbar />
 
-        <div className="nav-buttons space-x-4">
-          <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Sign Up</button>
-          <button className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">Sign In</button>
-        </div>
-
-
-      </nav>
       <div className="car-image mt-12">
-          <img src="./background.png" alt="" className="mx-auto max-w-full h-auto" />
-        </div>
-
+        <img src={images[currentImageIndex]} alt="" className="mx-auto max-w-full h-auto" />
+      </div>
 
       <main className="main-content text-center py-16 px-6 bg-gray-100">
         <div className="hero-section max-w-4xl mx-auto">
@@ -37,9 +38,7 @@ function Dashboard() {
         </div>
       </main>
 
-      <footer className="footer bg-gray-800 text-white text-center py-4">
-        <p>&copy; 2025 Motron</p>
-      </footer>
+      <Footer />
     </div>
   );
 }
