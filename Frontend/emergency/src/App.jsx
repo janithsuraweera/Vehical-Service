@@ -23,20 +23,23 @@ function App() {
       <ToastContainer />
       <Routes>
 
-        //Home Page Route
+        {/* //Home Page Route */}
         <Route path="/" element={<Dashboard />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignupForm />} />
 
-
-        //Emergency Routes
+        {/* //Emergency Routes */}
         <Route path="/emergency" element={<EmergencyHomePage />} />
         <Route path="/emergencyform" element={<EmergencyForm/>}/>
         <Route path="/emergencylist" element={<EmergencyList/>}/>
         <Route path="/update-emergency/:id" element={<UpdateEmergencyForm/>}/>
 
 
-        //Inventory Routes
+
+
+
+
+       {/* //Inventory Routes */}
         <Route path="/inventory" element={<InventoryHomePage />} />
         <Route path="/inventory-form" element={<InventoryForm/>} />
         <Route path="/inventory-list" element={<InventoryList/>}/>
