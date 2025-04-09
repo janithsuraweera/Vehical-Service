@@ -96,3 +96,4 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
+// Compare this snippet from Backend/models/emergencyRequest.js:
