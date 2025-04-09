@@ -5,6 +5,7 @@ import './App.css'
 
 
 
+
 import HomePage from '././components/inventory/HomePage';
 import InventoryForm from './components/inventory/InventoryForm';
 import InventoryList from './components/inventory/InventoryList';
@@ -12,13 +13,14 @@ import UpdateInventoryForm from './components/inventory/UpdateInventoryForm';
 import Dashboard from './components/inventory/Dashboard';
 import InventoryDetails from './components/inventory/InventoryDetails';
 
-
 function App() {
   return (
     <Router>
       <ToastContainer />
       <Routes>
-        <Route path="/" element={<HomePage />} />
+
+
+        <Route path="i" element={<HomePage />} />
         <Route path="/inventory-form" element={<InventoryForm/>} />
         <Route path="/inventory-list" element={<InventoryList/>}/>
         <Route path="/update-inventory/:id" element={<UpdateInventoryForm/>}/>
