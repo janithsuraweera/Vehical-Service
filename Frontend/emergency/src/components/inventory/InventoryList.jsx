@@ -143,6 +143,11 @@ const InventoryList = () => {
                         <FaArrowLeft className="mr-2" /> Back to Dashboard
                     </button>
                     
+
+                    <button onClick={handleDownload} className="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline">
+                        <FaDownload className="mr-2" /> Download Report
+                    </button>
+
                 </div>
             </div>
         </div>
