@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import Navbar from  './Navbar';
+import Footer from  './Footer';
 
 function Dashboard() {
   const images = [
