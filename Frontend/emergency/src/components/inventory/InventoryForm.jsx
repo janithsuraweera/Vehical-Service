@@ -127,7 +127,7 @@ const InventoryForm = () => {
                 transition={{ duration: 0.5 }}
             >
                 <h2 className="text-4xl font-bold mb-8 text-center text-blue-700">
-                    Inventory Request
+                    Add Inventory Item
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
