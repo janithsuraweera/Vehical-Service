@@ -14,9 +14,18 @@ const EmergencyHomePage = () => {
                         Sign Up
                     </Link>
                 </div>
-                <Link to="/emergency" className="block w-full py-4 px-6 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold rounded-lg">
+                <Link to="/emergencyform" className="block w-full py-4 px-6 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold rounded-lg">
                     Emergency Form
                 </Link>
+
+                <Link
+                        to="/emergencylist" // Replace with your EmergencyList route
+                         className="mt-4  bg-green-500  hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline w-full flex items-center justify-center"
+                        // className="mt-4 bg-gradient-to-r from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline w-full flex items-center justify-center"
+                    >
+                         Admin View
+                    </Link>
+
             </div>
         </div>
     );
