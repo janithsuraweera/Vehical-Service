@@ -18,7 +18,7 @@ const EmergencyForm = () => {
             coordinates: [0, 0],
             address: '',
         },
-        vehicleType: 'car',
+        vehicleType: '',
         vehicleColor: '',
         emergencyType: 'breakdown',
         description: '',
@@ -39,6 +39,8 @@ const EmergencyForm = () => {
                     address: value,
                 },
             });
+        } else if (name === 'vehicleNumber') {
+            setFormData({ ...formData, [name]: value.slice(0, 6) });
         } else {
             setFormData({ ...formData, [name]: value });
         }
@@ -83,7 +85,7 @@ const EmergencyForm = () => {
                 coordinates: [0, 0],
                 address: '',
             },
-            vehicleType: 'car',
+            vehicleType: '',
             vehicleColor: '',
             emergencyType: 'breakdown',
             description: '',
@@ -132,6 +134,11 @@ const EmergencyForm = () => {
             isValid = false;
         }
 
+        if (!formData.vehicleType) {
+            formErrors.vehicleType = 'Vehicle type is required.';
+            isValid = false;
+        }
+
         setErrors(formErrors);
 
         if (!isValid) {
@@ -139,8 +146,8 @@ const EmergencyForm = () => {
         }
 
         try {
-            await axios.post('http://localhost:5000/api/emergency', formData);
-            toast.success('Emergency request submitted successfully!');
+            const response = await axios.post('http://localhost:5000/api/emergency', formData);
+            toast.success(`Emergency request submitted successfully! Emergency Request No: ${response.data.emergencyRequestNo}`);
             resetForm();
         } catch (error) {
             if (error.response && error.response.data && error.response.data.errors) {
@@ -209,7 +216,7 @@ const EmergencyForm = () => {
                             value={formData.vehicleNumber}
                             onChange={handleChange}
                             className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                            placeholder="Enter vehicle number"
+                            placeholder="Enter vehicle number (max 6 characters)"
                         />
                         {errors.vehicleNumber && <p className="text-red-500 text-sm mt-1">{errors.vehicleNumber}</p>}
                     </div>
@@ -243,6 +250,7 @@ const EmergencyForm = () => {
                             onChange={handleChange}
                             className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
                         >
+                            <option value="">Select Vehicle Type</option>
                             <option value="car">Car</option>
                             <option value="motorcycle">Motorcycle</option>
                             <option value="bus">Bus</option>
@@ -250,18 +258,21 @@ const EmergencyForm = () => {
                             <option value="van">Van</option>
                             <option value="other">Other</option>
                         </select>
+                        {errors.vehicleType && <p className="text-red-500 text-sm mt-1">{errors.vehicleType}</p>}
                     </div>
                     <div>
                         <label htmlFor="vehicleColor" className="block font-medium mb-1">Vehicle Color</label>
-                        <input
-                            type="text"
-                            id="vehicleColor"
-                            name="vehicleColor"
-                            value={formData.vehicleColor}
-                            onChange={handleChange}
-                            className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                            placeholder="Enter vehicle color"
-                        />
+                        <div className="flex items-center space-x-4">
+                            <input
+                                type="color"
+                                id="vehicleColor"
+                                name="vehicleColor"
+                                value={formData.vehicleColor}
+                                onChange={handleChange}
+                                className="border w-16 h-12 rounded-lg shadow-sm cursor-pointer"
+                            />
+                            <span className="text-gray-700">{formData.vehicleColor || '#000000'}</span>
+                        </div>
                         {errors.vehicleColor && <p className="text-red-500 text-sm mt-1">{errors.vehicleColor}</p>}
                     </div>
                     <div>
