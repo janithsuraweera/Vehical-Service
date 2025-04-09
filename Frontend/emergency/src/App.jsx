@@ -2,19 +2,22 @@ import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-
-
+import SignupForm from './shared/SignupForm';
+import LoginForm from './shared/LoginForm';
 import Dashboard from './shared/Dashboard';
-import HomePage from './components/inventory/InventoryHomePage';
+
 import InventoryForm from './components/inventory/InventoryForm';
 import InventoryList from './components/inventory/InventoryList';
 import UpdateInventoryForm from './components/inventory/UpdateInventoryForm';
 import InventoryDetails from './components/inventory/InventoryDetails';
-import EmergencyForm from './components/emergency/EmergencyForm';
-import LoginForm from './shared/LoginForm';
 import InventoryHomePage from './components/inventory/InventoryHomePage';
-import SignupForm from './shared/SignupForm';
+
+import EmergencyForm from './components/emergency/EmergencyForm';
 import EmergencyHomePage from './components/emergency/EmergencyHomePage';
+import EmergencyList from './components/emergency/EmergencyList';
+import UpdateEmergencyForm from './components/emergency/UpdateEmergencyForm';
+import EmergencyDetails from './components/emergency/EmergencyDetails';
+import About from './otherfolders/About';
 
 function App() {
   return (
@@ -22,21 +25,26 @@ function App() {
       <ToastContainer />
       <Routes>
 
-        //Home Page Route
+        {/* //Home Page Route */}
         <Route path="/" element={<Dashboard />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignupForm />} />
+        <Route path="/aboutus" element={<About />} />
 
-        //Emergency Routes
+        {/* //Emergency Routes */}
         <Route path="/emergency" element={<EmergencyHomePage />} />
         <Route path="/emergencyform" element={<EmergencyForm/>}/>
-        <Route path="/emergencylist" element={<EmergencyForm/>}/>
-        <Route path="/emergencyform/:id" element={<EmergencyForm/>}/>
-        <Route path="/emergencylist/:id" element={<EmergencyForm/>}/>
+        <Route path="/emergencylist" element={<EmergencyList/>}/>
+        <Route path="/update-emergency/:id" element={<UpdateEmergencyForm/>}/>
+        <Route path="/emergency/:id" element={<EmergencyDetails/>}/>
 
 
-        //Inventory Routes
-        <Route path="/inventory" element={<InventoryHomePage />} />
+
+
+
+       {/* //Inventory Routes */}
+        <Route path="/inventory" element={<InventoryHomePage />} /> 
+
         <Route path="/inventory-form" element={<InventoryForm/>} />
         <Route path="/inventory-list" element={<InventoryList/>}/>
         <Route path="/update-inventory/:id" element={<UpdateInventoryForm/>}/>
