@@ -34,7 +34,7 @@ function App() {
         <Route path="/emergencyform" element={<EmergencyForm/>}/>
         <Route path="/emergencylist" element={<EmergencyList/>}/>
         <Route path="/emergencyform/:id" element={<UpdateEmergencyForm/>}/>
-        {/* <Route path="/emergencylist/:id" element={<UpdateEmergencyForm/>}/> */}
+        <Route path="/emergencylist/:id" element={<UpdateEmergencyForm/>}/>
 
 
         //Inventory Routes
