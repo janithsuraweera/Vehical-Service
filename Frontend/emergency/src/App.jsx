@@ -1,16 +1,15 @@
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import './App.css'
 
 
 
+import Dashboard from './shared/Dashboard';
 
 import HomePage from '././components/inventory/HomePage';
 import InventoryForm from './components/inventory/InventoryForm';
 import InventoryList from './components/inventory/InventoryList';
 import UpdateInventoryForm from './components/inventory/UpdateInventoryForm';
-import Dashboard from './components/inventory/Dashboard';
 import InventoryDetails from './components/inventory/InventoryDetails';
 
 function App() {
@@ -19,6 +18,7 @@ function App() {
       <ToastContainer />
       <Routes>
 
+<Route path="/" element={<Dashboard />} />
 
         <Route path="i" element={<HomePage />} />
         <Route path="/inventory-form" element={<InventoryForm/>} />

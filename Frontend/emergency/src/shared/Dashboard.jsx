@@ -6,16 +6,13 @@ function Dashboard() {
       <nav className="flex justify-between items-center bg-gray-800 text-white px-6 py-4">
         <div className="logo">
       
-          <img src="motron-logo.png" alt="Motron Logo" className="h-10" />
+          <img src="./logo.png" alt="Motron Logo" className="h-10" />
         </div>
         <div className="nav-items hidden md:flex space-x-6">
-          <a href="#" className="hover:text-gray-400">Home</a>
-          <a href="#" className="hover:text-gray-400">About Us</a>
+          <a href="dashboard" className="hover:text-gray-400">Home</a>
+          <a href="#" className="hover:text-gray-400">Store</a>
           <a href="#" className="hover:text-gray-400">Services</a>
-          <a href="#" className="hover:text-gray-400">Branches</a>
-          <a href="#" className="hover:text-gray-400">Packages</a>
-          <a href="#" className="hover:text-gray-400">News</a>
-          <a href="#" className="hover:text-gray-400">Contact</a>
+          <a href="#" className="hover:text-gray-400">About Us</a>
         </div>
         <div className="nav-buttons space-x-4">
           <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Sign Up</button>
