@@ -150,7 +150,7 @@ const UpdateEmergencyForm = () => {
         try {
             await axios.put(`http://localhost:5000/api/emergency/${id}`, formData);
             toast.success('Emergency request updated successfully!');
-            navigate('/list');
+            navigate('/emergencylist');
         } catch (error) {
             if (error.response && error.response.data && error.response.data.errors) {
                 const errorData = error.response.data.errors.reduce((acc, err) => ({ ...acc, [err.path]: err.msg }), {});
