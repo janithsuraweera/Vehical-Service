@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 
 import Dashboard from './shared/Dashboard';
-import HomePage from './components/inventory/InventoryHomePage';
 import InventoryForm from './components/inventory/InventoryForm';
 import InventoryList from './components/inventory/InventoryList';
 import UpdateInventoryForm from './components/inventory/UpdateInventoryForm';
