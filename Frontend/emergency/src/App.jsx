@@ -2,21 +2,20 @@ import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-
-
+import SignupForm from './shared/SignupForm';
+import LoginForm from './shared/LoginForm';
 import Dashboard from './shared/Dashboard';
-import HomePage from './components/inventory/InventoryHomePage';
+
 import InventoryForm from './components/inventory/InventoryForm';
 import InventoryList from './components/inventory/InventoryList';
 import UpdateInventoryForm from './components/inventory/UpdateInventoryForm';
 import InventoryDetails from './components/inventory/InventoryDetails';
-import EmergencyForm from './components/emergency/EmergencyForm';
-import LoginForm from './shared/LoginForm';
 import InventoryHomePage from './components/inventory/InventoryHomePage';
-import SignupForm from './shared/SignupForm';
+
+import EmergencyForm from './components/emergency/EmergencyForm';
 import EmergencyHomePage from './components/emergency/EmergencyHomePage';
-import UpdateEmergencyForm from './components/emergency/UpdateEmergencyForm';
 import EmergencyList from './components/emergency/EmergencyList';
+import UpdateEmergencyForm from './components/emergency/UpdateEmergencyForm';
 
 function App() {
   return (
@@ -29,12 +28,12 @@ function App() {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignupForm />} />
 
+
         //Emergency Routes
         <Route path="/emergency" element={<EmergencyHomePage />} />
         <Route path="/emergencyform" element={<EmergencyForm/>}/>
         <Route path="/emergencylist" element={<EmergencyList/>}/>
-        <Route path="/emergencyform/:id" element={<UpdateEmergencyForm/>}/>
-        <Route path="/emergencylist/:id" element={<UpdateEmergencyForm/>}/>
+        <Route path="/update-emergency/:id" element={<UpdateEmergencyForm/>}/>
 
 
         //Inventory Routes
