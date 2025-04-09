@@ -31,4 +31,4 @@ const inventoryRequestSchema = new mongoose.Schema({
 }, { timestamps: false }); // timestamps option is set to false to disable createdAt and updatedAt fields
 
 module.exports = mongoose.model('InventoryRequest', inventoryRequestSchema);
-//repo
+//test resalt
