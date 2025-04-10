@@ -96,7 +96,7 @@ const InventoryForm = () => {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            toast.success('Inventory request submitted successfully!');
+            toast.success('Inventory item added successfully! ');
             resetForm();
         } catch (error) {
             if (error.response && error.response.data && error.response.data.errors) {
