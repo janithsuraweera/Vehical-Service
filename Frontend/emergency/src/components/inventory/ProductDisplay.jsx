@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Cart from './Cart'; // Cart component එක ආනයනය කරන්න
+import Cart from './Cart';
 
 const ProductDisplay = () => {
     const [products, setProducts] = useState([]);
