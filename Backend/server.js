@@ -19,7 +19,7 @@ connectDB(); // Connect to MongoDB
 app
 app.use('/api/emergency', emergencyRoutes);
 app.use('/api/inventory', inventoryRoutes);
-app.use('/api/vehicleRegistrationRequest', vehicleRegistrationRequestRoutes);
+app.use('/api/vehicle-registration', vehicleRegistrationRequestRoutes);
 
 
 app.get('/', (req, res) => {res.send('Hello World!');

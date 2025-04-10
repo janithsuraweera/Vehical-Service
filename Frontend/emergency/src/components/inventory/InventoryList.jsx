@@ -45,7 +45,7 @@ const InventoryList = () => {
     };
 
     const handleBack = () => {
-        navigate('/dashboard');
+        navigate('/inventory');
     };
 
     const filteredInventoryItems = inventoryItems.filter(item => {

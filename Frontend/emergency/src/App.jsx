@@ -18,6 +18,10 @@ import EmergencyList from './components/emergency/EmergencyList';
 import UpdateEmergencyForm from './components/emergency/UpdateEmergencyForm';
 import EmergencyDetails from './components/emergency/EmergencyDetails';
 import About from './otherfolders/About';
+import RegistrationHomePage from './components/vehicalregistation/RegistrationHomePage';
+import UpdateVehicleForm from './components/vehicalregistation/UpdateVehicleForm';
+import VehicleRegistrationForm from './components/vehicalregistation/VehicleRegistrationForm';
+import VehicleRegistrationList from './components/vehicalregistation/VehicleRegistrationList';
 
 function App() {
   return (
@@ -51,6 +55,12 @@ function App() {
         <Route path="/inventory/:id" element={<InventoryDetails/>}/>
 
 
+
+        {/* //Vehicle Registration Routes */} 
+      <Route path="/rvhome" element={<RegistrationHomePage />} />
+      <Route path="/registrationform" element={<VehicleRegistrationForm />} />
+      <Route path="/view-registrations" element={<VehicleRegistrationList />} />
+      <Route path="/update-vehicle-registration/:id" element={<UpdateVehicleForm />} />
        
       </Routes>
     </Router>
