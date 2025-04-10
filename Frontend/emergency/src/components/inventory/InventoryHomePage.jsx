@@ -27,7 +27,7 @@ const InventoryHomePage = () => {
                     </Link>
                 </div>
                 <Link
-                    to="/dashboard"
+                    to="/cart"
                     className="block w-full py-4 px-6 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg"
                 >
                     Dashboard
