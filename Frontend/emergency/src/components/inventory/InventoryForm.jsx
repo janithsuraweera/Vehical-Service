@@ -60,7 +60,7 @@ const InventoryForm = () => {
         }
 
         if (!formData.productName.trim()) {
-            formErrors.productName = 'Product name is required.';
+            formErrors.productName = 'Product Name is required.';
             isValid = false;
         }
 
@@ -127,7 +127,7 @@ const InventoryForm = () => {
                 transition={{ duration: 0.5 }}
             >
                 <h2 className="text-4xl font-bold mb-8 text-center text-blue-700">
-                    Inventory Request
+                    Add Inventory Item
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
@@ -152,7 +152,7 @@ const InventoryForm = () => {
                             value={formData.productName}
                             onChange={handleChange}
                             className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                            placeholder="Enter product name"
+                            placeholder="Enter product Name"
                         />
                         {errors.productName && <p className="text-red-500 text-sm mt-1">{errors.productName}</p>}
                     </div>
