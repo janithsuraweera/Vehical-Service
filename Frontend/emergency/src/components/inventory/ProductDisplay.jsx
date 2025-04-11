@@ -43,7 +43,7 @@ const ProductDisplay = () => {
                             <h3 className="text-xl font-semibold mb-2">{product.productName}</h3>
                             <p>Price: Rs. {product.productPrice}</p>
                             <p>Quantity: {product.productQuantity}</p>
-                            <p>{product.productDescription}</p>
+                            <p>Description: {product.productDescription}</p>
                             <button onClick={() => addToCart(product)} className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
                                 Add to Cart
                             </button>
