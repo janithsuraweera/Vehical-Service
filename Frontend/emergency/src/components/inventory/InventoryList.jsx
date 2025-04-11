@@ -77,10 +77,10 @@ const InventoryList = () => {
                         <label htmlFor="categoryFilter" className="sr-only">Filter by Category</label>
                         <select id="categoryFilter" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="p-2 border rounded">
                             <option value="">All Categories</option>
-                            <option value="electronics">Electronics</option>
-                            <option value="clothing">Clothing</option>
-                            <option value="books">Books</option>
-                            <option value="furniture">Furniture</option>
+                            <option value="oils">Oils</option>
+                            <option value="vehicle lights">Vehicle lights</option>
+                            <option value="shock absorbers">Shock Absorbers</option>
+                            <option value="tire">Tire</option>
                         </select>
 
                         <label htmlFor="priceFilter" className="sr-only">Filter by Max Price</label>
