@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { FaEdit, FaTrash, FaArrowLeft, FaDownload, FaSearch } from 'react-icons/fa';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-//error fix now
+//error fix now ok
 const VehicleRegistrationList = () => {
     const [registrations, setRegistrations] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
