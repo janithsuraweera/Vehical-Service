@@ -14,7 +14,7 @@ const UpdateInventoryForm = () => {
         productPrice: 0,
         productQuantity: 0,
         productDescription: '',
-        category: 'electronics', // Default category
+        category: 'oils', // Default category
     });
     const [errors, setErrors] = useState({});
 
@@ -169,7 +169,7 @@ const UpdateInventoryForm = () => {
                             onChange={handleChange}
                             className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
                         >
-                            <option value="electronics">Electronics</option>
+                            <option value="electronics">Oils</option>
                             <option value="clothing">Clothing</option>
                             <option value="books">Books</option>
                             <option value="furniture">Furniture</option>
