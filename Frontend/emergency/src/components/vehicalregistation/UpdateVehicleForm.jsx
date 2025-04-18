@@ -90,7 +90,7 @@ const UpdateVehicleForm = () => {
             isValid = false;
         }
 
-        // Validate owner contact number
+        // Validate owner's contact number
         if (!formData.ownerContact.trim()) {
             formErrors.ownerContact = 'Owner contact number is required.';
             isValid = false;
