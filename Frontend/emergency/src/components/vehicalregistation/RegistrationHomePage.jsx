@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-//Add a new vehicle
+//Add a new vehicle through the system
 const RegistrationHomePage = () => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-600">
