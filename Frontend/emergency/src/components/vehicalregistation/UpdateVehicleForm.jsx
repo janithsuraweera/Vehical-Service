@@ -81,7 +81,7 @@ const UpdateVehicleForm = () => {
             isValid = false;
         }
 
-        // Validate owner name
+        // Validate owner's name
         if (!formData.ownerName.trim()) {
             formErrors.ownerName = 'Owner name is required.';
             isValid = false;
