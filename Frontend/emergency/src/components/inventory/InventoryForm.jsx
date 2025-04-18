@@ -52,3 +52,18 @@ const InventoryForm = () => {
         setPreviewImage(null);
         setErrors({});
     };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();   //Stops the form from refreshing the page
+        const newErrors = {};  //Creates a blank object to store any input errors
+        if (!formData.productId) newErrors.productId = 'Product ID is required';  //Field Checks
+        if (!formData.productName) newErrors.productName = 'Product Name is required';
+        if (!formData.productPrice) newErrors.productPrice = 'Product Price is required';
+        if (!formData.productQuantity) newErrors.productQuantity = 'Product Quantity is required';
+        if (!formData.productDescription) newErrors.productDescription = 'Product Description is required';
+        if (!formData.productImage) newErrors.productImage = 'Product Image is required';
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
