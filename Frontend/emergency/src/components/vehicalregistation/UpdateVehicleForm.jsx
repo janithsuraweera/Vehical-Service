@@ -99,7 +99,7 @@ const UpdateVehicleForm = () => {
             isValid = false;
         }
 
-        // Validate vehicle type
+        // Validate vehicle type 
         if (!formData.vehicleType) {
             formErrors.vehicleType = 'Vehicle type is required.';
             isValid = false;
