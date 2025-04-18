@@ -37,3 +37,18 @@ const InventoryForm = () => {
         }
         setErrors({ ...errors, [name]: '' });
     };
+
+    //resets everything back to empty or default values
+
+    const resetForm = () => {
+        setFormData({
+            productId: '',
+            productName: '',
+            productPrice: '',
+            productQuantity: '',
+            productDescription: '',
+            productImage: null,
+        });
+        setPreviewImage(null);
+        setErrors({});
+    };
