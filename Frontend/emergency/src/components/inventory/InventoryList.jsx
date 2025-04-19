@@ -56,16 +56,7 @@ const InventoryList = () => {
         return searchMatch && categoryMatch && priceMatch;
     });
 
-    const handleDownload = () => {
-        const doc = new jsPDF();
-        doc.autoTable({
-            head: [['Product ID', 'Product Name', 'Price', 'Quantity', 'Description', 'Image']],
-            body: filteredInventoryItems.map(item => [
-                item.productId, item.productName, item.productPrice, item.productQuantity, item.productDescription, 'Image Link' // Image link එක PDF එකේ පෙන්නන්න බැරි නිසා 'Image Link' විදියට දාලා තියෙනවා. 
-            ]),
-        });
-        doc.save('inventory_report.pdf');
-    };
+    
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-green-400 via-teal-500 to-lime-600 p-4">
