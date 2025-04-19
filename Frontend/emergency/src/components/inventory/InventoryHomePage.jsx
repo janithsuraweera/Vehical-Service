@@ -14,3 +14,25 @@ const InventoryHomePage = () => {
                         to="/inventory-form"
                         className="block w-full py-4 px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg"
                     >
+
+                    Add New Item
+                    </Link>
+                    <Link
+                        to="/inventory-reports"
+                        className="block w-full py-4 px-6 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg"
+                    >
+                        Inventory Reports
+                    </Link>
+                </div>
+                <Link
+                    to="/cart"
+                    className="block w-full py-4 px-6 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg"
+                >
+                    Dashboard
+                </Link>
+            </div>
+        </div>
+    );
+};
+
+export default InventoryHomePage;
