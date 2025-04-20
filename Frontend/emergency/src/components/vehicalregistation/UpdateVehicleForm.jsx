@@ -45,7 +45,7 @@ const UpdateVehicleForm = () => {
     // Handle form input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
-        // Handle contact number input, allowing only numeric values
+        // Handle contact number input, allowing only numeric value
         if (name === 'ownerContact') {
             const numericValue = value.replace(/[^0-9]/g, '');
             setFormData({ ...formData, [name]: numericValue.slice(0, 10) });
