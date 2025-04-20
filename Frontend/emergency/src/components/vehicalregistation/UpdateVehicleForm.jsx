@@ -8,7 +8,7 @@ import backgroundImage from '../../assets/background.png';
 import { motion } from 'framer-motion';
 
 const UpdateVehicleForm = () => {
-    // Get the vehicle ID from the URL parameters
+    // Get the vehicle ID from the URL parameter
     const { id } = useParams();
     // Use useNavigate for navigation
     const navigate = useNavigate();
