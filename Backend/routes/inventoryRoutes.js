@@ -69,17 +69,6 @@ router.put('/:id', [
   }
 });
 
-// Delete an inventory item
-router.delete('/:id', async (req, res) => {
-  try {
-    const inventoryRequest = await InventoryRequest.findByIdAndDelete(req.params.id);
-    if (!inventoryRequest) {
-      return res.status(404).json({ message: 'Inventory item not found' });
-    }
-    res.json({ message: 'Inventory item deleted' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+
 
 module.exports = router;
