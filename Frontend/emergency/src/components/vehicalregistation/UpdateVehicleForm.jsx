@@ -54,7 +54,7 @@ const UpdateVehicleForm = () => {
         else if (name === 'vehicleNumber') {
             setFormData({ ...formData, [name]: value.slice(0, 6) });
         }
-        // Handle other form input fields
+        // Handling other form input fields
         else {
             setFormData({ ...formData, [name]: value });
         }
