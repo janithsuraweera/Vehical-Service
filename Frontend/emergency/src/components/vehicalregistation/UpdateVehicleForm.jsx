@@ -42,7 +42,7 @@ const UpdateVehicleForm = () => {
         fetchVehicle();
     }, [id]);
 
-    // Handle form input changes
+    // Handling form input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         // Handle contact number input, allowing only numeric value
