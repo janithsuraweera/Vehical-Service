@@ -28,7 +28,7 @@ const UpdateVehicleForm = () => {
     useEffect(() => {
         const fetchVehicle = async () => {
             try {
-                // Make a GET request to fetch vehicle data
+                // Making a GET request to fetch vehicle data
                 const response = await axios.get(`http://localhost:5000/api/vehicles/${id}`);
                 // Update form data state with fetched data
                 setFormData(response.data);
