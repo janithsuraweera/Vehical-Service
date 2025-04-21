@@ -45,6 +45,9 @@ const ProductDisplay = () => {
                             <p>Quantity: {product.productQuantity}</p>
                             <p>Description: {product.productDescription}</p>
                             
+                            <button onClick={() => addToCart(product)} className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+                                Add to Cart
+                            </button>
                         </div>
                     ))}
                 </div>
