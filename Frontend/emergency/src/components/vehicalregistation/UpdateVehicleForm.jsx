@@ -21,7 +21,7 @@ const UpdateVehicleForm = () => {
         ownerName: '',
         ownerContact: '',
     });
-    // Initialize error state
+    // Initializing error state
     const [errors, setErrors] = useState({});
 
     // Fetch vehicle data on component mount
