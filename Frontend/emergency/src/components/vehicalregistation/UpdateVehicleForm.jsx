@@ -24,7 +24,7 @@ const UpdateVehicleForm = () => {
     // Initializing error state
     const [errors, setErrors] = useState({});
 
-    // Fetch vehicle data on component mount
+    // Fetching vehicle data on component mount
     useEffect(() => {
         const fetchVehicle = async () => {
             try {
