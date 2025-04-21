@@ -62,7 +62,7 @@ const UpdateVehicleForm = () => {
         setErrors({ ...errors, [name]: '' });
     };
 
-    // Handle form submissions
+    // Handling form submissions
     const handleSubmit = async (e) => {
         e.preventDefault();
         // Initialize error object and validation flag
