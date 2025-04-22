@@ -117,7 +117,7 @@ const UpdateVehicleForm = () => {
         try {
             // Making a PUT request to update vehicle data
             await axios.put(`http://localhost:5000/api/vehicles/${id}`, formData);
-            // Display success toast message and navigate to vehicle list
+            // Display a success toast message and navigate to vehicle list
             toast.success('Vehicle information updated successfully!');
             navigate('/vehicle-list');
         } catch (error) {
