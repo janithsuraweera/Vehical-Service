@@ -56,6 +56,7 @@ const UpdateVehicleForm = () => {
         }
         // Handling the other form input fields
         else {
+            
             setFormData({ ...formData, [name]: value });
         }
         // Clears the corresponding error message
