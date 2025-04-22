@@ -56,7 +56,7 @@ const UpdateVehicleForm = () => {
         }
         // Handling the other form input fields
         else {
-            
+
             setFormData({ ...formData, [name]: value });
         }
         // Clears the corresponding error message
@@ -131,7 +131,6 @@ const UpdateVehicleForm = () => {
             }
         }
     };
-
     // Handle back button click
     const handleBack = () => {
         navigate(-1);
