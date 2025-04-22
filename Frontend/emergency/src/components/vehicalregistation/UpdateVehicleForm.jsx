@@ -135,8 +135,7 @@ const UpdateVehicleForm = () => {
     const handleBack = () => {
         navigate(-1);
     };
-
-    return (
+  return (
         <div
             className="min-h-screen bg-cover bg-center flex justify-center items-center"
             style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', opacity: 0.9 }}
