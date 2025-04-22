@@ -28,7 +28,7 @@ const ProductDisplay = () => {
         } else {
             setCart([...cart, { ...product, quantity: 1 }]);
         }
-        toast.success(`${product.productName} added to cart!`);
+        toast.success(`${product.productName} added to cart!`);//add cart
     };
 
     return (
