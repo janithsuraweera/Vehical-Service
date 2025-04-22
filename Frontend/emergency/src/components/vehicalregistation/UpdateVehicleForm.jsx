@@ -121,7 +121,7 @@ const UpdateVehicleForm = () => {
             toast.success('Vehicle information updated successfully!');
             navigate('/vehicle-list');
         } catch (error) {
-            // Handle API error
+            // Handle API errors
             if (error.response && error.response.data && error.response.data.errors) {
                 const errorData = error.response.data.errors.reduce((acc, err) => ({ ...acc, [err.path]: err.msg }), {});
                 setErrors(errorData);
