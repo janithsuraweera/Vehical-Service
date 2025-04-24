@@ -1,7 +1,7 @@
 import React from 'react';
 
-
-
+const Cart = ({ cart }) => {
+    const total = cart.reduce((acc, item) => acc + (item.productPrice * item.quantity), 0);
 
 return (
     <div className="bg-white p-4 rounded-lg shadow-md mt-4">
@@ -18,3 +18,6 @@ return (
     </div>
 );
 
+};
+
+export default Cart;
