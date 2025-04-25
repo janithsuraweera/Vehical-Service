@@ -185,7 +185,9 @@ const UpdateInventoryForm = () => {
                     </button>
 
                     <button
-                       
+                        type="button"
+                        onClick={handleBack}
+                        className="bg-gray-600 hover:bg-gray-600 text-white p-3 rounded-lg w-full mt-4 transition-colors duration-300 flex items-center justify-center"
                     >
                         <FaArrowLeft className="mr-2" /> Back
                     </button>
