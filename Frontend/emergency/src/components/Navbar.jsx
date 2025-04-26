@@ -38,6 +38,18 @@ const Navbar = () => {
                         </Link>
                     </div>
                     
+                    <div className="hidden md:flex items-center space-x-6">
+                        <Link to="/" className="text-gray-600 hover:text-gray-900">Home</Link>
+                        {isLoggedIn && (
+                            <>
+                                <Link to="/inventory" className="text-gray-600 hover:text-gray-900">Store</Link>
+                                <Link to="/emergency" className="text-gray-600 hover:text-gray-900">Emergency</Link>
+                                <Link to="/rvhome" className="text-gray-600 hover:text-gray-900">Register</Link>
+                            </>
+                        )}
+                        <Link to="/aboutus" className="text-gray-600 hover:text-gray-900">About Us</Link>
+                    </div>
+                    
                     <div className="flex items-center">
                         {isLoggedIn ? (
                             <div className="relative">
