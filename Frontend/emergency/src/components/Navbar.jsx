@@ -1,31 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [user, setUser] = useState(null);
     const [showDropdown, setShowDropdown] = useState(false);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        const userData = localStorage.getItem('user');
-        
-        if (token && userData) {
-            setIsLoggedIn(true);
-            setUser(JSON.parse(userData));
-        } else {
-            setIsLoggedIn(false);
-            setUser(null);
-        }
-    }, []);
+    const { user, logout } = useAuth();
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setIsLoggedIn(false);
-        setUser(null);
-        navigate('/login');
+        logout();
+        navigate('/');
     };
 
     return (
@@ -40,7 +24,7 @@ const Navbar = () => {
                     
                     <div className="hidden md:flex items-center space-x-6">
                         <Link to="/" className="text-gray-600 hover:text-gray-900">Home</Link>
-                        {isLoggedIn && (
+                        {user && (
                             <>
                                 <Link to="/inventory" className="text-gray-600 hover:text-gray-900">Store</Link>
                                 <Link to="/emergency" className="text-gray-600 hover:text-gray-900">Emergency</Link>
@@ -51,28 +35,22 @@ const Navbar = () => {
                     </div>
                     
                     <div className="flex items-center">
-                        {isLoggedIn ? (
+                        {user ? (
                             <div className="relative">
                                 <button 
                                     onClick={() => setShowDropdown(!showDropdown)}
                                     className="flex items-center focus:outline-none"
                                 >
                                     <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white">
-                                        {user?.username?.charAt(0).toUpperCase()}
+                                        {user.username?.charAt(0).toUpperCase()}
                                     </div>
                                 </button>
                                 
                                 {showDropdown && (
                                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
                                         <div className="px-4 py-2 text-sm text-gray-700 border-b">
-                                            {user?.username}
+                                            {user.username}
                                         </div>
-                                        <Link 
-                                            to="/dashboard" 
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                        >
-                                            Dashboard
-                                        </Link>
                                         <Link 
                                             to="/profile" 
                                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
