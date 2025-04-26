@@ -6,17 +6,26 @@ import SignupForm from './shared/SignupForm';
 import LoginForm from './shared/LoginForm';
 import Dashboard from './shared/Dashboard';
 
+
+
+// Emergency Imports
+import EmergencyForm from './components/emergency/EmergencyForm';
+import EmergencyHomePage from './components/emergency/EmergencyHomePage';
+import EmergencyList from './components/emergency/EmergencyList';
+import UpdateEmergencyForm from './components/emergency/UpdateEmergencyForm';
+import EmergencyDetails from './components/emergency/EmergencyDetails';
+
+//Inventory Imports 
 import InventoryForm from './components/inventory/InventoryForm';
 import InventoryList from './components/inventory/InventoryList';
 import UpdateInventoryForm from './components/inventory/UpdateInventoryForm';
 import InventoryDetails from './components/inventory/InventoryDetails';
 import InventoryHomePage from './components/inventory/InventoryHomePage';
 
-import EmergencyForm from './components/emergency/EmergencyForm';
-import EmergencyHomePage from './components/emergency/EmergencyHomePage';
-import EmergencyList from './components/emergency/EmergencyList';
-import UpdateEmergencyForm from './components/emergency/UpdateEmergencyForm';
-import EmergencyDetails from './components/emergency/EmergencyDetails';
+// Vehicle Registration Imports
+
+
+
 import About from './otherfolders/About';
 
 
