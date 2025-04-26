@@ -17,6 +17,8 @@ const InventoryForm = () => {
         productDescription: '',
         productImage: null,
     });
+
+
     const [errors, setErrors] = useState({});
     const [previewImage, setPreviewImage] = useState(null);
 
@@ -36,6 +38,8 @@ const InventoryForm = () => {
         setErrors({ ...errors, [name]: '' });
     };
 
+    //resets everything back to empty or default values
+
     const resetForm = () => {
         setFormData({
             productId: '',
@@ -50,9 +54,9 @@ const InventoryForm = () => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        const newErrors = {};
-        if (!formData.productId) newErrors.productId = 'Product ID is required';
+        e.preventDefault();   //Stops the form from refreshing the page
+        const newErrors = {};  //Creates a blank object to store any input errors
+        if (!formData.productId) newErrors.productId = 'Product ID is required';  //Field Checks
         if (!formData.productName) newErrors.productName = 'Product Name is required';
         if (!formData.productPrice) newErrors.productPrice = 'Product Price is required';
         if (!formData.productQuantity) newErrors.productQuantity = 'Product Quantity is required';
@@ -63,6 +67,7 @@ const InventoryForm = () => {
             setErrors(newErrors);
             return;
         }
+
 
         const formDataToSend = new FormData();
         for (const key in formData) {

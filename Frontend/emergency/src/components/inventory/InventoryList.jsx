@@ -67,6 +67,8 @@ const InventoryList = () => {
         doc.save('inventory_report.pdf');
     };
 
+    
+
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-green-400 via-teal-500 to-lime-600 p-4">
             <div className="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-7xl">

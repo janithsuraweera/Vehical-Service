@@ -68,12 +68,12 @@ const InventoryDetails = () => {
                     <p><strong>Image:</strong>{item.backgroundImage}</p>
 
                     <div className="flex justify-center mt-6">
-                        <button
+                    <button
                             onClick={handleBack}
-                            className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                            className="bg-gray-520 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
                         >
                             Back
-                        </button>
+                        </button> 
                     </div>
                 </div>
             </motion.div>

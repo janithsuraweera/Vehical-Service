@@ -1,6 +1,3 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-
 const InventoryHomePage = () => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-teal-400 via-green-500 to-lime-500">
@@ -17,7 +14,8 @@ const InventoryHomePage = () => {
                         to="/inventory-form"
                         className="block w-full py-4 px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg"
                     >
-                        Add New Item
+
+                    Add New Item
                     </Link>
                     <Link
                         to="/inventory-reports"

@@ -50,6 +50,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update an inventory item
+
 router.put('/:id', [
   body('productId').optional().notEmpty().withMessage('Product ID must not be empty'),
   body('productName').optional().notEmpty().withMessage('Product name must not be empty'),
@@ -69,7 +70,7 @@ router.put('/:id', [
   }
 });
 
-// Delete an inventory item
+// Delete an inventory item 
 router.delete('/:id', async (req, res) => {
   try {
     const inventoryRequest = await InventoryRequest.findByIdAndDelete(req.params.id);

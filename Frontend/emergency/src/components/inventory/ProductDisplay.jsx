@@ -28,11 +28,11 @@ const ProductDisplay = () => {
         } else {
             setCart([...cart, { ...product, quantity: 1 }]);
         }
-        toast.success(`${product.productName} added to cart!`);
+        toast.success(`${product.productName} added to cart!`);//add cart
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-200 via-purple-300 to-pink-200">
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-210 via-purple-300 to-pink-200">
             <div className="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-7xl">
                 <h2 className="text-4xl font-bold mb-10 text-center text-purple-700">Products</h2>
 
@@ -44,6 +44,7 @@ const ProductDisplay = () => {
                             <p>Price: Rs. {product.productPrice}</p>
                             <p>Quantity: {product.productQuantity}</p>
                             <p>Description: {product.productDescription}</p>
+                            
                             <button onClick={() => addToCart(product)} className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
                                 Add to Cart
                             </button>
