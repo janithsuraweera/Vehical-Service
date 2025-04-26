@@ -6,6 +6,7 @@ import { FaEdit, FaTrash, FaArrowLeft, FaDownload, FaSearch } from 'react-icons/
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
+
 const EmergencyList = () => {
     const [emergencies, setEmergencies] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');

@@ -7,7 +7,6 @@ import { motion } from 'framer-motion';
 
 import backgroundImage from '../../assets/background.png'; 
 
-
 import { FaMapMarkerAlt, FaArrowLeft } from 'react-icons/fa';
 
 const EmergencyForm = () => {
