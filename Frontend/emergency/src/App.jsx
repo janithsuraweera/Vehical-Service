@@ -22,6 +22,7 @@ import UpdateInventoryForm from './components/inventory/UpdateInventoryForm';
 import InventoryDetails from './components/inventory/InventoryDetails';
 import InventoryHomePage from './components/inventory/InventoryHomePage';
 
+
 // Vehicle Registration Imports
 import About from './otherfolders/About';
 import RegistrationHomePage from './components/vehicalregistation/RegistrationHomePage';
@@ -29,6 +30,7 @@ import VehicleRegistrationForm from './components/vehicalregistation/VehicleRegi
 import VehicleRegistrationList from './components/vehicalregistation/VehicleRegistrationList';
 import UpdateVehicleForm from './components/vehicalregistation/UpdateVehicleForm';
 import ProductDisplay from './components/inventory/ProductDisplay';
+
 
 
 function App() {
@@ -53,14 +55,13 @@ function App() {
 
 
        {/* //Inventory Routes */}
-        <Route path="/inventory" element={<InventoryHomePage/>} /> 
+        <Route path="/inventory" element={<InventoryHomePage/>} />
         <Route path="/inventory-form" element={<InventoryForm/>} />
         <Route path="/inventory-list" element={<InventoryList/>}/>
         <Route path="/update-inventory/:id" element={<UpdateInventoryForm/>}/>
         <Route path="/inventory/:id" element={<InventoryDetails/>}/>
         <Route path="/cart" element={<ProductDisplay/>}/>
-
-
+        
         {/* //Vehicle Registration Routes */} 
       <Route path="/rvhome" element={<RegistrationHomePage/>} />
       <Route path="/registrationform" element={<VehicleRegistrationForm/>} />
