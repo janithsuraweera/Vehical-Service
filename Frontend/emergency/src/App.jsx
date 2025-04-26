@@ -23,10 +23,12 @@ import InventoryDetails from './components/inventory/InventoryDetails';
 import InventoryHomePage from './components/inventory/InventoryHomePage';
 
 // Vehicle Registration Imports
-
-
-
 import About from './otherfolders/About';
+import RegistrationHomePage from './components/vehicalregistation/RegistrationHomePage';
+import VehicleRegistrationForm from './components/vehicalregistation/VehicleRegistrationForm';
+import VehicleRegistrationList from './components/vehicalregistation/VehicleRegistrationList';
+import UpdateVehicleForm from './components/vehicalregistation/UpdateVehicleForm';
+import ProductDisplay from './components/inventory/ProductDisplay';
 
 
 function App() {
@@ -36,13 +38,13 @@ function App() {
       <Routes>
 
         {/* //Home Page Route */}
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<Dashboard/>} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/aboutus" element={<About />} />
 
         {/* //Emergency Routes */}
-        <Route path="/emergency" element={<EmergencyHomePage />} />
+        <Route path="/emergency" element={<EmergencyHomePage/>} />
         <Route path="/emergencyform" element={<EmergencyForm/>}/>
         <Route path="/emergencylist" element={<EmergencyList/>}/>
         <Route path="/update-emergency/:id" element={<UpdateEmergencyForm/>}/>
@@ -51,7 +53,7 @@ function App() {
 
 
        {/* //Inventory Routes */}
-        <Route path="/inventory" element={<InventoryHomePage />} /> 
+        <Route path="/inventory" element={<InventoryHomePage/>} /> 
         <Route path="/inventory-form" element={<InventoryForm/>} />
         <Route path="/inventory-list" element={<InventoryList/>}/>
         <Route path="/update-inventory/:id" element={<UpdateInventoryForm/>}/>
@@ -60,10 +62,10 @@ function App() {
 
 
         {/* //Vehicle Registration Routes */} 
-      <Route path="/rvhome" element={<RegistrationHomePage />} />
-      <Route path="/registrationform" element={<VehicleRegistrationForm />} />
-      <Route path="/view-registrations" element={<VehicleRegistrationList />} />
-      <Route path="/update-vehicle-registration/:id" element={<UpdateVehicleForm />} />
+      <Route path="/rvhome" element={<RegistrationHomePage/>} />
+      <Route path="/registrationform" element={<VehicleRegistrationForm/>} />
+      <Route path="/view-registrations" element={<VehicleRegistrationList/>} />
+      <Route path="/update-vehicle-registration/:id" element={<UpdateVehicleForm/>} />
       </Routes>
     </Router>
   );
