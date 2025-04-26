@@ -1,36 +1,69 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const SignupForm = () => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [formData, setFormData] = useState({
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+    });
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Signup logic here (e.g., API call)
-        console.log('Signup submitted', { name, email, password });
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
     };
 
-    const handleBack = () => {
-        navigate('/'); // Navigate back to the home page or previous page
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+
+        if (formData.password !== formData.confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
+
+        try {
+            const response = await axios.post('http://localhost:5000/api/auth/signup', {
+                username: formData.username,
+                email: formData.email,
+                password: formData.password
+            });
+
+            toast.success('Registration successful! Please login.');
+            navigate('/login');
+        } catch (error) {
+            setError(error.response?.data?.message || 'An error occurred during registration');
+            toast.error(error.response?.data?.message || 'Registration failed');
+        }
     };
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-green-400 via-blue-500 to-purple-600">
             <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
                 <h2 className="text-3xl font-bold mb-8 text-center text-green-700">Sign Up</h2>
+                {error && (
+                    <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                        {error}
+                    </div>
+                )}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-6">
-                        <label htmlFor="name" className="block text-gray-700 text-sm font-semibold mb-2">
-                            Name:
+                        <label htmlFor="username" className="block text-gray-700 text-sm font-semibold mb-2">
+                            Username:
                         </label>
                         <input
                             type="text"
-                            id="name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            id="username"
+                            name="username"
+                            value={formData.username}
+                            onChange={handleChange}
                             className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
                             required
                         />
@@ -42,21 +75,37 @@ const SignupForm = () => {
                         <input
                             type="email"
                             id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
                             className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
                             required
                         />
                     </div>
-                    <div className="mb-8">
+                    <div className="mb-6">
                         <label htmlFor="password" className="block text-gray-700 text-sm font-semibold mb-2">
                             Password:
                         </label>
                         <input
                             type="password"
                             id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
+                            required
+                        />
+                    </div>
+                    <div className="mb-8">
+                        <label htmlFor="confirmPassword" className="block text-gray-700 text-sm font-semibold mb-2">
+                            Confirm Password:
+                        </label>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
                             className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
                             required
                         />
@@ -68,13 +117,12 @@ const SignupForm = () => {
                         >
                             Sign Up
                         </button>
-                         <button
-                            type="button"
-                            onClick={handleBack}
-                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline"
+                        <Link
+                            to="/login"
+                            className="text-green-600 hover:text-green-800 font-semibold"
                         >
-                            Back
-                        </button>
+                            Already have an account?
+                        </Link>
                     </div>
                 </form>
             </div>
