@@ -40,13 +40,13 @@ const App = () => {
         <Navbar />
         <Routes>
           {/* Public Routes */}
-          <Route path="/" element={<LoginForm />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/signup" element={<SignupForm />} />
           <Route path="/aboutus" element={<About />} />
 
           {/* Protected Routes */}
-          <Route path="/" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
+          <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
           {/* Emergency Routes */}
@@ -71,7 +71,7 @@ const App = () => {
           <Route path="/update-vehicle-registration/:id" element={<ProtectedRoute><UpdateVehicleForm /></ProtectedRoute>} />
 
           {/* Redirect to login if no other route matches */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>
     </AuthProvider>

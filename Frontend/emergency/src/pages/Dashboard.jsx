@@ -1,57 +1,105 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import Navbar from '../components/Navbar';
+import Footer from '../shared/Footer';
 
 const Dashboard = () => {
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem('user'));
 
+    const imageData = [
+        {
+            image: './background.png',
+            title: 'Expert Vehicle Maintenance',         
+            description: 'Guaranteed 100% Satisfaction',
+        },
+        {
+            image: './test2.png',
+            title: 'Trusted Service Center',
+            description: 'Trust 100% for Your Vehicle',
+        },
+        {
+            image: './test3.png',
+            title: 'Quality Auto Repairs',
+            description: 'Reliable and Professional',
+        },
+        {
+            image: './test4.png',
+            title: 'Premium Car Care',
+            description: 'Your Vehicle Deserves the Best',
+        },
+    ];
+
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageData.length);
+        }, 10000); 
+        return () => clearInterval(intervalId);
+    }, [imageData.length]);
+
     return (
         <div className="min-h-screen bg-gray-100">
-            <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                <div className="px-4 py-6 sm:px-0">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {/* Dashboard Cards */}
-                        <div className="bg-white overflow-hidden shadow rounded-lg">
-                            <div className="p-5">
-                                <h3 className="text-lg font-medium text-gray-900">Emergency Services</h3>
-                                <p className="mt-1 text-sm text-gray-500">View and manage emergency service requests</p>
-                                <button
-                                    onClick={() => navigate('/emergency')}
-                                    className="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
-                                >
-                                    View Emergencies
-                                </button>
-                            </div>
-                        </div>
+            <Navbar />
+            
+            <div className="relative mt-0">
+                <AnimatePresence initial={false} mode="wait">
+                    <motion.div
+                        key={currentImageIndex}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 1, ease: 'easeInOut' }}
+                        className="relative"
+                    >
+                        <img
+                            src={imageData[currentImageIndex].image}
+                            alt="Slideshow Image"
+                            className="mx-auto w-full h-[250px] md:h-[600px] object-cover shadow-lg"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, y: 200 }}
+                            animate={{ opacity: 1, y: 5 }}
+                            exit={{ opacity: 0, y: -50 }}
+                            transition={{ duration: 0.5, ease: 'easeInOut' }}
+                            className="absolute top-10 left-10 text-left text-white p-3 bg-black bg-opacity-50 rounded-lg"
+                        >
+                            <h2 className="text-2xl md:text-4xl font-bold mb-2">
+                                {imageData[currentImageIndex].title}
+                            </h2>
+                            <p className="text-lg md:text-xl">
+                                {imageData[currentImageIndex].description}
+                            </p>
+                        </motion.div>
+                    </motion.div>
+                </AnimatePresence>
+            </div>
 
-                        <div className="bg-white overflow-hidden shadow rounded-lg">
-                            <div className="p-5">
-                                <h3 className="text-lg font-medium text-gray-900">Vehicle Registration</h3>
-                                <p className="mt-1 text-sm text-gray-500">Manage vehicle registration requests</p>
-                                <button
-                                    onClick={() => navigate('/vehicle-registration')}
-                                    className="mt-4 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md"
-                                >
-                                    View Registrations
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="bg-white overflow-hidden shadow rounded-lg">
-                            <div className="p-5">
-                                <h3 className="text-lg font-medium text-gray-900">Inventory</h3>
-                                <p className="mt-1 text-sm text-gray-500">Manage service inventory and parts</p>
-                                <button
-                                    onClick={() => navigate('/inventory')}
-                                    className="mt-4 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-md"
-                                >
-                                    View Inventory
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <main className="main-content text-center py-16 px-6 bg-gray-100">
+                <motion.div
+                    className="hero-section max-w-4xl mx-auto"
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, ease: 'easeInOut' }}
+                >
+                    <h1 className="text-4xl md:text-6xl font-bold text-gray-800">28 Years of Excellence</h1>
+                    <p className="text-lg md:text-xl text-gray-600 mt-4">Since 1994</p>
+                    <p className="text-lg md:text-xl text-gray-600">Guaranteed 100% Satisfaction</p>
+                    <p className="text-lg md:text-xl text-gray-600">Leads with 40 Centres in Sri Lanka</p>
+                    
+                    <motion.button
+                        className="mt-6 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded shadow-md"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        Learn More
+                    </motion.button>
+                </motion.div>
             </main>
+
+            <Footer />
         </div>
     );
 };
