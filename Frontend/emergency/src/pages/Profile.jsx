@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
 
 const Profile = () => {
     const [user, setUser] = useState(null);
@@ -21,8 +20,6 @@ const Profile = () => {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <Navbar />
-            
             <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 py-6 sm:px-0">
                     <div className="bg-white shadow overflow-hidden sm:rounded-lg">

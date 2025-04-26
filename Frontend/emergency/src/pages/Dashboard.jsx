@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import Navbar from '../components/Navbar';
 import Footer from '../shared/Footer';
 
 const Dashboard = () => {
@@ -42,8 +41,6 @@ const Dashboard = () => {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <Navbar />
-            
             <div className="relative mt-0">
                 <AnimatePresence initial={false} mode="wait">
                     <motion.div
