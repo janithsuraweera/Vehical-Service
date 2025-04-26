@@ -152,7 +152,7 @@ const VehicleRegistrationForm = () => {
               value={formData.vehicleType}
               onChange={handleChange}
               className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-            >
+            > 
               <option value="">Select Vehicle Type</option>
               <option value="car">Car</option>
               <option value="motorcycle">Motorcycle</option>

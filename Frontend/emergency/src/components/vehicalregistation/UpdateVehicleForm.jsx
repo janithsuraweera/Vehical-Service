@@ -8,7 +8,7 @@ import backgroundImage from '../../assets/background.png';
 import { motion } from 'framer-motion';
 
 const UpdateVehicleForm = () => {
-    // Get the vehicle ID from the URL parameters
+    // Get the vehicle ID from the URL parameter
     const { id } = useParams();
     // Use useNavigate for navigation
     const navigate = useNavigate();
@@ -21,14 +21,14 @@ const UpdateVehicleForm = () => {
         ownerName: '',
         ownerContact: '',
     });
-    // Initialize error state
+    // Initializing error state
     const [errors, setErrors] = useState({});
 
-    // Fetch vehicle data on component mount
+    // Fetching vehicle data on component mount
     useEffect(() => {
         const fetchVehicle = async () => {
             try {
-                // Make a GET request to fetch vehicle data
+                // Making a GET request to fetch vehicle data
                 const response = await axios.get(`http://localhost:5000/api/vehicles/${id}`);
                 // Update form data state with fetched data
                 setFormData(response.data);
@@ -38,14 +38,14 @@ const UpdateVehicleForm = () => {
                 toast.error('Failed to load vehicle data.');
             }
         };
-        // Call fetchVehicle function
+        // Calling fetchVehicle function
         fetchVehicle();
     }, [id]);
 
-    // Handle form input changes
+    // Handling form input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
-        // Handle contact number input, allowing only numeric values
+        // Handle contact number input, allowing only numeric value
         if (name === 'ownerContact') {
             const numericValue = value.replace(/[^0-9]/g, '');
             setFormData({ ...formData, [name]: numericValue.slice(0, 10) });
@@ -54,15 +54,16 @@ const UpdateVehicleForm = () => {
         else if (name === 'vehicleNumber') {
             setFormData({ ...formData, [name]: value.slice(0, 6) });
         }
-        // Handle other input fields
+        // Handling the other form input fields
         else {
+
             setFormData({ ...formData, [name]: value });
         }
-        // Clear corresponding error message
+        // Clears the corresponding error message
         setErrors({ ...errors, [name]: '' });
     };
 
-    // Handle form submission
+    // Handling form submissions
     const handleSubmit = async (e) => {
         e.preventDefault();
         // Initialize error object and validation flag
@@ -81,7 +82,7 @@ const UpdateVehicleForm = () => {
             isValid = false;
         }
 
-        // Validate owner name
+        // Validate owner's name
         if (!formData.ownerName.trim()) {
             formErrors.ownerName = 'Owner name is required.';
             isValid = false;
@@ -90,7 +91,7 @@ const UpdateVehicleForm = () => {
             isValid = false;
         }
 
-        // Validate owner contact number
+        // Validate owner's contact number
         if (!formData.ownerContact.trim()) {
             formErrors.ownerContact = 'Owner contact number is required.';
             isValid = false;
@@ -99,7 +100,7 @@ const UpdateVehicleForm = () => {
             isValid = false;
         }
 
-        // Validate vehicle type
+        // Validate vehicle type 
         if (!formData.vehicleType) {
             formErrors.vehicleType = 'Vehicle type is required.';
             isValid = false;
@@ -114,9 +115,9 @@ const UpdateVehicleForm = () => {
         }
 
         try {
-            // Make a PUT request to update vehicle data
+            // Making a PUT request to update vehicle data
             await axios.put(`http://localhost:5000/api/vehicles/${id}`, formData);
-            // Display success toast message and navigate to vehicle list
+            // Display a success toast message and navigate to vehicle list
             toast.success('Vehicle information updated successfully!');
             navigate('/vehicle-list');
         } catch (error) {
@@ -130,13 +131,11 @@ const UpdateVehicleForm = () => {
             }
         }
     };
-
     // Handle back button click
     const handleBack = () => {
         navigate(-1);
     };
-
-    return (
+  return (
         <div
             className="min-h-screen bg-cover bg-center flex justify-center items-center"
             style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', opacity: 0.9 }}
