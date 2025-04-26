@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');//authorizes the server to accept JSON
 const inventoryRoutes = require('./routes/inventoryRoutes');
 const emergencyRoutes = require('./routes/emergencyRoutes');
 const vehicleRegistrationRequestRoutes = require('./routes/vehicleRegistrationRequestRoutes');
-
+const authRoutes = require('./routes/auth');
 
 require('dotenv').config();
 
@@ -16,11 +16,11 @@ app.use(express.json());
 
 connectDB(); // Connect to MongoDB
 
-app
+// Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/emergency', emergencyRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/vehicle-registration', vehicleRegistrationRequestRoutes);
-
 
 app.get('/', (req, res) => {res.send('Hello World!');
 });

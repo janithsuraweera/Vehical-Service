@@ -1,26 +1,49 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { FaUserShield } from 'react-icons/fa'; // Import admin icon
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Login logic here (e.g., API call)
-        console.log('Login submitted', { email, password });
+        setError('');
+        
+        try {
+            const response = await axios.post('http://localhost:5000/api/auth/login', {
+                email,
+                password
+            });
+            
+            // Store the token in localStorage
+            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('user', JSON.stringify(response.data.user));
+            
+            toast.success('Login successful!');
+            navigate('/dashboard');
+        } catch (error) {
+            setError(error.response?.data?.message || 'Login failed. Please check your credentials.');
+            toast.error(error.response?.data?.message || 'Login failed');
+        }
     };
 
     const handleBack = () => {
-        navigate('/'); // Navigate back to the home page or previous page
+        navigate('/');
     };
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
             <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
                 <h2 className="text-3xl font-bold mb-8 text-center text-blue-700">Login</h2>
+                {error && (
+                    <div className="mb-4 p-4 text-red-700 bg-red-100 rounded-lg">
+                        {error}
+                    </div>
+                )}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-6">
                         <label htmlFor="email" className="block text-gray-700 text-sm font-semibold mb-2">
@@ -48,35 +71,31 @@ const LoginForm = () => {
                             required
                         />
                     </div>
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mb-4">
                         <button
                             type="submit"
-                            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline"
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         >
-                            Login
+                            Sign In
                         </button>
-                        <a
-                            className="inline-block align-baseline font-semibold text-sm text-blue-600 hover:text-blue-800"
-                            href="/forgot-password" // Replace with your forgot password route
+                        <button
+                            type="button"
+                            onClick={handleBack}
+                            className="text-blue-500 hover:text-blue-700"
                         >
-                            Forgot Password?
-                        </a>
+                            Back
+                        </button>
                     </div>
-                    <button
-                        type="button"
-                        onClick={handleBack}
-                        className="mt-8 bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline w-full"
-                    >
-                        Back
-                    </button>
-                    <Link
-                        to="/emergencylist" // Replace with your EmergencyList route
-                         className="mt-4  bg-green-500  hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline w-full flex items-center justify-center"
-                        // className="mt-4 bg-gradient-to-r from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline w-full flex items-center justify-center"
-                    >
-                         Admin View
-                    </Link>
                 </form>
+                <div className="mt-4 text-center">
+                    <p className="text-gray-600 mb-2">Don't have an account?</p>
+                    <Link
+                        to="/signup"
+                        className="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline"
+                    >
+                        Sign Up
+                    </Link>
+                </div>
             </div>
         </div>
     );
