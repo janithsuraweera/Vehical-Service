@@ -41,11 +41,8 @@ function App() {
         
 
 
-
-
        {/* //Inventory Routes */}
         <Route path="/inventory" element={<InventoryHomePage />} /> 
-
         <Route path="/inventory-form" element={<InventoryForm/>} />
         <Route path="/inventory-list" element={<InventoryList/>}/>
         <Route path="/update-inventory/:id" element={<UpdateInventoryForm/>}/>
@@ -58,7 +55,6 @@ function App() {
       <Route path="/registrationform" element={<VehicleRegistrationForm />} />
       <Route path="/view-registrations" element={<VehicleRegistrationList />} />
       <Route path="/update-vehicle-registration/:id" element={<UpdateVehicleForm />} />
-       
       </Routes>
     </Router>
   );
