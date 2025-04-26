@@ -1,15 +1,44 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { FaHome, FaStore, FaExclamationTriangle, FaCar, FaWrench, FaInfoCircle, FaUser, FaSignOutAlt } from 'react-icons/fa';
 
 const Navbar = () => {
     const [showDropdown, setShowDropdown] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
     const { user, logout } = useAuth();
+    const [activeTab, setActiveTab] = useState('');
+
+    useEffect(() => {
+        // Set active tab based on current path
+        const path = location.pathname;
+        if (path === '/') setActiveTab('home');
+        else if (path === '/inventory') setActiveTab('store');
+        else if (path === '/emergency') setActiveTab('emergency');
+        else if (path === '/rvhome') setActiveTab('register');
+        else if (path === '/vehicle-errors') setActiveTab('vehicle-errors');
+        else if (path === '/aboutus') setActiveTab('about');
+        else setActiveTab('');
+    }, [location]);
 
     const handleLogout = () => {
         logout();
         navigate('/');
+    };
+
+    // Function to determine if a tab is active
+    const isActive = (tabName) => {
+        return activeTab === tabName;
+    };
+
+    // Function to get tab styling based on active state
+    const getTabStyle = (tabName) => {
+        const baseStyle = "flex items-center cursor-pointer transition-colors duration-200";
+        const activeStyle = "text-blue-600 font-medium";
+        const inactiveStyle = "text-gray-600 hover:text-gray-900";
+        
+        return `${baseStyle} ${isActive(tabName) ? activeStyle : inactiveStyle}`;
     };
 
     return (
@@ -23,15 +52,28 @@ const Navbar = () => {
                     </div>
                     
                     <div className="hidden md:flex items-center space-x-6">
-                        <Link to="/" className="text-gray-600 hover:text-gray-900">Home</Link>
+                        <Link to="/" className={getTabStyle('home')}>
+                            <FaHome className="mr-1" /> Home
+                        </Link>
                         {user && (
                             <>
-                                <Link to="/inventory" className="text-gray-600 hover:text-gray-900">Store</Link>
-                                <Link to="/emergency" className="text-gray-600 hover:text-gray-900">Emergency</Link>
-                                <Link to="/rvhome" className="text-gray-600 hover:text-gray-900">Register</Link>
+                                <Link to="/inventory" className={getTabStyle('store')}>
+                                    <FaStore className="mr-1" /> Store
+                                </Link>
+                                <Link to="/emergency" className={getTabStyle('emergency')}>
+                                    <FaExclamationTriangle className="mr-1" /> Emergency
+                                </Link>
+                                <Link to="/rvhome" className={getTabStyle('register')}>
+                                    <FaCar className="mr-1" /> Register
+                                </Link>
+                                <Link to="/vehicle-errors" className={getTabStyle('vehicle-errors')}>
+                                    <FaWrench className="mr-1" /> Vehicle Errors
+                                </Link>
                             </>
                         )}
-                        <Link to="/aboutus" className="text-gray-600 hover:text-gray-900">About Us</Link>
+                        <Link to="/aboutus" className={getTabStyle('about')}>
+                            <FaInfoCircle className="mr-1" /> About Us
+                        </Link>
                     </div>
                     
                     <div className="flex items-center">
@@ -53,15 +95,15 @@ const Navbar = () => {
                                         </div>
                                         <Link 
                                             to="/profile" 
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
                                         >
-                                            Profile
+                                            <FaUser className="mr-2" /> Profile
                                         </Link>
                                         <button
                                             onClick={handleLogout}
-                                            className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                                            className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center"
                                         >
-                                            Logout
+                                            <FaSignOutAlt className="mr-2" /> Logout
                                         </button>
                                     </div>
                                 )}
@@ -70,15 +112,15 @@ const Navbar = () => {
                             <div className="flex space-x-4">
                                 <Link 
                                     to="/login" 
-                                    className="text-gray-600 hover:text-gray-900"
+                                    className="text-gray-600 hover:text-gray-900 flex items-center cursor-pointer"
                                 >
-                                    Sign In
+                                    <FaUser className="mr-1" /> Sign In
                                 </Link>
                                 <Link 
                                     to="/signup" 
-                                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
+                                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center cursor-pointer"
                                 >
-                                    Sign Up
+                                    <FaUser className="mr-1" /> Sign Up
                                 </Link>
                             </div>
                         )}
