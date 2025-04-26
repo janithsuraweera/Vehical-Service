@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Footer from '../shared/Footer';
-import Navbar from '../shared/Navbar';
+
 const About = () => {
   return (
     
@@ -11,7 +11,7 @@ const About = () => {
       transition={{ duration: 0.8, ease: 'easeInOut' }}
       className="py-0 bg-gray-100"
     >
-        <Navbar />
+        
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-gray-800 mb-6">About Us</h2>

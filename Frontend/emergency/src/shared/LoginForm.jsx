@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useAuth } from '../context/AuthContext';
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -19,12 +21,11 @@ const LoginForm = () => {
                 password
             });
             
-            // Store the token in localStorage
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('user', JSON.stringify(response.data.user));
+            // Use the login function from AuthContext
+            login(response.data.user, response.data.token);
             
             toast.success('Login successful!');
-            navigate('/dashboard');
+            navigate('/');
         } catch (error) {
             setError(error.response?.data?.message || 'Login failed. Please check your credentials.');
             toast.error(error.response?.data?.message || 'Login failed');

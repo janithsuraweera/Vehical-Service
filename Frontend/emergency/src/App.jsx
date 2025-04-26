@@ -3,12 +3,14 @@ import { ToastContainer } from 'react-toastify';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import 'react-toastify/dist/ReactToastify.css';
 
 import SignupForm from './shared/SignupForm';
 import LoginForm from './shared/LoginForm';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Navbar from './components/Navbar';
+import Home from './pages/Home';
 
 // Emergency Imports
 import EmergencyForm from './components/emergency/EmergencyForm';
@@ -43,6 +45,7 @@ const App = () => {
           <Route path="/login" element={<LoginForm />} />
           <Route path="/signup" element={<SignupForm />} />
           <Route path="/aboutus" element={<About />} />
+          <Route path="/" element={<Dashboard />} />
 
           {/* Protected Routes */}
           <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
