@@ -1,13 +1,14 @@
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
 import SignupForm from './shared/SignupForm';
 import LoginForm from './shared/LoginForm';
-import Dashboard from './shared/Dashboard';
-
+import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
+import Navbar from './components/Navbar';
 
 // Emergency Imports
 import EmergencyForm from './components/emergency/EmergencyForm';
@@ -31,11 +32,12 @@ import VehicleRegistrationList from './components/vehicalregistation/VehicleRegi
 import UpdateVehicleForm from './components/vehicalregistation/UpdateVehicleForm';
 import ProductDisplay from './components/inventory/ProductDisplay';
 
-function App() {
+const App = () => {
   return (
     <AuthProvider>
       <Router>
         <ToastContainer />
+        <Navbar />
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<LoginForm />} />
@@ -44,7 +46,8 @@ function App() {
           <Route path="/aboutus" element={<About />} />
 
           {/* Protected Routes */}
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
+          <Route path="/" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
           {/* Emergency Routes */}
           <Route path="/emergency" element={<ProtectedRoute><EmergencyHomePage /></ProtectedRoute>} />
@@ -66,10 +69,13 @@ function App() {
           <Route path="/registrationform" element={<ProtectedRoute><VehicleRegistrationForm /></ProtectedRoute>} />
           <Route path="/view-registrations" element={<ProtectedRoute><VehicleRegistrationList /></ProtectedRoute>} />
           <Route path="/update-vehicle-registration/:id" element={<ProtectedRoute><UpdateVehicleForm /></ProtectedRoute>} />
+
+          {/* Redirect to login if no other route matches */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>
     </AuthProvider>
   );
-}
+};
 
 export default App;
