@@ -75,7 +75,7 @@ npm run dev
 ```bash
 cd Backend
 npm install
-npm run dev
+npm start
 ```
 
 > ⚡ **Make sure to set up your `.env` file with proper MongoDB URI and JWT secret!**
