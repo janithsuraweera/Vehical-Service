@@ -11,14 +11,20 @@ router.post('/signup', async (req, res) => {
     // Check if user already exists
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      if (existingUser.email === email) {
+        return res.status(400).json({ message: 'Email already exists' });
+      }
+      if (existingUser.username === username) {
+        return res.status(400).json({ message: 'Username already exists' });
+      }
     }
 
     // Create new user
     const user = new User({
       username,
       email,
-      password
+      password,
+      createdAt: new Date()
     });
 
     await user.save();
@@ -37,11 +43,25 @@ router.post('/signup', async (req, res) => {
         id: user._id,
         username: user.username,
         email: user.email,
-        role: user.role
+        role: user.role,
+        createdAt: user.createdAt
       }
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error creating user', error: error.message });
+    console.error('Signup error:', error);
+    if (error.code === 11000) {
+      // MongoDB duplicate key error
+      const field = Object.keys(error.keyPattern)[0];
+      return res.status(400).json({ 
+        message: `${field} already exists`,
+        error: error.message 
+      });
+    }
+    res.status(500).json({ 
+      message: 'Error creating user', 
+      error: error.message,
+      details: error.errors ? Object.values(error.errors).map(err => err.message) : []
+    });
   }
 });
 
@@ -76,11 +96,16 @@ router.post('/login', async (req, res) => {
         id: user._id,
         username: user.username,
         email: user.email,
-        role: user.role
+        role: user.role,
+        createdAt: user.createdAt
       }
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error logging in', error: error.message });
+    console.error('Login error:', error);
+    res.status(500).json({ 
+      message: 'Error logging in', 
+      error: error.message 
+    });
   }
 });
 
