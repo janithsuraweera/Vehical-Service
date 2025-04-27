@@ -18,20 +18,37 @@ const SignupForm = () => {
             ...formData,
             [e.target.name]: e.target.value
         });
+        // Clear error when user starts typing
+        setError('');
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
+        // Validate password match
         if (formData.password !== formData.confirmPassword) {
             setError('Passwords do not match');
+            toast.error('Passwords do not match');
+            return;
+        }
+
+        // Validate password length
+        if (formData.password.length < 6) {
+            setError('Password must be at least 6 characters long');
+            toast.error('Password must be at least 6 characters long');
+            return;
+        }
+
+        // Validate username length
+        if (formData.username.length < 3) {
+            setError('Username must be at least 3 characters long');
+            toast.error('Username must be at least 3 characters long');
             return;
         }
 
         try {
             const response = await axios.post('http://localhost:5000/api/auth/signup', {
-                
                 username: formData.username,
                 email: formData.email,
                 password: formData.password
@@ -40,8 +57,11 @@ const SignupForm = () => {
             toast.success('Registration successful! Please login.');
             navigate('/login');
         } catch (error) {
-            setError(error.response?.data?.message || 'An error occurred during registration');
-            toast.error(error.response?.data?.message || 'Registration failed');
+            const errorMessage = error.response?.data?.message || 'An error occurred during registration';
+            const errorDetails = error.response?.data?.error || '';
+            setError(`${errorMessage}${errorDetails ? `: ${errorDetails}` : ''}`);
+            toast.error(errorMessage);
+            console.error('Registration error:', error.response?.data);
         }
     };
 
@@ -67,6 +87,7 @@ const SignupForm = () => {
                             onChange={handleChange}
                             className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
                             required
+                            minLength="3"
                         />
                     </div>
                     <div className="mb-6">
@@ -95,6 +116,7 @@ const SignupForm = () => {
                             onChange={handleChange}
                             className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
                             required
+                            minLength="6"
                         />
                     </div>
                     <div className="mb-8">
@@ -109,6 +131,7 @@ const SignupForm = () => {
                             onChange={handleChange}
                             className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
                             required
+                            minLength="6"
                         />
                     </div>
                     <div className="flex items-center justify-between">
