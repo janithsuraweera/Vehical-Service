@@ -93,6 +93,14 @@ const LoginForm = () => {
                                 {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
                             </button>
                         </div>
+                        <div className="mt-2 text-right">
+                            <Link
+                                to="/forgot-password"
+                                className="text-sm font-medium text-blue-600 hover:text-blue-800 underline"
+                            >
+                                Forgot Password?
+                            </Link>
+                        </div>
                     </div>
                     <div className="flex items-center justify-between mb-4">
                         <button
