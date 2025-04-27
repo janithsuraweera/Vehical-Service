@@ -2,24 +2,34 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 
 const LoginForm = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    });
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const { login } = useAuth();
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+        // Clear error when user starts typing
+        setError('');
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/login', {
-                email,
-                password
-            });
+            const response = await axios.post('http://localhost:5000/api/auth/login', formData);
             
             // Use the login function from AuthContext
             login(response.data.user, response.data.token);
@@ -27,8 +37,9 @@ const LoginForm = () => {
             toast.success('Login successful!');
             navigate('/');
         } catch (error) {
-            setError(error.response?.data?.message || 'Login failed. Please check your credentials.');
-            toast.error(error.response?.data?.message || 'Login failed');
+            const errorMessage = error.response?.data?.message || 'An error occurred during login';
+            setError(errorMessage);
+            toast.error(errorMessage);
         }
     };
 
@@ -53,8 +64,9 @@ const LoginForm = () => {
                         <input
                             type="email"
                             id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
                             className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-400"
                             required
                         />
@@ -63,14 +75,24 @@ const LoginForm = () => {
                         <label htmlFor="password" className="block text-gray-700 text-sm font-semibold mb-2">
                             Password:
                         </label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            required
-                        />
+                        <div className="relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                            >
+                                {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                            </button>
+                        </div>
                     </div>
                     <div className="flex items-center justify-between mb-4">
                         <button
