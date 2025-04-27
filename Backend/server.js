@@ -22,7 +22,8 @@ app.use('/api/emergency', emergencyRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/vehicle-registration', vehicleRegistrationRequestRoutes);
 
-app.get('/', (req, res) => {res.send('Hello World!');
+app.get('/', (req, res) => {res.send('Welcome DB');
+
 });
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
