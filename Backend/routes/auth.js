@@ -1,35 +1,37 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// Signup route
+// Register new user (signup)
 router.post('/signup', async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { name, email, password, phone, role } = req.body;
 
     // Check if user already exists
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
-    if (existingUser) {
-      if (existingUser.email === email) {
-        return res.status(400).json({ message: 'Email already exists' });
-      }
-      if (existingUser.username === username) {
-        return res.status(400).json({ message: 'Username already exists' });
-      }
+    let user = await User.findOne({ email });
+    if (user) {
+      return res.status(400).json({ message: 'User already exists' });
     }
 
     // Create new user
-    const user = new User({
-      username,
+    user = new User({
+      name,
       email,
       password,
-      createdAt: new Date()
+      phone,
+      role: role || 'user' // Default role is 'user' if not specified
     });
 
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+
+    // Save user
     await user.save();
 
-    // Generate JWT token
+    // Create JWT token
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
@@ -37,52 +39,37 @@ router.post('/signup', async (req, res) => {
     );
 
     res.status(201).json({
-      message: 'User created successfully',
       token,
       user: {
         id: user._id,
-        username: user.username,
+        name: user.name,
         email: user.email,
-        role: user.role,
-        createdAt: user.createdAt
+        role: user.role
       }
     });
   } catch (error) {
-    console.error('Signup error:', error);
-    if (error.code === 11000) {
-      // MongoDB duplicate key error
-      const field = Object.keys(error.keyPattern)[0];
-      return res.status(400).json({ 
-        message: `${field} already exists`,
-        error: error.message 
-      });
-    }
-    res.status(500).json({ 
-      message: 'Error creating user', 
-      error: error.message,
-      details: error.errors ? Object.values(error.errors).map(err => err.message) : []
-    });
+    res.status(500).json({ message: 'Error creating user', error: error.message });
   }
 });
 
-// Login route
+// Login user
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user
+    // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Check password
-    const isMatch = await user.comparePassword(password);
+    // Verify password
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Generate JWT token
+    // Create JWT token
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
@@ -90,22 +77,16 @@ router.post('/login', async (req, res) => {
     );
 
     res.json({
-      message: 'Login successful',
       token,
       user: {
         id: user._id,
-        username: user.username,
+        name: user.name,
         email: user.email,
-        role: user.role,
-        createdAt: user.createdAt
+        role: user.role
       }
     });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ 
-      message: 'Error logging in', 
-      error: error.message 
-    });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
