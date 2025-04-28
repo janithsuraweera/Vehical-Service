@@ -11,6 +11,8 @@ import LoginForm from './shared/LoginForm';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Navbar from './components/Navbar';
+import ForgotPasswordForm from './shared/ForgotPasswordForm';
+import ResetPasswordForm from './shared/ResetPasswordForm';
 // import Home from './pages/Home';
 
 // Emergency Imports
@@ -45,6 +47,8 @@ const App = () => {
           {/* Public Routes */}
           <Route path="/login" element={<LoginForm />} />
           <Route path="/signup" element={<SignupForm />} />
+          <Route path="/forgot-password" element={<ForgotPasswordForm />} />
+          <Route path="/reset-password" element={<ResetPasswordForm />} />
           <Route path="/aboutus" element={<About />} />
           <Route path="/" element={<Dashboard />} />
 

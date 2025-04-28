@@ -14,6 +14,24 @@ const Profile = () => {
         }
     }, [navigate]);
 
+    const formatDate = (dateString) => {
+        if (!dateString) return 'Not available';
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return 'Invalid date';
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } catch (error) {
+            console.error('Date formatting error:', error);
+            return 'Invalid date';
+        }
+    };
+
     if (!user) {
         return <div>Loading...</div>;
     }
@@ -62,7 +80,7 @@ const Profile = () => {
                                         Account created
                                     </dt>
                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                        {new Date(user.createdAt).toLocaleDateString()}
+                                        {formatDate(user.createdAt)}
                                     </dd>
                                 </div>
                             </dl>

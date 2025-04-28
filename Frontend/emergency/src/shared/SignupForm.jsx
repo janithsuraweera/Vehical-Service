@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const SignupForm = () => {
     const [formData, setFormData] = useState({
@@ -11,6 +12,8 @@ const SignupForm = () => {
         confirmPassword: ''
     });
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -18,20 +21,37 @@ const SignupForm = () => {
             ...formData,
             [e.target.name]: e.target.value
         });
+        // Clear error when user starts typing
+        setError('');
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
+        // Validate password match
         if (formData.password !== formData.confirmPassword) {
             setError('Passwords do not match');
+            toast.error('Passwords do not match');
+            return;
+        }
+
+        // Validate password length
+        if (formData.password.length < 6) {
+            setError('Password must be at least 6 characters long');
+            toast.error('Password must be at least 6 characters long');
+            return;
+        }
+
+        // Validate username length
+        if (formData.username.length < 3) {
+            setError('Username must be at least 3 characters long');
+            toast.error('Username must be at least 3 characters long');
             return;
         }
 
         try {
             const response = await axios.post('http://localhost:5000/api/auth/signup', {
-                
                 username: formData.username,
                 email: formData.email,
                 password: formData.password
@@ -40,8 +60,11 @@ const SignupForm = () => {
             toast.success('Registration successful! Please login.');
             navigate('/login');
         } catch (error) {
-            setError(error.response?.data?.message || 'An error occurred during registration');
-            toast.error(error.response?.data?.message || 'Registration failed');
+            const errorMessage = error.response?.data?.message || 'An error occurred during registration';
+            const errorDetails = error.response?.data?.error || '';
+            setError(`${errorMessage}${errorDetails ? `: ${errorDetails}` : ''}`);
+            toast.error(errorMessage);
+            console.error('Registration error:', error.response?.data);
         }
     };
 
@@ -67,6 +90,7 @@ const SignupForm = () => {
                             onChange={handleChange}
                             className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
                             required
+                            minLength="3"
                         />
                     </div>
                     <div className="mb-6">
@@ -87,29 +111,49 @@ const SignupForm = () => {
                         <label htmlFor="password" className="block text-gray-700 text-sm font-semibold mb-2">
                             Password:
                         </label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
-                            required
-                        />
+                        <div className="relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
+                                required
+                                minLength="6"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                            >
+                                {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                            </button>
+                        </div>
                     </div>
                     <div className="mb-8">
                         <label htmlFor="confirmPassword" className="block text-gray-700 text-sm font-semibold mb-2">
                             Confirm Password:
                         </label>
-                        <input
-                            type="password"
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
-                            required
-                        />
+                        <div className="relative">
+                            <input
+                                type={showConfirmPassword ? "text" : "password"}
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
+                                required
+                                minLength="6"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                            >
+                                {showConfirmPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                            </button>
+                        </div>
                     </div>
                     <div className="flex items-center justify-between">
                         <button
