@@ -4,10 +4,9 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { FaMapMarkerAlt, FaArrowLeft, FaCamera, FaTrash } from 'react-icons/fa';
 
 import backgroundImage from '../../assets/background.png'; 
-
-import { FaMapMarkerAlt, FaArrowLeft } from 'react-icons/fa';
 
 const EmergencyForm = () => {
     const navigate = useNavigate();
@@ -22,11 +21,13 @@ const EmergencyForm = () => {
         },
         vehicleType: '',
         vehicleColor: '',
-        emergencyType: '', // Initial value changed to empty string
+        emergencyType: '',
         description: '',
+        photos: [],
     });
     const [errors, setErrors] = useState({});
     const [isFetchingLocation, setIsFetchingLocation] = useState(false);
+    const [previewPhotos, setPreviewPhotos] = useState([]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -47,6 +48,45 @@ const EmergencyForm = () => {
             setFormData({ ...formData, [name]: value });
         }
         setErrors({ ...errors, [name]: '' });
+    };
+
+    const handlePhotoUpload = (e) => {
+        const files = Array.from(e.target.files);
+        
+        if (formData.photos.length + files.length > 5) {
+            toast.error('Maximum 5 photos allowed');
+            return;
+        }
+
+        const validFiles = files.filter(file => {
+            const isValidType = ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type);
+            const isValidSize = file.size <= 5 * 1024 * 1024;
+
+            if (!isValidType) {
+                toast.error(`${file.name} is not a valid image file`);
+            }
+            if (!isValidSize) {
+                toast.error(`${file.name} is too large. Maximum size is 5MB`);
+            }
+
+            return isValidType && isValidSize;
+        });
+
+        const newPreviewUrls = validFiles.map(file => URL.createObjectURL(file));
+        setPreviewPhotos([...previewPhotos, ...newPreviewUrls]);
+
+        setFormData(prev => ({
+            ...prev,
+            photos: [...prev.photos, ...validFiles]
+        }));
+    };
+
+    const removePhoto = (index) => {
+        setFormData(prev => ({
+            ...prev,
+            photos: prev.photos.filter((_, i) => i !== index)
+        }));
+        setPreviewPhotos(prev => prev.filter((_, i) => i !== index));
     };
 
     const getCurrentLocation = () => {
@@ -91,7 +131,9 @@ const EmergencyForm = () => {
             vehicleColor: '',
             emergencyType: '',
             description: '',
+            photos: [],
         });
+        setPreviewPhotos([]);
         setErrors({});
     };
 
@@ -153,7 +195,26 @@ const EmergencyForm = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/api/emergency', formData);
+            const formDataToSend = new FormData();
+            
+            Object.keys(formData).forEach(key => {
+                if (key === 'location') {
+                    formDataToSend.append(key, JSON.stringify(formData[key]));
+                } else if (key === 'photos') {
+                    formData.photos.forEach((photo, index) => {
+                        formDataToSend.append('photos', photo);
+                    });
+                } else {
+                    formDataToSend.append(key, formData[key]);
+                }
+            });
+
+            const response = await axios.post('http://localhost:5000/api/emergency', formDataToSend, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            
             toast.success(`Emergency request submitted successfully! Emergency Request No: ${response.data.emergencyRequestNo}`);
             resetForm();
         } catch (error) {
@@ -310,6 +371,45 @@ const EmergencyForm = () => {
                             placeholder="Enter a description"
                         ></textarea>
                         {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
+                    </div>
+                    <div>
+                        <label className="block font-medium mb-1">Photos (Max 5)</label>
+                        <div className="flex flex-wrap gap-4 mb-4">
+                            {previewPhotos.map((preview, index) => (
+                                <div key={index} className="relative">
+                                    <img
+                                        src={preview}
+                                        alt={`Preview ${index + 1}`}
+                                        className="w-32 h-32 object-cover rounded-lg"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => removePhoto(index)}
+                                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                                    >
+                                        <FaTrash size={16} />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="flex items-center">
+                            <label className="flex items-center justify-center w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500">
+                                <div className="text-center">
+                                    <FaCamera className="mx-auto h-8 w-8 text-gray-400" />
+                                    <span className="mt-2 block text-sm text-gray-600">Add Photo</span>
+                                </div>
+                                <input
+                                    type="file"
+                                    className="hidden"
+                                    accept="image/*"
+                                    multiple
+                                    onChange={handlePhotoUpload}
+                                />
+                            </label>
+                            <span className="ml-4 text-sm text-gray-500">
+                                {formData.photos.length}/5 photos
+                            </span>
+                        </div>
                     </div>
                     <button
                         type="submit"
