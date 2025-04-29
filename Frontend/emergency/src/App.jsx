@@ -13,6 +13,7 @@ import Profile from './pages/Profile';
 import Navbar from './components/Navbar';
 import ForgotPasswordForm from './shared/ForgotPasswordForm';
 import ResetPasswordForm from './shared/ResetPasswordForm';
+import AdminDashboard from './pages/AdminDashboard';
 // import Home from './pages/Home';
 
 // Emergency Imports
@@ -56,6 +57,7 @@ const App = () => {
           <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
 
           {/* Emergency Routes */}
           <Route path="/emergency" element={<ProtectedRoute><EmergencyHomePage /></ProtectedRoute>} />
