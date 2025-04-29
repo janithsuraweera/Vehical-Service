@@ -3,7 +3,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useDarkMode } from '../context/DarkModeContext';
 import { FaHome, FaStore, FaExclamationTriangle, FaCar, FaWrench, FaInfoCircle, FaUser, FaSignOutAlt, FaMoon, FaSun } from 'react-icons/fa';
-
+import logo from '/logo.png';
 const Navbar = () => {
     const [showDropdown, setShowDropdown] = useState(false);
     const navigate = useNavigate();
@@ -48,9 +48,13 @@ const Navbar = () => {
             <div className="max-w-7xl mx-auto px-4">
                 <div className="flex justify-between h-16">
                     <div className="flex items-center">
-                        <Link to="/" className="text-xl font-bold text-gray-800 dark:text-white flex items-center relative group">
-                            <span className="group-hover:opacity-0 transition-opacity duration-300">Vehicle Service</span>
-                            <FaCar className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-blue-600" size={24} />
+                        <Link to="/" className="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-0">
+                            <img 
+                                src={logo} 
+                                alt="Motrone Logo" 
+                                className="h-20 w-auto"
+                            />
+                            <span className="text-2xl">Motrone</span>
                         </Link>
                     </div>
                     
