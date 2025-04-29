@@ -4,9 +4,47 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaMapMarkerAlt, FaArrowLeft, FaCamera, FaTrash } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaArrowLeft, FaCamera, FaTrash, FaMap } from 'react-icons/fa';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import backgroundImage from '../../assets/background.png';
 
-import backgroundImage from '../../assets/background.png'; 
+// Fix for default marker icon
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
+
+// Map Click Handler Component
+const MapClickHandler = ({ onLocationSelect }) => {
+    useMapEvents({
+        click: (e) => {
+            onLocationSelect(e);
+        },
+    });
+    return null;
+};
+
+// Map Component
+const Map = ({ position, onLocationSelect }) => {
+    return (
+        <MapContainer
+            center={position}
+            zoom={13}
+            style={{ height: '100%', width: '100%' }}
+        >
+            <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
+            <Marker position={position} />
+            <MapClickHandler onLocationSelect={onLocationSelect} />
+        </MapContainer>
+    );
+};
 
 const EmergencyForm = () => {
     const navigate = useNavigate();
@@ -28,6 +66,8 @@ const EmergencyForm = () => {
     const [errors, setErrors] = useState({});
     const [isFetchingLocation, setIsFetchingLocation] = useState(false);
     const [previewPhotos, setPreviewPhotos] = useState([]);
+    const [showMap, setShowMap] = useState(false);
+    const [mapPosition, setMapPosition] = useState([6.9271, 79.8612]); // Default to Colombo
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -48,6 +88,48 @@ const EmergencyForm = () => {
             setFormData({ ...formData, [name]: value });
         }
         setErrors({ ...errors, [name]: '' });
+    };
+
+    const handleMapClick = (e) => {
+        const { lat, lng } = e.latlng;
+        setMapPosition([lat, lng]);
+        setFormData(prev => ({
+            ...prev,
+            location: {
+                ...prev.location,
+                coordinates: [lng, lat],
+                address: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`,
+            },
+        }));
+    };
+
+    const getCurrentLocation = () => {
+        setIsFetchingLocation(true);
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setMapPosition([latitude, longitude]);
+                    setFormData({
+                        ...formData,
+                        location: {
+                            ...formData.location,
+                            coordinates: [longitude, latitude],
+                            address: `Lat: ${latitude}, Lng: ${longitude}`,
+                        },
+                    });
+                    toast.success('Location fetched successfully!');
+                    setIsFetchingLocation(false);
+                },
+                (error) => {
+                    toast.error('Failed to fetch location.');
+                    setIsFetchingLocation(false);
+                }
+            );
+        } else {
+            toast.error('Geolocation is not supported by your browser.');
+            setIsFetchingLocation(false);
+        }
     };
 
     const handlePhotoUpload = (e) => {
@@ -87,34 +169,6 @@ const EmergencyForm = () => {
             photos: prev.photos.filter((_, i) => i !== index)
         }));
         setPreviewPhotos(prev => prev.filter((_, i) => i !== index));
-    };
-
-    const getCurrentLocation = () => {
-        setIsFetchingLocation(true);
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    setFormData({
-                        ...formData,
-                        location: {
-                            ...formData.location,
-                            coordinates: [longitude, latitude],
-                            address: `Lat: ${latitude}, Lng: ${longitude}`,
-                        },
-                    });
-                    toast.success('Location fetched successfully!');
-                    setIsFetchingLocation(false);
-                },
-                (error) => {
-                    toast.error('Failed to fetch location.');
-                    setIsFetchingLocation(false);
-                }
-            );
-        } else {
-            toast.error('Geolocation is not supported by your browser.');
-            setIsFetchingLocation(false);
-        }
     };
 
     const resetForm = () => {
@@ -288,25 +342,42 @@ const EmergencyForm = () => {
                         />
                         {errors.vehicleNumber && <p className="text-red-500 text-sm mt-1">{errors.vehicleNumber}</p>}
                     </div>
-                    <div className="relative">
-                        <label htmlFor="address" className="block font-medium mb-1">Address</label>
-                        <input
-                            type="text"
-                            id="address"
-                            name="location.address"
-                            value={formData.location.address}
-                            onChange={handleChange}
-                            className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                            placeholder="Enter your address"
-                        />
-                        <button
-                            type="button"
-                            onClick={getCurrentLocation}
-                            disabled={isFetchingLocation}
-                            className="absolute right-2 top-9 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md transition-colors duration-300"
-                        >
-                            {isFetchingLocation ? 'Fetching...' : <FaMapMarkerAlt />}
-                        </button>
+                    <div>
+                        <label htmlFor="address" className="block font-medium mb-1">Location</label>
+                        <div className="flex space-x-2">
+                            <div className="flex-1 relative">
+                                <input
+                                    type="text"
+                                    id="address"
+                                    name="location.address"
+                                    value={formData.location.address}
+                                    onChange={handleChange}
+                                    className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+                                    placeholder="Enter your location"
+                                    readOnly
+                                />
+                                <button
+                                    type="button"
+                                    onClick={getCurrentLocation}
+                                    disabled={isFetchingLocation}
+                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-blue-500 hover:text-blue-600"
+                                >
+                                    <FaMapMarkerAlt size={20} />
+                                </button>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setShowMap(!showMap)}
+                                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 flex items-center"
+                            >
+                                <FaMap className="mr-2" /> {showMap ? 'Hide Map' : 'Show Map'}
+                            </button>
+                        </div>
+                        {showMap && (
+                            <div className="mt-2 h-64 rounded-lg overflow-hidden border border-gray-300">
+                                <Map position={mapPosition} onLocationSelect={handleMapClick} />
+                            </div>
+                        )}
                         {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location}</p>}
                     </div>
                     <div>
