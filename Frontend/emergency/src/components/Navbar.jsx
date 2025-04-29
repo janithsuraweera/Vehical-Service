@@ -36,7 +36,7 @@ const Navbar = () => {
 
     // Function to get tab styling based on active state
     const getTabStyle = (tabName) => {
-        const baseStyle = "flex items-center cursor-pointer transition-colors duration-200 px-4 py-2 rounded-lg";
+        const baseStyle = "flex items-center cursor-pointer transition-all duration-300 px-4 py-2 rounded-lg relative group";
         const activeStyle = "text-blue-600 font-medium bg-blue-50 dark:bg-blue-900/20";
         const inactiveStyle = "text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white";
         
@@ -48,40 +48,47 @@ const Navbar = () => {
             <div className="max-w-7xl mx-auto px-4">
                 <div className="flex justify-between h-16">
                     <div className="flex items-center">
-                        <Link to="/" className="text-xl font-bold text-gray-800 dark:text-white flex items-center">
-                            <FaCar className="mr-2 text-blue-600" size={24} />
-                            Vehicle Service
+                        <Link to="/" className="text-xl font-bold text-gray-800 dark:text-white flex items-center relative group">
+                            <span className="group-hover:opacity-0 transition-opacity duration-300">Vehicle Service</span>
+                            <FaCar className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-blue-600" size={24} />
                         </Link>
                     </div>
                     
                     <div className="hidden md:flex items-center space-x-2">
                         <Link to="/" className={getTabStyle('home')}>
-                            <FaHome className="mr-2" size={18} /> Home
+                            <span className="group-hover:opacity-0 transition-opacity duration-300">Home</span>
+                            <FaHome className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                         </Link>
                         {user && (
                             <>
                                 <Link to="/inventory" className={getTabStyle('store')}>
-                                    <FaStore className="mr-2" size={18} /> Store
+                                    <span className="group-hover:opacity-0 transition-opacity duration-300">Store</span>
+                                    <FaStore className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                 </Link>
                                 {user.role === 'admin' ? (
                                     <Link to="/emergencylist" className={getTabStyle('emergency')}>
-                                        <FaExclamationTriangle className="mr-2" size={18} /> Emergency List
+                                        <span className="group-hover:opacity-0 transition-opacity duration-300">Emergency List</span>
+                                        <FaExclamationTriangle className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                     </Link>
                                 ) : (
                                     <Link to="/emergencyform" className={getTabStyle('emergency')}>
-                                        <FaExclamationTriangle className="mr-2" size={18} /> Emergency Form
+                                        <span className="group-hover:opacity-0 transition-opacity duration-300">Emergency Form</span>
+                                        <FaExclamationTriangle className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                     </Link>
                                 )}
                                 <Link to="/rvhome" className={getTabStyle('register')}>
-                                    <FaCar className="mr-2" size={18} /> Register
+                                    <span className="group-hover:opacity-0 transition-opacity duration-300">Register</span>
+                                    <FaCar className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                 </Link>
                                 <Link to="/vehicle-errors" className={getTabStyle('vehicle-errors')}>
-                                    <FaWrench className="mr-2" size={18} /> Vehicle Errors
+                                    <span className="group-hover:opacity-0 transition-opacity duration-300">Vehicle Errors</span>
+                                    <FaWrench className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                 </Link>
                             </>
                         )}
                         <Link to="/aboutus" className={getTabStyle('about')}>
-                            <FaInfoCircle className="mr-2" size={18} /> About Us
+                            <span className="group-hover:opacity-0 transition-opacity duration-300">About Us</span>
+                            <FaInfoCircle className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                         </Link>
                     </div>
                     
@@ -90,7 +97,7 @@ const Navbar = () => {
                             onClick={toggleDarkMode}
                             className="p-2 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
                         >
-                            {darkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
+                            {darkMode ? <FaSun size={18} /> : <FaMoon size={18} />}
                         </button>
                         {user ? (
                             <div className="relative">
@@ -110,23 +117,26 @@ const Navbar = () => {
                                         </div>
                                         <Link 
                                             to="/profile" 
-                                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
+                                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 relative group"
                                         >
-                                            <FaUser className="mr-2" size={16} /> Profile
+                                            <span className="group-hover:opacity-0 transition-opacity duration-300">Profile</span>
+                                            <FaUser className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={16} />
                                         </Link>
                                         {user.role === 'admin' && (
                                             <Link 
                                                 to="/admin" 
-                                                className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
+                                                className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 relative group"
                                             >
-                                                <FaUser className="mr-2" size={16} /> Admin Dashboard
+                                                <span className="group-hover:opacity-0 transition-opacity duration-300">Admin Dashboard</span>
+                                                <FaUser className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={16} />
                                             </Link>
                                         )}
                                         <button
                                             onClick={handleLogout}
-                                            className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
+                                            className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 relative group"
                                         >
-                                            <FaSignOutAlt className="mr-2" size={16} /> Logout
+                                            <span className="group-hover:opacity-0 transition-opacity duration-300">Logout</span>
+                                            <FaSignOutAlt className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={16} />
                                         </button>
                                     </div>
                                 )}
@@ -135,15 +145,17 @@ const Navbar = () => {
                             <div className="flex space-x-4">
                                 <Link 
                                     to="/login" 
-                                    className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center cursor-pointer px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center cursor-pointer px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 relative group"
                                 >
-                                    <FaUser className="mr-2" size={18} /> Sign In
+                                    <span className="group-hover:opacity-0 transition-opacity duration-300">Sign In</span>
+                                    <FaUser className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                 </Link>
                                 <Link 
                                     to="/signup" 
-                                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center cursor-pointer transition-colors duration-200"
+                                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center cursor-pointer transition-colors duration-200 relative group"
                                 >
-                                    <FaUser className="mr-2" size={18} /> Sign Up
+                                    <span className="group-hover:opacity-0 transition-opacity duration-300">Sign Up</span>
+                                    <FaUser className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                 </Link>
                             </div>
                         )}
