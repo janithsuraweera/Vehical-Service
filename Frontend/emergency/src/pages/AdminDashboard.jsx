@@ -1,9 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Navigate } from 'react-router-dom';
+import axios from 'axios';
 
 const AdminDashboard = () => {
     const { user } = useAuth();
+    const [totalUsers, setTotalUsers] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        const fetchTotalUsers = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/api/users/count', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                setTotalUsers(response.data.count);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching total users:', error);
+                setError('Error fetching total users');
+                setLoading(false);
+            }
+        };
+
+        fetchTotalUsers();
+    }, []);
 
     // Redirect if not admin
     if (!user || user.role !== 'admin') {
@@ -35,7 +59,7 @@ const AdminDashboard = () => {
                                                 </dt>
                                                 <dd className="flex items-baseline">
                                                     <div className="text-2xl font-semibold text-gray-900">
-                                                        0
+                                                        {loading ? 'Loading...' : error ? 'Error' : totalUsers}
                                                     </div>
                                                 </dd>
                                             </dl>

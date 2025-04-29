@@ -7,6 +7,7 @@ const inventoryRoutes = require('./routes/inventoryRoutes');
 const emergencyRoutes = require('./routes/emergencyRoutes');
 const vehicleRegistrationRequestRoutes = require('./routes/vehicleRegistrationRequestRoutes');
 const authRoutes = require('./routes/auth');
+const usersRoutes = require('./routes/users');
 
 require('dotenv').config();
 
@@ -21,6 +22,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/emergency', emergencyRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/vehicle-registration', vehicleRegistrationRequestRoutes);
+app.use('/api/users', usersRoutes);
 
 app.get('/', (req, res) => {res.send('Welcome DB');
 
