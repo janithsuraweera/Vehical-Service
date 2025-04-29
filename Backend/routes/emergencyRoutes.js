@@ -74,6 +74,7 @@ router.post('/', upload.array('photos', 5), [
 
   try {
     const location = JSON.parse(req.body.location);
+    // Handle photos - if no photos are uploaded, use an empty array
     const photoUrls = req.files ? req.files.map(file => `/uploads/emergency/${file.filename}`) : [];
     console.log('Generated photo URLs:', photoUrls);
 
