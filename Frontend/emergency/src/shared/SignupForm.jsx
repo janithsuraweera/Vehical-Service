@@ -28,7 +28,9 @@ const SignupForm = () => {
             
             // If name field is changed, update username field
             if (name === 'name') {
-                newData.username = value.toLowerCase().replace(/\s+/g, '');
+                // Convert to lowercase and replace spaces with underscores
+                const username = value.toLowerCase().replace(/\s+/g, '_');
+                newData.username = username;
             }
             
             return newData;
@@ -106,10 +108,18 @@ const SignupForm = () => {
                             className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
                             required
                         />
+                    </div>
+                    <div className="mb-6">
+                        <label htmlFor="username" className="block text-gray-700 text-sm font-semibold mb-2">
+                            Username (Auto-generated):
+                        </label>
                         <input
-                            type="hidden"
+                            type="text"
+                            id="username"
                             name="username"
                             value={formData.username}
+                            className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-500 bg-gray-100 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
+                            readOnly
                         />
                     </div>
                     <div className="mb-6">

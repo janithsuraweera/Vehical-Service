@@ -213,9 +213,6 @@ const EmergencyForm = () => {
         if (!formData.name || !formData.name.trim()) {
             formErrors.name = 'Name is required.';
             isValid = false;
-        } else if (!/^[A-Za-z\s]+$/.test(formData.name)) {
-            formErrors.name = 'Name should contain only English letters.';
-            isValid = false;
         }
 
         // Validate contact number
@@ -227,11 +224,8 @@ const EmergencyForm = () => {
             isValid = false;
         }
 
-        // Validate vehicle number
-        if (!formData.vehicleNumber || !formData.vehicleNumber.trim()) {
-            formErrors.vehicleNumber = 'Vehicle number is required.';
-            isValid = false;
-        } else if (formData.vehicleNumber.length !== 7) {
+        // Validate vehicle number (optional)
+        if (formData.vehicleNumber && formData.vehicleNumber.trim() && formData.vehicleNumber.length !== 7) {
             formErrors.vehicleNumber = 'Vehicle number should be 7 characters.';
             isValid = false;
         }
@@ -242,9 +236,30 @@ const EmergencyForm = () => {
             isValid = false;
         }
 
+        // Validate vehicle type
+        if (!formData.vehicleType) {
+            formErrors.vehicleType = 'Vehicle type is required.';
+            isValid = false;
+        } else if (!['car', 'motorcycle', 'bus', 'truck', 'van', 'other'].includes(formData.vehicleType)) {
+            formErrors.vehicleType = 'Invalid vehicle type.';
+            isValid = false;
+        }
+
         // Validate vehicle color
         if (!formData.vehicleColor || !formData.vehicleColor.trim()) {
             formErrors.vehicleColor = 'Vehicle color is required.';
+            isValid = false;
+        } else if (!/^#([0-9A-F]{3}){1,2}$/i.test(formData.vehicleColor)) {
+            formErrors.vehicleColor = 'Invalid color format (e.g., #FFFFFF).';
+            isValid = false;
+        }
+
+        // Validate emergency type
+        if (!formData.emergencyType) {
+            formErrors.emergencyType = 'Emergency type is required.';
+            isValid = false;
+        } else if (!['breakdown', 'accident', 'flat_tire', 'other'].includes(formData.emergencyType)) {
+            formErrors.emergencyType = 'Invalid emergency type.';
             isValid = false;
         }
 
@@ -254,97 +269,49 @@ const EmergencyForm = () => {
             isValid = false;
         }
 
-        // Validate vehicle type
-        if (!formData.vehicleType || !formData.vehicleType.trim()) {
-            formErrors.vehicleType = 'Vehicle type is required.';
-            isValid = false;
-        }
-
-        // Validate emergency type
-        if (!formData.emergencyType || !formData.emergencyType.trim()) {
-            formErrors.emergencyType = 'Emergency type is required.';
-            isValid = false;
-        }
-
         setErrors(formErrors);
 
         if (!isValid) {
-            const errorFields = Object.keys(formErrors).join(', ');
-            toast.error(`Please fix the following fields: ${errorFields}`);
             return;
         }
 
         try {
-            const formDataToSend = new FormData();
-            
-            // Add all form fields to FormData
-            formDataToSend.append('name', formData.name.trim());
-            formDataToSend.append('contactNumber', formData.contactNumber.trim());
-            formDataToSend.append('vehicleNumber', formData.vehicleNumber.trim());
-            formDataToSend.append('vehicleType', formData.vehicleType.trim());
-            formDataToSend.append('vehicleColor', formData.vehicleColor.trim());
-            formDataToSend.append('emergencyType', formData.emergencyType.trim());
-            formDataToSend.append('description', formData.description.trim());
-            
-            // Add location data as JSON string
-            const locationData = {
-                type: 'Point',
-                coordinates: formData.location.coordinates,
-                address: formData.location.address.trim()
-            };
-            formDataToSend.append('location', JSON.stringify(locationData));
-            
-            // Add photos if they exist
-            if (formData.photos && formData.photos.length > 0) {
-                formData.photos.forEach((photo) => {
-                    formDataToSend.append('photos', photo);
-                });
-            }
-
-            // Log the data being sent (for debugging)
-            console.log('Sending data:', {
+            // Format data according to backend expectations
+            const formattedData = {
                 name: formData.name.trim(),
                 contactNumber: formData.contactNumber.trim(),
-                vehicleNumber: formData.vehicleNumber.trim(),
-                vehicleType: formData.vehicleType.trim(),
-                vehicleColor: formData.vehicleColor.trim(),
-                emergencyType: formData.emergencyType.trim(),
-                description: formData.description.trim(),
-                location: locationData,
-                photosCount: formData.photos ? formData.photos.length : 0
-            });
-
-            const response = await axios.post('http://localhost:5000/api/emergency', formDataToSend, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
+                vehicleNumber: formData.vehicleNumber ? formData.vehicleNumber.trim() : undefined,
+                location: {
+                    type: 'Point',
+                    coordinates: formData.location.coordinates,
+                    address: formData.location.address.trim()
                 },
-            });
+                vehicleType: formData.vehicleType,
+                vehicleColor: formData.vehicleColor.trim(),
+                emergencyType: formData.emergencyType,
+                description: formData.description.trim()
+            };
+
+            console.log('Sending data:', formattedData); // For debugging
+
+            const response = await axios.post('http://localhost:5000/api/emergency', formattedData);
             
-            if (response.data.success) {
+            if (response.status === 201) {
                 toast.success('Emergency request submitted successfully!');
-                resetForm();
-                navigate('/emergency-requests');
+                navigate('/dashboard');
             } else {
-                toast.error(response.data.error || 'Failed to submit emergency request');
+                toast.error('Failed to submit emergency request.');
             }
         } catch (error) {
-            console.error('Error submitting form:', error);
-            if (error.response?.data?.errors) {
+            console.error('Error:', error.response?.data || error); // For debugging
+            if (error.response && error.response.data && error.response.data.errors) {
                 const errorData = error.response.data.errors.reduce(
                     (acc, err) => ({ ...acc, [err.path]: err.msg }),
                     {}
                 );
                 setErrors(errorData);
-                const errorFields = Object.keys(errorData).join(', ');
-                toast.error(`Server validation errors in: ${errorFields}`);
-            } else if (error.response?.data?.error) {
-                toast.error(`Server error: ${error.response.data.error}`);
-            } else if (error.response) {
-                toast.error(`Server error (${error.response.status}): ${error.response.statusText}`);
-            } else if (error.request) {
-                toast.error('Network error: Could not connect to the server');
             } else {
-                toast.error(`Error: ${error.message}`);
+                toast.error('Failed to submit emergency request.');
             }
         }
     };
