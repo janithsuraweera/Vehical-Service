@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,6 +9,7 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import backgroundImage from '../../assets/background.png';
+import { useAuth } from '../../context/AuthContext';
 
 // Fix for default marker icon
 delete L.Icon.Default.prototype._getIconUrl;
@@ -48,6 +49,7 @@ const Map = ({ position, onLocationSelect }) => {
 
 const EmergencyForm = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [formData, setFormData] = useState({
         name: '',
         contactNumber: '',
@@ -68,6 +70,17 @@ const EmergencyForm = () => {
     const [previewPhotos, setPreviewPhotos] = useState([]);
     const [showMap, setShowMap] = useState(false);
     const [mapPosition, setMapPosition] = useState([6.9271, 79.8612]); // Default to Colombo
+
+    // Auto-fill user details when component mounts
+    useEffect(() => {
+        if (user) {
+            setFormData(prev => ({
+                ...prev,
+                name: user.name || '',
+                contactNumber: user.phone || '',
+            }));
+        }
+    }, [user]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
