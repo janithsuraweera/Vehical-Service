@@ -209,7 +209,8 @@ const EmergencyForm = () => {
         let formErrors = {};
         let isValid = true;
 
-        if (!formData.name.trim()) {
+        // Validate name
+        if (!formData.name || !formData.name.trim()) {
             formErrors.name = 'Name is required.';
             isValid = false;
         } else if (!/^[A-Za-z\s]+$/.test(formData.name)) {
@@ -217,7 +218,8 @@ const EmergencyForm = () => {
             isValid = false;
         }
 
-        if (!formData.contactNumber.trim()) {
+        // Validate contact number
+        if (!formData.contactNumber || !formData.contactNumber.trim()) {
             formErrors.contactNumber = 'Contact number is required.';
             isValid = false;
         } else if (formData.contactNumber.length !== 10) {
@@ -225,32 +227,41 @@ const EmergencyForm = () => {
             isValid = false;
         }
 
-        if (!formData.vehicleNumber.trim()) {
+        // Validate vehicle number
+        if (!formData.vehicleNumber || !formData.vehicleNumber.trim()) {
             formErrors.vehicleNumber = 'Vehicle number is required.';
             isValid = false;
-        }
-
-        if (!formData.location.address.trim()) {
-            formErrors.location = 'Address is required.';
+        } else if (formData.vehicleNumber.length !== 7) {
+            formErrors.vehicleNumber = 'Vehicle number should be 7 characters.';
             isValid = false;
         }
 
-        if (!formData.vehicleColor.trim()) {
+        // Validate location
+        if (!formData.location || !formData.location.coordinates || !formData.location.address) {
+            formErrors.location = 'Location is required.';
+            isValid = false;
+        }
+
+        // Validate vehicle color
+        if (!formData.vehicleColor || !formData.vehicleColor.trim()) {
             formErrors.vehicleColor = 'Vehicle color is required.';
             isValid = false;
         }
 
-        if (!formData.description.trim()) {
+        // Validate description
+        if (!formData.description || !formData.description.trim()) {
             formErrors.description = 'Description is required.';
             isValid = false;
         }
 
-        if (!formData.vehicleType) {
+        // Validate vehicle type
+        if (!formData.vehicleType || !formData.vehicleType.trim()) {
             formErrors.vehicleType = 'Vehicle type is required.';
             isValid = false;
         }
 
-        if (!formData.emergencyType) {
+        // Validate emergency type
+        if (!formData.emergencyType || !formData.emergencyType.trim()) {
             formErrors.emergencyType = 'Emergency type is required.';
             isValid = false;
         }
@@ -258,22 +269,49 @@ const EmergencyForm = () => {
         setErrors(formErrors);
 
         if (!isValid) {
+            const errorFields = Object.keys(formErrors).join(', ');
+            toast.error(`Please fix the following fields: ${errorFields}`);
             return;
         }
 
         try {
             const formDataToSend = new FormData();
             
-            Object.keys(formData).forEach(key => {
-                if (key === 'location') {
-                    formDataToSend.append(key, JSON.stringify(formData[key]));
-                } else if (key === 'photos') {
-                    formData.photos.forEach((photo, index) => {
-                        formDataToSend.append('photos', photo);
-                    });
-                } else {
-                    formDataToSend.append(key, formData[key]);
-                }
+            // Add all form fields to FormData
+            formDataToSend.append('name', formData.name.trim());
+            formDataToSend.append('contactNumber', formData.contactNumber.trim());
+            formDataToSend.append('vehicleNumber', formData.vehicleNumber.trim());
+            formDataToSend.append('vehicleType', formData.vehicleType.trim());
+            formDataToSend.append('vehicleColor', formData.vehicleColor.trim());
+            formDataToSend.append('emergencyType', formData.emergencyType.trim());
+            formDataToSend.append('description', formData.description.trim());
+            
+            // Add location data as JSON string
+            const locationData = {
+                type: 'Point',
+                coordinates: formData.location.coordinates,
+                address: formData.location.address.trim()
+            };
+            formDataToSend.append('location', JSON.stringify(locationData));
+            
+            // Add photos if they exist
+            if (formData.photos && formData.photos.length > 0) {
+                formData.photos.forEach((photo) => {
+                    formDataToSend.append('photos', photo);
+                });
+            }
+
+            // Log the data being sent (for debugging)
+            console.log('Sending data:', {
+                name: formData.name.trim(),
+                contactNumber: formData.contactNumber.trim(),
+                vehicleNumber: formData.vehicleNumber.trim(),
+                vehicleType: formData.vehicleType.trim(),
+                vehicleColor: formData.vehicleColor.trim(),
+                emergencyType: formData.emergencyType.trim(),
+                description: formData.description.trim(),
+                location: locationData,
+                photosCount: formData.photos ? formData.photos.length : 0
             });
 
             const response = await axios.post('http://localhost:5000/api/emergency', formDataToSend, {
@@ -282,17 +320,31 @@ const EmergencyForm = () => {
                 },
             });
             
-            toast.success(`Emergency request submitted successfully! Emergency Request No: ${response.data.emergencyRequestNo}`);
-            resetForm();
+            if (response.data.success) {
+                toast.success('Emergency request submitted successfully!');
+                resetForm();
+                navigate('/emergency-requests');
+            } else {
+                toast.error(response.data.error || 'Failed to submit emergency request');
+            }
         } catch (error) {
-            if (error.response && error.response.data && error.response.data.errors) {
+            console.error('Error submitting form:', error);
+            if (error.response?.data?.errors) {
                 const errorData = error.response.data.errors.reduce(
                     (acc, err) => ({ ...acc, [err.path]: err.msg }),
                     {}
                 );
                 setErrors(errorData);
+                const errorFields = Object.keys(errorData).join(', ');
+                toast.error(`Server validation errors in: ${errorFields}`);
+            } else if (error.response?.data?.error) {
+                toast.error(`Server error: ${error.response.data.error}`);
+            } else if (error.response) {
+                toast.error(`Server error (${error.response.status}): ${error.response.statusText}`);
+            } else if (error.request) {
+                toast.error('Network error: Could not connect to the server');
             } else {
-                toast.error('Failed to submit emergency request.');
+                toast.error(`Error: ${error.message}`);
             }
         }
     };
