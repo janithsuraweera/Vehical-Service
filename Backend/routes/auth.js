@@ -7,10 +7,10 @@ const User = require('../models/User');
 // Register new user (signup)
 router.post('/signup', async (req, res) => {
   try {
-    const { name, email, password, phone, role } = req.body;
+    const { name, email, password, phone, username, role } = req.body;
 
     // Check if user already exists
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ $or: [{ email }, { username }] });
     if (user) {
       return res.status(400).json({ message: 'User already exists' });
     }
@@ -18,17 +18,14 @@ router.post('/signup', async (req, res) => {
     // Create new user
     user = new User({
       name,
+      username,
       email,
       password,
       phone,
       role: role || 'user' // Default role is 'user' if not specified
     });
 
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password, salt);
-
-    // Save user
+    // Save user (password will be hashed by the pre-save hook)
     await user.save();
 
     // Create JWT token
@@ -43,11 +40,13 @@ router.post('/signup', async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
+        username: user.username,
         email: user.email,
         role: user.role
       }
     });
   } catch (error) {
+    console.error('Signup error:', error);
     res.status(500).json({ message: 'Error creating user', error: error.message });
   }
 });
@@ -57,14 +56,20 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if user exists
-    const user = await User.findOne({ email });
+    // Check if user exists by email or username
+    const user = await User.findOne({
+      $or: [
+        { email: email.toLowerCase() },
+        { username: email.toLowerCase() }
+      ]
+    });
+    
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
     // Verify password
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
@@ -81,11 +86,13 @@ router.post('/login', async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
+        username: user.username,
         email: user.email,
         role: user.role
       }
     });
   } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });

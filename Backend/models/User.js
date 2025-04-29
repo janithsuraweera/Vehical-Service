@@ -17,17 +17,24 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true
+  },
   email: {
     type: String,
     required: true,
-    unique: true
-     // trim: true,
-    // lowercase: true
+    unique: true,
+    trim: true,
+    lowercase: true
   },
   password: {
     type: String,
     required: true,
-        minlength: 6
+    minlength: 6
   },
   phone: {
     type: String,

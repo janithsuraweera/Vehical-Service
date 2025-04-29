@@ -10,7 +10,8 @@ const SignupForm = () => {
         password: '',
         confirmPassword: '',
         name: '',
-        phone: ''
+        phone: '',
+        username: ''
     });
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -18,9 +19,19 @@ const SignupForm = () => {
     const navigate = useNavigate();
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
+        const { name, value } = e.target;
+        setFormData(prevData => {
+            const newData = {
+                ...prevData,
+                [name]: value
+            };
+            
+            // If name field is changed, update username field
+            if (name === 'name') {
+                newData.username = value.toLowerCase().replace(/\s+/g, '');
+            }
+            
+            return newData;
         });
         // Clear error when user starts typing
         setError('');
@@ -44,10 +55,11 @@ const SignupForm = () => {
             return;
         }
 
-        // Validate username length
-        if (formData.email.length < 3) {
-            setError('Email must be at least 3 characters long');
-            toast.error('Email must be at least 3 characters long');
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            setError('Please enter a valid email address');
+            toast.error('Please enter a valid email address');
             return;
         }
 
@@ -56,7 +68,8 @@ const SignupForm = () => {
                 email: formData.email,
                 password: formData.password,
                 name: formData.name,
-                phone: formData.phone
+                phone: formData.phone,
+                username: formData.username
             });
 
             toast.success('Registration successful! Please login.');
@@ -92,6 +105,11 @@ const SignupForm = () => {
                             onChange={handleChange}
                             className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
                             required
+                        />
+                        <input
+                            type="hidden"
+                            name="username"
+                            value={formData.username}
                         />
                     </div>
                     <div className="mb-6">
