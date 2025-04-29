@@ -36,58 +36,59 @@ const Navbar = () => {
 
     // Function to get tab styling based on active state
     const getTabStyle = (tabName) => {
-        const baseStyle = "flex items-center cursor-pointer transition-colors duration-200";
-        const activeStyle = "text-blue-600 font-medium";
-        const inactiveStyle = "text-gray-600 hover:text-gray-900";
+        const baseStyle = "flex items-center cursor-pointer transition-colors duration-200 px-4 py-2 rounded-lg";
+        const activeStyle = "text-blue-600 font-medium bg-blue-50 dark:bg-blue-900/20";
+        const inactiveStyle = "text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white";
         
         return `${baseStyle} ${isActive(tabName) ? activeStyle : inactiveStyle}`;
     };
 
     return (
-        <nav className="bg-white dark:bg-gray-800 shadow-lg">
+        <nav className="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4">
                 <div className="flex justify-between h-16">
                     <div className="flex items-center">
-                        <Link to="/" className="text-xl font-bold text-gray-800 dark:text-white">
+                        <Link to="/" className="text-xl font-bold text-gray-800 dark:text-white flex items-center">
+                            <FaCar className="mr-2 text-blue-600" size={24} />
                             Vehicle Service
                         </Link>
                     </div>
                     
-                    <div className="hidden md:flex items-center space-x-6">
+                    <div className="hidden md:flex items-center space-x-2">
                         <Link to="/" className={getTabStyle('home')}>
-                            <FaHome className="mr-1" /> Home
+                            <FaHome className="mr-2" size={18} /> Home
                         </Link>
                         {user && (
                             <>
                                 <Link to="/inventory" className={getTabStyle('store')}>
-                                    <FaStore className="mr-1" /> Store
+                                    <FaStore className="mr-2" size={18} /> Store
                                 </Link>
                                 {user.role === 'admin' ? (
                                     <Link to="/emergencylist" className={getTabStyle('emergency')}>
-                                        <FaExclamationTriangle className="mr-1" /> Emergency List
+                                        <FaExclamationTriangle className="mr-2" size={18} /> Emergency List
                                     </Link>
                                 ) : (
                                     <Link to="/emergencyform" className={getTabStyle('emergency')}>
-                                        <FaExclamationTriangle className="mr-1" /> Emergency Form
+                                        <FaExclamationTriangle className="mr-2" size={18} /> Emergency Form
                                     </Link>
                                 )}
                                 <Link to="/rvhome" className={getTabStyle('register')}>
-                                    <FaCar className="mr-1" /> Register
+                                    <FaCar className="mr-2" size={18} /> Register
                                 </Link>
                                 <Link to="/vehicle-errors" className={getTabStyle('vehicle-errors')}>
-                                    <FaWrench className="mr-1" /> Vehicle Errors
+                                    <FaWrench className="mr-2" size={18} /> Vehicle Errors
                                 </Link>
                             </>
                         )}
                         <Link to="/aboutus" className={getTabStyle('about')}>
-                            <FaInfoCircle className="mr-1" /> About Us
+                            <FaInfoCircle className="mr-2" size={18} /> About Us
                         </Link>
                     </div>
                     
                     <div className="flex items-center space-x-4">
                         <button
                             onClick={toggleDarkMode}
-                            className="p-2 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline-none"
+                            className="p-2 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
                         >
                             {darkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
                         </button>
@@ -97,13 +98,13 @@ const Navbar = () => {
                                     onClick={() => setShowDropdown(!showDropdown)}
                                     className="flex items-center focus:outline-none"
                                 >
-                                    <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white">
+                                    <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold hover:bg-blue-600 transition-colors duration-200">
                                         {user.username?.charAt(0).toUpperCase()}
                                     </div>
                                 </button>
                                 
                                 {showDropdown && (
-                                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-10">
+                                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-10 border border-gray-200 dark:border-gray-700">
                                         <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 border-b dark:border-gray-700">
                                             {user.username}
                                         </div>
@@ -111,21 +112,21 @@ const Navbar = () => {
                                             to="/profile" 
                                             className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
                                         >
-                                            <FaUser className="mr-2" /> Profile
+                                            <FaUser className="mr-2" size={16} /> Profile
                                         </Link>
                                         {user.role === 'admin' && (
                                             <Link 
                                                 to="/admin" 
                                                 className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
                                             >
-                                                <FaUser className="mr-2" /> Admin Dashboard
+                                                <FaUser className="mr-2" size={16} /> Admin Dashboard
                                             </Link>
                                         )}
                                         <button
                                             onClick={handleLogout}
                                             className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
                                         >
-                                            <FaSignOutAlt className="mr-2" /> Logout
+                                            <FaSignOutAlt className="mr-2" size={16} /> Logout
                                         </button>
                                     </div>
                                 )}
@@ -134,15 +135,15 @@ const Navbar = () => {
                             <div className="flex space-x-4">
                                 <Link 
                                     to="/login" 
-                                    className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center cursor-pointer"
+                                    className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center cursor-pointer px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                                 >
-                                    <FaUser className="mr-1" /> Sign In
+                                    <FaUser className="mr-2" size={18} /> Sign In
                                 </Link>
                                 <Link 
                                     to="/signup" 
-                                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center cursor-pointer"
+                                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center cursor-pointer transition-colors duration-200"
                                 >
-                                    <FaUser className="mr-1" /> Sign Up
+                                    <FaUser className="mr-2" size={18} /> Sign Up
                                 </Link>
                             </div>
                         )}
