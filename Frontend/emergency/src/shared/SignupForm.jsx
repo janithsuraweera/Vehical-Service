@@ -6,10 +6,11 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const SignupForm = () => {
     const [formData, setFormData] = useState({
-        username: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        name: '',
+        phone: ''
     });
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -44,17 +45,18 @@ const SignupForm = () => {
         }
 
         // Validate username length
-        if (formData.username.length < 3) {
-            setError('Username must be at least 3 characters long');
-            toast.error('Username must be at least 3 characters long');
+        if (formData.email.length < 3) {
+            setError('Email must be at least 3 characters long');
+            toast.error('Email must be at least 3 characters long');
             return;
         }
 
         try {
             const response = await axios.post('http://localhost:5000/api/auth/signup', {
-                username: formData.username,
                 email: formData.email,
-                password: formData.password
+                password: formData.password,
+                name: formData.name,
+                phone: formData.phone
             });
 
             toast.success('Registration successful! Please login.');
@@ -79,18 +81,17 @@ const SignupForm = () => {
                 )}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-6">
-                        <label htmlFor="username" className="block text-gray-700 text-sm font-semibold mb-2">
-                            Username:
+                        <label htmlFor="name" className="block text-gray-700 text-sm font-semibold mb-2">
+                            Full Name:
                         </label>
                         <input
                             type="text"
-                            id="username"
-                            name="username"
-                            value={formData.username}
+                            id="name"
+                            name="name"
+                            value={formData.name}
                             onChange={handleChange}
                             className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
                             required
-                            minLength="3"
                         />
                     </div>
                     <div className="mb-6">
@@ -102,6 +103,20 @@ const SignupForm = () => {
                             id="email"
                             name="email"
                             value={formData.email}
+                            onChange={handleChange}
+                            className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
+                            required
+                        />
+                    </div>
+                    <div className="mb-6">
+                        <label htmlFor="phone" className="block text-gray-700 text-sm font-semibold mb-2">
+                            Phone Number:
+                        </label>
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            value={formData.phone}
                             onChange={handleChange}
                             className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
                             required
