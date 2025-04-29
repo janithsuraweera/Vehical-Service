@@ -52,6 +52,18 @@ const Profile = () => {
         }
     };
 
+    const formatPhoneNumber = (phone) => {
+        if (!phone) return 'Not provided';
+        // Remove any non-digit characters
+        const cleaned = phone.replace(/\D/g, '');
+        // Format as XXX-XXX-XXXX
+        const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+        if (match) {
+            return `${match[1]}-${match[2]}-${match[3]}`;
+        }
+        return phone;
+    };
+
     const togglePasswordVisibility = (field) => {
         setShowPasswords(prev => ({
             ...prev,
@@ -140,7 +152,7 @@ const Profile = () => {
                                         Phone Number
                                     </dt>
                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                        {user.phone || 'Not provided'}
+                                        {formatPhoneNumber(user.phone)}
                                     </dd>
                                 </div>
                                 <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
