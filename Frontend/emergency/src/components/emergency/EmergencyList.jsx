@@ -221,24 +221,22 @@ const EmergencyList = () => {
                                                 <div className="flex space-x-2">
                                                     {emergency.photos && emergency.photos.length > 0 ? (
                                                         <div className="flex flex-wrap gap-2">
-                                                            {emergency.photos.map((photo, index) => {
-                                                                console.log('Rendering photo:', photo);
-                                                                return (
-                                                                    <div key={index} className="relative group">
-                                                                        <img
-                                                                            src={photo}
-                                                                            alt={`Emergency photo ${index + 1}`}
-                                                                            className="w-16 h-16 object-cover rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-110"
-                                                                            onClick={() => window.open(photo, '_blank')}
-                                                                            onError={(e) => {
-                                                                                console.error('Error loading image:', photo);
-                                                                                e.target.src = 'https://via.placeholder.com/64?text=Error';
-                                                                            }}
-                                                                        />
-                                                                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 rounded-lg transition-all duration-200"></div>
-                                                                    </div>
-                                                                );
-                                                            })}
+                                                            {emergency.photos.map((photo, index) => (
+                                                                <div key={index} className="relative group">
+                                                                    <img
+                                                                        src={photo}
+                                                                        alt={`Emergency photo ${index + 1}`}
+                                                                        className="w-16 h-16 object-cover rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-110"
+                                                                        onClick={() => window.open(photo, '_blank')}
+                                                                        onError={(e) => {
+                                                                            console.error('Error loading image:', photo);
+                                                                            e.target.src = '/error-image.png';
+                                                                            e.target.onerror = null;
+                                                                        }}
+                                                                    />
+                                                                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 rounded-lg transition-all duration-200"></div>
+                                                                </div>
+                                                            ))}
                                                         </div>
                                                     ) : (
                                                         <span className="text-gray-400 italic">No photos</span>

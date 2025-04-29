@@ -296,17 +296,21 @@ const EmergencyForm = () => {
             formDataToSend.append('description', formData.description.trim());
 
             // Add photos to FormData
+            console.log('Photos to upload:', formData.photos);
             formData.photos.forEach((photo, index) => {
+                console.log('Adding photo to FormData:', photo);
                 formDataToSend.append('photos', photo);
             });
 
-            console.log('Sending data:', formDataToSend); // For debugging
+            console.log('Sending FormData:', formDataToSend);
 
             const response = await axios.post('http://localhost:5000/api/emergency', formDataToSend, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
+            
+            console.log('Server response:', response.data);
             
             if (response.status === 201) {
                 toast.success('Emergency request submitted successfully!');
@@ -315,7 +319,7 @@ const EmergencyForm = () => {
                 toast.error('Failed to submit emergency request.');
             }
         } catch (error) {
-            console.error('Error:', error.response?.data || error); // For debugging
+            console.error('Error details:', error.response?.data || error);
             if (error.response && error.response.data && error.response.data.errors) {
                 const errorData = error.response.data.errors.reduce(
                     (acc, err) => ({ ...acc, [err.path]: err.msg }),

@@ -86,7 +86,14 @@ router.post('/', upload.array('photos', 5), [
     console.log('Saving emergency request:', emergencyRequest);
     await emergencyRequest.save();
     console.log('Saved emergency request:', emergencyRequest);
-    res.status(201).json(emergencyRequest);
+
+    // Transform the response to include full URLs
+    const transformedRequest = {
+      ...emergencyRequest.toObject(),
+      photos: photoUrls.map(url => `http://localhost:5000${url}`)
+    };
+
+    res.status(201).json(transformedRequest);
   } catch (error) {
     console.error('Error saving emergency request:', error);
     // Delete uploaded files if saving fails
@@ -103,16 +110,31 @@ router.post('/', upload.array('photos', 5), [
 router.get('/', async (req, res) => {
   try {
     const emergencyRequests = await EmergencyRequest.find();
-    console.log('Found emergency requests:', emergencyRequests);
+    console.log('Found emergency requests:', emergencyRequests.map(req => ({
+      id: req._id,
+      photos: req.photos
+    })));
+
     // Transform photo URLs to include the full server URL
     const transformedRequests = emergencyRequests.map(request => {
       const transformed = {
         ...request.toObject(),
-        photos: request.photos ? request.photos.map(photo => `http://localhost:5000${photo}`) : []
+        photos: request.photos ? request.photos.map(photo => {
+          // If the photo URL already includes http, return it as is
+          if (photo.startsWith('http')) {
+            return photo;
+          }
+          // Otherwise, prepend the server URL
+          return `http://localhost:5000${photo}`;
+        }) : []
       };
-      console.log('Transformed request photos:', transformed.photos);
+      console.log('Transformed request photos:', {
+        id: transformed._id,
+        photos: transformed.photos
+      });
       return transformed;
     });
+
     res.json(transformedRequests);
   } catch (error) {
     console.error('Error fetching emergency requests:', error);
