@@ -1,30 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');
-const auth = require('../middleware/auth');
+const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const nodemailer = require('nodemailer');
 
-// Get total users count
-router.get('/count', auth, async (req, res) => {
-    try {
-        // Check if user is admin
-        if (req.user.role !== 'admin') {
-            return res.status(403).json({ message: 'Access denied. Admin only.' });
-        }
-
-        const count = await User.countDocuments();
-        res.json({ count });
-    } catch (error) {
-        console.error('Error getting users count:', error);
-        res.status(500).json({ message: 'Server error', error: error.message });
-    }
-});
-
 // Password change route
-router.post('/change-password', auth, [
+router.post('/change-password', [
     body('currentPassword').notEmpty().withMessage('Current password is required'),
     body('newPassword').isLength({ min: 6 }).withMessage('New password must be at least 6 characters long')
 ], async (req, res) => {
@@ -35,7 +18,7 @@ router.post('/change-password', auth, [
         }
 
         const { currentPassword, newPassword } = req.body;
-        const userId = req.user.id;
+        const userId = req.user.id; // Assuming you have user info in req.user from auth middleware
 
         const user = await User.findById(userId);
         if (!user) {
@@ -53,8 +36,7 @@ router.post('/change-password', auth, [
 
         res.json({ message: 'Password changed successfully' });
     } catch (error) {
-        console.error('Error changing password:', error);
-        res.status(500).json({ message: 'Server error', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 });
 
@@ -108,9 +90,10 @@ router.post('/reset', [
         await transporter.sendMail(mailOptions);
         res.json({ message: 'Reset instructions sent to your email' });
     } catch (error) {
-        console.error('Error processing reset request:', error);
-        res.status(500).json({ message: 'Server error', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 });
+
+// ... existing routes ...
 
 module.exports = router; 
