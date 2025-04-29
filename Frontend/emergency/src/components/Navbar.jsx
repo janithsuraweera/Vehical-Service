@@ -17,7 +17,7 @@ const Navbar = () => {
         const path = location.pathname;
         if (path === '/') setActiveTab('home');
         else if (path === '/inventory') setActiveTab('store');
-        else if (path === '/emergency') setActiveTab('emergency');
+        else if (path === '/emergencyform' || path === '/emergencylist') setActiveTab('emergency');
         else if (path === '/rvhome') setActiveTab('register');
         else if (path === '/vehicle-errors') setActiveTab('vehicle-errors');
         else if (path === '/aboutus') setActiveTab('about');
@@ -62,9 +62,15 @@ const Navbar = () => {
                                 <Link to="/inventory" className={getTabStyle('store')}>
                                     <FaStore className="mr-1" /> Store
                                 </Link>
-                                <Link to="/emergency" className={getTabStyle('emergency')}>
-                                    <FaExclamationTriangle className="mr-1" /> Emergency
-                                </Link>
+                                {user.role === 'admin' ? (
+                                    <Link to="/emergencylist" className={getTabStyle('emergency')}>
+                                        <FaExclamationTriangle className="mr-1" /> Emergency List
+                                    </Link>
+                                ) : (
+                                    <Link to="/emergencyform" className={getTabStyle('emergency')}>
+                                        <FaExclamationTriangle className="mr-1" /> Emergency Form
+                                    </Link>
+                                )}
                                 <Link to="/rvhome" className={getTabStyle('register')}>
                                     <FaCar className="mr-1" /> Register
                                 </Link>
