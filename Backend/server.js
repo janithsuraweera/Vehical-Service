@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const bodyParser = require('body-parser');//authorizes the server to accept JSON data in a POST request
+const path = require('path');
 const inventoryRoutes = require('./routes/inventoryRoutes');
 const emergencyRoutes = require('./routes/emergencyRoutes');
 const vehicleRegistrationRequestRoutes = require('./routes/vehicleRegistrationRequestRoutes');
@@ -14,6 +15,9 @@ require('dotenv').config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Serve static files from the uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 connectDB(); // Connect to MongoDB
 
