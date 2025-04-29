@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useDarkMode } from '../context/DarkModeContext';
-import { FaHome, FaStore, FaExclamationTriangle, FaCar, FaWrench, FaInfoCircle, FaUser, FaSignOutAlt, FaMoon, FaSun } from 'react-icons/fa';
+import { FaHome, FaStore, FaExclamationTriangle, FaCar, FaWrench, FaInfoCircle, FaUser, FaSignOutAlt, FaMoon, FaSun, FaGlobe } from 'react-icons/fa';
 import logo from '/logo.png';
+
 const Navbar = () => {
     const [showDropdown, setShowDropdown] = useState(false);
+    const [showLangDropdown, setShowLangDropdown] = useState(false);
+    const [language, setLanguage] = useState('en');
     const navigate = useNavigate();
     const location = useLocation();
     const { user, logout } = useAuth();
@@ -41,6 +44,12 @@ const Navbar = () => {
         const inactiveStyle = "text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white";
         
         return `${baseStyle} ${isActive(tabName) ? activeStyle : inactiveStyle}`;
+    };
+
+    const handleLanguageChange = (lang) => {
+        setLanguage(lang);
+        setShowLangDropdown(false);
+        // Here you can add logic to change the language of the entire application
     };
 
     return (
@@ -97,12 +106,40 @@ const Navbar = () => {
                     </div>
                     
                     <div className="flex items-center space-x-4">
+                        <div className="relative">
+                            <button
+                                onClick={() => setShowLangDropdown(!showLangDropdown)}
+                                className="p-2 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline-none hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
+                            >
+                                <FaGlobe size={18} />
+                                <span className="ml-2 text-sm">{language === 'en' ? 'English' : 'සිංහල'}</span>
+                            </button>
+                            
+                            {showLangDropdown && (
+                                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-10 border border-gray-200 dark:border-gray-700">
+                                    <button
+                                        onClick={() => handleLanguageChange('en')}
+                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    >
+                                        English
+                                    </button>
+                                    <button
+                                        onClick={() => handleLanguageChange('si')}
+                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    >
+                                        සිංහල
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
                         <button
                             onClick={toggleDarkMode}
                             className="p-2 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
                         >
                             {darkMode ? <FaSun size={18} /> : <FaMoon size={18} />}
                         </button>
+
                         {user ? (
                             <div className="relative">
                                 <button 
