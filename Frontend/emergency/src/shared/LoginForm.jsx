@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext';
 
 const LoginForm = () => {
     const [formData, setFormData] = useState({
-        email: '',
+        emailOrUsername: '',
         password: ''
     });
     const [error, setError] = useState('');
@@ -29,7 +29,10 @@ const LoginForm = () => {
         setError('');
         
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/login', formData);
+            const response = await axios.post('http://localhost:5000/api/auth/login', {
+                email: formData.emailOrUsername.toLowerCase(),
+                password: formData.password
+            });
             
             // Use the login function from AuthContext
             login(response.data.user, response.data.token);
@@ -37,6 +40,7 @@ const LoginForm = () => {
             toast.success('Login successful!');
             navigate('/');
         } catch (error) {
+            console.error('Login error:', error);
             const errorMessage = error.response?.data?.message || 'An error occurred during login';
             setError(errorMessage);
             toast.error(errorMessage);
@@ -58,14 +62,14 @@ const LoginForm = () => {
                 )}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-6">
-                        <label htmlFor="email" className="block text-gray-700 text-sm font-semibold mb-2">
-                            Email:
+                        <label htmlFor="emailOrUsername" className="block text-gray-700 text-sm font-semibold mb-2">
+                            Email or Username:
                         </label>
                         <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
+                            type="text"
+                            id="emailOrUsername"
+                            name="emailOrUsername"
+                            value={formData.emailOrUsername}
                             onChange={handleChange}
                             className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-400"
                             required

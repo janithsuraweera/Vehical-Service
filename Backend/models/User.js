@@ -1,13 +1,28 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+// Drop the existing index if it exists
+mongoose.connection.on('connected', async () => {
+  try {
+    await mongoose.connection.collection('users').dropIndex('username_1');
+    console.log('Dropped username index');
+  } catch (error) {
+    // Index might not exist, which is fine
+    console.log('No username index to drop');
+  }
+});
+
 const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
   username: {
     type: String,
     required: true,
     unique: true,
     trim: true,
-    minlength: 3
+    lowercase: true
   },
   email: {
     type: String,
@@ -20,6 +35,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 6
+  },
+  phone: {
+    type: String,
+    required: true
   },
   role: {
     type: String,

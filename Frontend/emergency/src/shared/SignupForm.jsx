@@ -6,10 +6,12 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const SignupForm = () => {
     const [formData, setFormData] = useState({
-        username: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        name: '',
+        phone: '',
+        username: ''
     });
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -17,9 +19,19 @@ const SignupForm = () => {
     const navigate = useNavigate();
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
+        const { name, value } = e.target;
+        setFormData(prevData => {
+            const newData = {
+                ...prevData,
+                [name]: value
+            };
+            
+            // If name field is changed, update username field
+            if (name === 'name') {
+                newData.username = value.toLowerCase().replace(/\s+/g, '');
+            }
+            
+            return newData;
         });
         // Clear error when user starts typing
         setError('');
@@ -43,18 +55,21 @@ const SignupForm = () => {
             return;
         }
 
-        // Validate username length
-        if (formData.username.length < 3) {
-            setError('Username must be at least 3 characters long');
-            toast.error('Username must be at least 3 characters long');
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            setError('Please enter a valid email address');
+            toast.error('Please enter a valid email address');
             return;
         }
 
         try {
             const response = await axios.post('http://localhost:5000/api/auth/signup', {
-                username: formData.username,
                 email: formData.email,
-                password: formData.password
+                password: formData.password,
+                name: formData.name,
+                phone: formData.phone,
+                username: formData.username
             });
 
             toast.success('Registration successful! Please login.');
@@ -79,18 +94,22 @@ const SignupForm = () => {
                 )}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-6">
-                        <label htmlFor="username" className="block text-gray-700 text-sm font-semibold mb-2">
-                            Username:
+                        <label htmlFor="name" className="block text-gray-700 text-sm font-semibold mb-2">
+                            Full Name:
                         </label>
                         <input
                             type="text"
-                            id="username"
-                            name="username"
-                            value={formData.username}
+                            id="name"
+                            name="name"
+                            value={formData.name}
                             onChange={handleChange}
                             className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
                             required
-                            minLength="3"
+                        />
+                        <input
+                            type="hidden"
+                            name="username"
+                            value={formData.username}
                         />
                     </div>
                     <div className="mb-6">
@@ -102,6 +121,20 @@ const SignupForm = () => {
                             id="email"
                             name="email"
                             value={formData.email}
+                            onChange={handleChange}
+                            className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
+                            required
+                        />
+                    </div>
+                    <div className="mb-6">
+                        <label htmlFor="phone" className="block text-gray-700 text-sm font-semibold mb-2">
+                            Phone Number:
+                        </label>
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            value={formData.phone}
                             onChange={handleChange}
                             className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-400"
                             required
