@@ -20,6 +20,7 @@ const EmergencyList = () => {
         const fetchEmergencies = async () => {
             try {
                 const response = await axios.get('http://localhost:5000/api/emergency');
+                console.log('Fetched emergencies:', response.data);
                 const sortedEmergencies = response.data.sort((a, b) => {
                     const dateA = a.date ? new Date(a.date) : 0;
                     const dateB = b.date ? new Date(b.date) : 0;
@@ -210,83 +211,94 @@ const EmergencyList = () => {
                         </thead>
                         <tbody>
                             {filteredEmergencies.length > 0 ? (
-                                filteredEmergencies.map((emergency) => (
-                                    <tr key={emergency._id} className="hover:bg-gray-50">
-                                        <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.emergencyRequestNo}</td>
-                                        <td className="py-3 px-4 md:px-6 border-b">
-                                            <div className="flex space-x-2">
-                                                {emergency.photos && emergency.photos.length > 0 ? (
-                                                    <div className="flex flex-wrap gap-2">
-                                                        {emergency.photos.map((photo, index) => (
-                                                            <div key={index} className="relative group">
-                                                                <img
-                                                                    src={photo}
-                                                                    alt={`Emergency photo ${index + 1}`}
-                                                                    className="w-16 h-16 object-cover rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-110"
-                                                                    onClick={() => window.open(photo, '_blank')}
-                                                                />
-                                                                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 rounded-lg transition-all duration-200"></div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                ) : (
-                                                    <span className="text-gray-400 italic">No photos</span>
-                                                )}
-                                            </div>
-                                        </td>
-                                        <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
-                                            <Link to={`/emergency/${emergency._id}`} className="text-blue-600 hover:text-blue-800 hover:underline">
-                                                {emergency.name}
-                                            </Link>
-                                        </td>
-                                        <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.contactNumber}</td>
-                                        <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.location?.address || 'N/A'}</td>
-                                        <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.vehicleType}</td>
-                                        <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
-                                            <div className="flex items-center space-x-2">
-                                                <div
-                                                    className="w-6 h-6 rounded-full border border-gray-200"
-                                                    style={{ backgroundColor: emergency.vehicleColor }}
-                                                ></div>
-                                                <span>{emergency.vehicleColor}</span>
-                                            </div>
-                                        </td>
-                                        <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.emergencyType}</td>
-                                        <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.description}</td>
-                                        <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
-                                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                                emergency.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                                emergency.status === 'Processing' ? 'bg-blue-100 text-blue-800' :
-                                                'bg-green-100 text-green-800'
-                                            }`}>
-                                                {emergency.status}
-                                            </span>
-                                        </td>
-                                        <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.vehicleNumber || 'N/A'}</td>
-                                        <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
-                                            {emergency.date ? new Date(emergency.date).toLocaleDateString() : 'N/A'}
-                                        </td>
-                                        <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.time}</td>
-                                        <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
-                                            <div className="flex space-x-2">
-                                                <button
-                                                    onClick={() => handleUpdate(emergency._id)}
-                                                    className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all duration-200"
-                                                    title="Update"
-                                                >
-                                                    <FaEdit size={18} />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(emergency._id)}
-                                                    className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all duration-200"
-                                                    title="Delete"
-                                                >
-                                                    <FaTrash size={18} />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
+                                filteredEmergencies.map((emergency) => {
+                                    console.log('Rendering emergency:', emergency);
+                                    console.log('Emergency photos:', emergency.photos);
+                                    return (
+                                        <tr key={emergency._id} className="hover:bg-gray-50">
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.emergencyRequestNo}</td>
+                                            <td className="py-3 px-4 md:px-6 border-b">
+                                                <div className="flex space-x-2">
+                                                    {emergency.photos && emergency.photos.length > 0 ? (
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {emergency.photos.map((photo, index) => {
+                                                                console.log('Rendering photo:', photo);
+                                                                return (
+                                                                    <div key={index} className="relative group">
+                                                                        <img
+                                                                            src={photo}
+                                                                            alt={`Emergency photo ${index + 1}`}
+                                                                            className="w-16 h-16 object-cover rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-110"
+                                                                            onClick={() => window.open(photo, '_blank')}
+                                                                            onError={(e) => {
+                                                                                console.error('Error loading image:', photo);
+                                                                                e.target.src = 'https://via.placeholder.com/64?text=Error';
+                                                                            }}
+                                                                        />
+                                                                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 rounded-lg transition-all duration-200"></div>
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    ) : (
+                                                        <span className="text-gray-400 italic">No photos</span>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
+                                                <Link to={`/emergency/${emergency._id}`} className="text-blue-600 hover:text-blue-800 hover:underline">
+                                                    {emergency.name}
+                                                </Link>
+                                            </td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.contactNumber}</td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.location?.address || 'N/A'}</td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.vehicleType}</td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
+                                                <div className="flex items-center space-x-2">
+                                                    <div
+                                                        className="w-6 h-6 rounded-full border border-gray-200"
+                                                        style={{ backgroundColor: emergency.vehicleColor }}
+                                                    ></div>
+                                                    <span>{emergency.vehicleColor}</span>
+                                                </div>
+                                            </td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.emergencyType}</td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.description}</td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
+                                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                                    emergency.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                                    emergency.status === 'Processing' ? 'bg-blue-100 text-blue-800' :
+                                                    'bg-green-100 text-green-800'
+                                                }`}>
+                                                    {emergency.status}
+                                                </span>
+                                            </td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.vehicleNumber || 'N/A'}</td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
+                                                {emergency.date ? new Date(emergency.date).toLocaleDateString() : 'N/A'}
+                                            </td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.time}</td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
+                                                <div className="flex space-x-2">
+                                                    <button
+                                                        onClick={() => handleUpdate(emergency._id)}
+                                                        className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                                                        title="Update"
+                                                    >
+                                                        <FaEdit size={18} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(emergency._id)}
+                                                        className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all duration-200"
+                                                        title="Delete"
+                                                    >
+                                                        <FaTrash size={18} />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
                             ) : (
                                 <tr>
                                     <td colSpan="14" className="text-center py-4 text-gray-500">

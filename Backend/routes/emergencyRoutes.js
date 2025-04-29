@@ -57,8 +57,12 @@ router.post('/', upload.array('photos', 5), [
   body('emergencyType').isIn(['breakdown', 'accident', 'flat_tire', 'other']).withMessage('Invalid emergency type'),
   body('description').notEmpty().withMessage('Description is required')
 ], async (req, res) => {
+  console.log('Received emergency request:', req.body);
+  console.log('Received files:', req.files);
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log('Validation errors:', errors.array());
     // Delete uploaded files if validation fails
     if (req.files) {
       req.files.forEach(file => {
@@ -71,6 +75,7 @@ router.post('/', upload.array('photos', 5), [
   try {
     const location = JSON.parse(req.body.location);
     const photoUrls = req.files ? req.files.map(file => `/uploads/emergency/${file.filename}`) : [];
+    console.log('Generated photo URLs:', photoUrls);
 
     const emergencyRequest = new EmergencyRequest({
       ...req.body,
@@ -78,9 +83,12 @@ router.post('/', upload.array('photos', 5), [
       photos: photoUrls
     });
 
+    console.log('Saving emergency request:', emergencyRequest);
     await emergencyRequest.save();
+    console.log('Saved emergency request:', emergencyRequest);
     res.status(201).json(emergencyRequest);
   } catch (error) {
+    console.error('Error saving emergency request:', error);
     // Delete uploaded files if saving fails
     if (req.files) {
       req.files.forEach(file => {
@@ -95,13 +103,19 @@ router.post('/', upload.array('photos', 5), [
 router.get('/', async (req, res) => {
   try {
     const emergencyRequests = await EmergencyRequest.find();
+    console.log('Found emergency requests:', emergencyRequests);
     // Transform photo URLs to include the full server URL
-    const transformedRequests = emergencyRequests.map(request => ({
-      ...request.toObject(),
-      photos: request.photos ? request.photos.map(photo => `http://localhost:5000${photo}`) : []
-    }));
+    const transformedRequests = emergencyRequests.map(request => {
+      const transformed = {
+        ...request.toObject(),
+        photos: request.photos ? request.photos.map(photo => `http://localhost:5000${photo}`) : []
+      };
+      console.log('Transformed request photos:', transformed.photos);
+      return transformed;
+    });
     res.json(transformedRequests);
   } catch (error) {
+    console.error('Error fetching emergency requests:', error);
     res.status(500).json({ message: error.message });
   }
 });
