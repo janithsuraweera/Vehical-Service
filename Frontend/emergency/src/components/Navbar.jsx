@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FaHome, FaStore, FaExclamationTriangle, FaCar, FaWrench, FaInfoCircle, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { useDarkMode } from '../context/DarkModeContext';
+import { FaHome, FaStore, FaExclamationTriangle, FaCar, FaWrench, FaInfoCircle, FaUser, FaSignOutAlt, FaMoon, FaSun } from 'react-icons/fa';
 
 const Navbar = () => {
     const [showDropdown, setShowDropdown] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
     const { user, logout } = useAuth();
+    const { darkMode, toggleDarkMode } = useDarkMode();
     const [activeTab, setActiveTab] = useState('');
 
     useEffect(() => {
@@ -42,11 +44,11 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="bg-white shadow-lg">
+        <nav className="bg-white dark:bg-gray-800 shadow-lg">
             <div className="max-w-7xl mx-auto px-4">
                 <div className="flex justify-between h-16">
                     <div className="flex items-center">
-                        <Link to="/" className="text-xl font-bold text-gray-800">
+                        <Link to="/" className="text-xl font-bold text-gray-800 dark:text-white">
                             Vehicle Service
                         </Link>
                     </div>
@@ -76,7 +78,13 @@ const Navbar = () => {
                         </Link>
                     </div>
                     
-                    <div className="flex items-center">
+                    <div className="flex items-center space-x-4">
+                        <button
+                            onClick={toggleDarkMode}
+                            className="p-2 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline-none"
+                        >
+                            {darkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
+                        </button>
                         {user ? (
                             <div className="relative">
                                 <button 
@@ -89,27 +97,27 @@ const Navbar = () => {
                                 </button>
                                 
                                 {showDropdown && (
-                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
-                                        <div className="px-4 py-2 text-sm text-gray-700 border-b">
+                                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-10">
+                                        <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 border-b dark:border-gray-700">
                                             {user.username}
                                         </div>
                                         <Link 
                                             to="/profile" 
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
                                         >
                                             <FaUser className="mr-2" /> Profile
                                         </Link>
                                         {user.role === 'admin' && (
                                             <Link 
                                                 to="/admin" 
-                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                                                className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
                                             >
                                                 <FaUser className="mr-2" /> Admin Dashboard
                                             </Link>
                                         )}
                                         <button
                                             onClick={handleLogout}
-                                            className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center"
+                                            className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
                                         >
                                             <FaSignOutAlt className="mr-2" /> Logout
                                         </button>
@@ -120,7 +128,7 @@ const Navbar = () => {
                             <div className="flex space-x-4">
                                 <Link 
                                     to="/login" 
-                                    className="text-gray-600 hover:text-gray-900 flex items-center cursor-pointer"
+                                    className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center cursor-pointer"
                                 >
                                     <FaUser className="mr-1" /> Sign In
                                 </Link>
