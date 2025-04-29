@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaMapMarkerAlt, FaArrowLeft, FaCamera, FaTrash, FaMap } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaArrowLeft, FaCamera, FaTrash, FaMap, FaUser, FaPhone, FaCar, FaInfoCircle } from 'react-icons/fa';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -290,212 +290,309 @@ const EmergencyForm = () => {
 
     return (
         <div
-            className="min-h-screen bg-cover bg-center flex justify-center items-center"
+            className="min-h-screen bg-cover bg-center flex justify-center items-center p-4"
             style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', opacity: 0.9 }}
         >
             <motion.div
-                className="w-full max-w-4xl p-8 bg-white bg-opacity-90 rounded-2xl shadow-lg mx-auto"
+                className="w-full max-w-4xl bg-white bg-opacity-95 rounded-2xl shadow-2xl overflow-hidden"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
             >
-                <h2 className="text-4xl font-bold mb-8 text-center text-blue-700">
-                    Vehicle Emergency Request
-                </h2>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div>
-                        <label htmlFor="name" className="block font-medium mb-1">Name</label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                            placeholder="Enter your name"
-                        />
-                        {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                {/* Header with gradient background */}
+                <div className="relative h-40 bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800">
+                    <div className="absolute inset-0 bg-black opacity-20"></div>
+                    <div className="relative h-full flex flex-col items-center justify-center">
+                        <h2 className="text-4xl font-bold text-white text-center mb-2">
+                            Vehicle Emergency Request
+                        </h2>
+                        <p className="text-blue-100 text-center max-w-2xl">
+                            Please fill out this form with accurate information about your emergency situation
+                        </p>
                     </div>
-                    <div>
-                        <label htmlFor="contactNumber" className="block font-medium mb-1">Contact Number</label>
-                        <input
-                            type="text"
-                            id="contactNumber"
-                            name="contactNumber"
-                            value={formData.contactNumber}
-                            onChange={handleChange}
-                            className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                            placeholder="Enter your contact number"
-                        />
-                        {errors.contactNumber && <p className="text-red-500 text-sm mt-1">{errors.contactNumber}</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="vehicleNumber" className="block font-medium mb-1">Vehicle Number</label>
-                        <input
-                            type="text"
-                            id="vehicleNumber"
-                            name="vehicleNumber"
-                            value={formData.vehicleNumber}
-                            onChange={handleChange}
-                            className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                            placeholder="Enter vehicle number (max 7 characters)"
-                        />
-                        {errors.vehicleNumber && <p className="text-red-500 text-sm mt-1">{errors.vehicleNumber}</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="address" className="block font-medium mb-1">Location</label>
-                        <div className="flex space-x-2">
-                            <div className="flex-1 relative">
-                                <input
-                                    type="text"
-                                    id="address"
-                                    name="location.address"
-                                    value={formData.location.address}
-                                    onChange={handleChange}
-                                    className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                                    placeholder="Enter your location"
-                                    readOnly
-                                />
-                                <button
-                                    type="button"
-                                    onClick={getCurrentLocation}
-                                    disabled={isFetchingLocation}
-                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-blue-500 hover:text-blue-600"
-                                >
-                                    <FaMapMarkerAlt size={20} />
-                                </button>
+                </div>
+
+                <div className="p-8">
+                    <form onSubmit={handleSubmit} className="space-y-8">
+                        {/* Personal Information Section */}
+                        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+                            <div className="flex items-center mb-6">
+                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                                    <FaUser className="text-blue-600 text-xl" />
+                                </div>
+                                <h3 className="text-2xl font-semibold text-gray-800">Personal Information</h3>
                             </div>
-                            <button
-                                type="button"
-                                onClick={() => setShowMap(!showMap)}
-                                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 flex items-center"
-                            >
-                                <FaMap className="mr-2" /> {showMap ? 'Hide Map' : 'Show Map'}
-                            </button>
-                        </div>
-                        {showMap && (
-                            <div className="mt-2 h-64 rounded-lg overflow-hidden border border-gray-300">
-                                <Map position={mapPosition} onLocationSelect={handleMapClick} />
-                            </div>
-                        )}
-                        {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location}</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="vehicleType" className="block font-medium mb-1">Vehicle Type</label>
-                        <select
-                            id="vehicleType"
-                            name="vehicleType"
-                            value={formData.vehicleType}
-                            onChange={handleChange}
-                            className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                        >
-                            <option value="">Select Vehicle Type</option>
-                            <option value="car">Car</option>
-                            <option value="motorcycle">Motorcycle</option>
-                            <option value="bus">Bus</option>
-                            <option value="truck">Truck</option>
-                            <option value="van">Van</option>
-                            <option value="other">Other</option>
-                        </select>
-                        {errors.vehicleType && <p className="text-red-500 text-sm mt-1">{errors.vehicleType}</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="vehicleColor" className="block font-medium mb-1">Vehicle Color</label>
-                        <div className="flex items-center space-x-4">
-                            <input
-                                type="color"
-                                id="vehicleColor"
-                                name="vehicleColor"
-                                value={formData.vehicleColor}
-                                onChange={handleChange}
-                                className="border w-16 h-12 rounded-lg shadow-sm cursor-pointer"
-                            />
-                            <span className="text-gray-700">{formData.vehicleColor || '#000000'}</span>
-                        </div>
-                        {errors.vehicleColor && <p className="text-red-500 text-sm mt-1">{errors.vehicleColor}</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="emergencyType" className="block font-medium mb-1">Emergency Type</label>
-                        <select
-                            id="emergencyType"
-                            name="emergencyType"
-                            value={formData.emergencyType}
-                            onChange={handleChange}
-                            className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                        >
-                            <option value="">Select Emergency Type</option>
-                            <option value="breakdown">Breakdown</option>
-                            <option value="accident">Accident</option>
-                            <option value="flat_tire">Flat Tire</option>
-                            <option value="other">Other</option>
-                        </select>
-                        {errors.emergencyType && <p className="text-red-500 text-sm mt-1">{errors.emergencyType}</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="description" className="block font-medium mb-1">Description</label>
-                        <textarea
-                            id="description"
-                            name="description"
-                            value={formData.description}
-                            onChange={handleChange}
-                            className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                            placeholder="Enter a description"
-                        ></textarea>
-                        {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
-                    </div>
-                    <div>
-                        <label className="block font-medium mb-1">Photos (Max 5)</label>
-                        <div className="flex flex-wrap gap-4 mb-4">
-                            {previewPhotos.map((preview, index) => (
-                                <div key={index} className="relative">
-                                    <img
-                                        src={preview}
-                                        alt={`Preview ${index + 1}`}
-                                        className="w-32 h-32 object-cover rounded-lg"
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div>
+                                    <label htmlFor="name" className="block font-medium text-gray-700 mb-2">
+                                        Full Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 text-lg"
+                                        placeholder="Enter your full name"
                                     />
+                                    {errors.name && <p className="text-red-500 text-sm mt-2">{errors.name}</p>}
+                                </div>
+                                <div>
+                                    <label htmlFor="contactNumber" className="block font-medium text-gray-700 mb-2">
+                                        Contact Number
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="contactNumber"
+                                        name="contactNumber"
+                                        value={formData.contactNumber}
+                                        onChange={handleChange}
+                                        className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 text-lg"
+                                        placeholder="Enter your contact number"
+                                    />
+                                    {errors.contactNumber && <p className="text-red-500 text-sm mt-2">{errors.contactNumber}</p>}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Vehicle Information Section */}
+                        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+                            <div className="flex items-center mb-6">
+                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                                    <FaCar className="text-blue-600 text-xl" />
+                                </div>
+                                <h3 className="text-2xl font-semibold text-gray-800">Vehicle Information</h3>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div>
+                                    <label htmlFor="vehicleNumber" className="block font-medium text-gray-700 mb-2">
+                                        Vehicle Number
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="vehicleNumber"
+                                        name="vehicleNumber"
+                                        value={formData.vehicleNumber}
+                                        onChange={handleChange}
+                                        className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 text-lg"
+                                        placeholder="Enter vehicle number"
+                                    />
+                                    {errors.vehicleNumber && <p className="text-red-500 text-sm mt-2">{errors.vehicleNumber}</p>}
+                                </div>
+                                <div>
+                                    <label htmlFor="vehicleType" className="block font-medium text-gray-700 mb-2">
+                                        Vehicle Type
+                                    </label>
+                                    <select
+                                        id="vehicleType"
+                                        name="vehicleType"
+                                        value={formData.vehicleType}
+                                        onChange={handleChange}
+                                        className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 text-lg"
+                                    >
+                                        <option value="">Select Vehicle Type</option>
+                                        <option value="car">Car</option>
+                                        <option value="motorcycle">Motorcycle</option>
+                                        <option value="bus">Bus</option>
+                                        <option value="truck">Truck</option>
+                                        <option value="van">Van</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    {errors.vehicleType && <p className="text-red-500 text-sm mt-2">{errors.vehicleType}</p>}
+                                </div>
+                                <div>
+                                    <label htmlFor="vehicleColor" className="block font-medium text-gray-700 mb-2">
+                                        Vehicle Color
+                                    </label>
+                                    <div className="flex items-center space-x-4">
+                                        <input
+                                            type="color"
+                                            id="vehicleColor"
+                                            name="vehicleColor"
+                                            value={formData.vehicleColor}
+                                            onChange={handleChange}
+                                            className="w-20 h-12 rounded-lg cursor-pointer border-2 border-gray-300 hover:border-blue-400 transition-all duration-200"
+                                        />
+                                        <span className="font-mono text-lg bg-gray-50 px-4 py-2 rounded-lg border border-gray-200">
+                                            {formData.vehicleColor || '#000000'}
+                                        </span>
+                                    </div>
+                                    {errors.vehicleColor && <p className="text-red-500 text-sm mt-2">{errors.vehicleColor}</p>}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Location Section */}
+                        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+                            <div className="flex items-center mb-6">
+                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                                    <FaMapMarkerAlt className="text-blue-600 text-xl" />
+                                </div>
+                                <h3 className="text-2xl font-semibold text-gray-800">Location Details</h3>
+                            </div>
+                            <div className="space-y-6">
+                                <div className="flex space-x-4">
+                                    <div className="flex-1 relative">
+                                        <input
+                                            type="text"
+                                            id="address"
+                                            name="location.address"
+                                            value={formData.location.address}
+                                            onChange={handleChange}
+                                            className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 text-lg"
+                                            placeholder="Click on map or use current location"
+                                            readOnly
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={getCurrentLocation}
+                                            disabled={isFetchingLocation}
+                                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500 hover:text-blue-600 transition-colors duration-200"
+                                            title="Get Current Location"
+                                        >
+                                            <FaMapMarkerAlt size={24} />
+                                        </button>
+                                    </div>
                                     <button
                                         type="button"
-                                        onClick={() => removePhoto(index)}
-                                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                                        onClick={() => setShowMap(!showMap)}
+                                        className="px-6 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 flex items-center space-x-2 shadow-md hover:shadow-lg text-lg"
                                     >
-                                        <FaTrash size={16} />
+                                        <FaMap />
+                                        <span>{showMap ? 'Hide Map' : 'Show Map'}</span>
                                     </button>
                                 </div>
-                            ))}
+                                {showMap && (
+                                    <div className="mt-4 h-[400px] rounded-lg overflow-hidden border-2 border-gray-300 shadow-lg">
+                                        <Map position={mapPosition} onLocationSelect={handleMapClick} />
+                                    </div>
+                                )}
+                                {errors.location && <p className="text-red-500 text-sm mt-2">{errors.location}</p>}
+                            </div>
                         </div>
-                        <div className="flex items-center">
-                            <label className="flex items-center justify-center w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500">
-                                <div className="text-center">
-                                    <FaCamera className="mx-auto h-8 w-8 text-gray-400" />
-                                    <span className="mt-2 block text-sm text-gray-600">Add Photo</span>
+
+                        {/* Emergency Details Section */}
+                        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+                            <div className="flex items-center mb-6">
+                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                                    <FaInfoCircle className="text-blue-600 text-xl" />
                                 </div>
-                                <input
-                                    type="file"
-                                    className="hidden"
-                                    accept="image/*"
-                                    multiple
-                                    onChange={handlePhotoUpload}
-                                />
-                            </label>
-                            <span className="ml-4 text-sm text-gray-500">
-                                {formData.photos.length}/5 photos
-                            </span>
+                                <h3 className="text-2xl font-semibold text-gray-800">Emergency Details</h3>
+                            </div>
+                            <div className="space-y-6">
+                                <div>
+                                    <label htmlFor="emergencyType" className="block font-medium text-gray-700 mb-2">
+                                        Emergency Type
+                                    </label>
+                                    <select
+                                        id="emergencyType"
+                                        name="emergencyType"
+                                        value={formData.emergencyType}
+                                        onChange={handleChange}
+                                        className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 text-lg"
+                                    >
+                                        <option value="">Select Emergency Type</option>
+                                        <option value="breakdown">Breakdown</option>
+                                        <option value="accident">Accident</option>
+                                        <option value="flat_tire">Flat Tire</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    {errors.emergencyType && <p className="text-red-500 text-sm mt-2">{errors.emergencyType}</p>}
+                                </div>
+                                <div>
+                                    <label htmlFor="description" className="block font-medium text-gray-700 mb-2">
+                                        Description
+                                    </label>
+                                    <textarea
+                                        id="description"
+                                        name="description"
+                                        value={formData.description}
+                                        onChange={handleChange}
+                                        className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 text-lg min-h-[150px]"
+                                        placeholder="Describe the emergency situation in detail"
+                                    ></textarea>
+                                    {errors.description && <p className="text-red-500 text-sm mt-2">{errors.description}</p>}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <button
-                        type="submit"
-                        className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg w-full transition-colors duration-300"
-                    >
-                        Submit
-                    </button>
-                    <button
-                        type="button"
-                        onClick={handleBack}
-                        className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-lg w-full mt-4 transition-colors duration-300 flex items-center justify-center"
-                    >
-                        <FaArrowLeft className="mr-2" /> Back
-                    </button>
-                </form>
+
+                        {/* Photos Section */}
+                        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+                            <div className="flex items-center mb-6">
+                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                                    <FaCamera className="text-blue-600 text-xl" />
+                                </div>
+                                <h3 className="text-2xl font-semibold text-gray-800">Photos</h3>
+                            </div>
+                            <div className="space-y-6">
+                                <div className="flex flex-wrap gap-6">
+                                    {previewPhotos.map((preview, index) => (
+                                        <motion.div
+                                            key={index}
+                                            className="relative group"
+                                            initial={{ opacity: 0, scale: 0.8 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            transition={{ duration: 0.2 }}
+                                        >
+                                            <img
+                                                src={preview}
+                                                alt={`Preview ${index + 1}`}
+                                                className="w-40 h-40 object-cover rounded-lg shadow-md"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => removePhoto(index)}
+                                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-all duration-200 opacity-0 group-hover:opacity-100 transform translate-y-1 group-hover:translate-y-0"
+                                            >
+                                                <FaTrash size={16} />
+                                            </button>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                                <div className="flex items-center space-x-6">
+                                    <label className="flex items-center justify-center w-40 h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-all duration-200 group">
+                                        <div className="text-center">
+                                            <FaCamera className="mx-auto h-10 w-10 text-gray-400 group-hover:text-blue-500 transition-colors duration-200" />
+                                            <span className="mt-3 block text-lg text-gray-600 group-hover:text-blue-500">Add Photo</span>
+                                            <span className="mt-2 block text-sm text-gray-500">Max 5 photos</span>
+                                        </div>
+                                        <input
+                                            type="file"
+                                            className="hidden"
+                                            accept="image/*"
+                                            multiple
+                                            onChange={handlePhotoUpload}
+                                        />
+                                    </label>
+                                    <div className="text-gray-500">
+                                        <p className="text-lg font-medium">{formData.photos.length}/5 photos</p>
+                                        <p className="text-sm mt-1">Supported formats: JPG, JPEG, PNG</p>
+                                        <p className="text-sm">Max size: 5MB per photo</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex space-x-6">
+                            <button
+                                type="button"
+                                onClick={handleBack}
+                                className="flex-1 px-8 py-4 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-200 flex items-center justify-center space-x-2 shadow-md hover:shadow-lg text-lg"
+                            >
+                                <FaArrowLeft />
+                                <span>Back</span>
+                            </button>
+                            <button
+                                type="submit"
+                                className="flex-1 px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg text-lg font-medium"
+                            >
+                                Submit Emergency Request
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </motion.div>
         </div>
     );
