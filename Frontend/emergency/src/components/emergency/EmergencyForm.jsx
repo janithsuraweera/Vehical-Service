@@ -294,37 +294,37 @@ const EmergencyForm = () => {
             style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', opacity: 0.9 }}
         >
             <motion.div
-                className="w-full max-w-4xl bg-white bg-opacity-95 rounded-2xl shadow-2xl overflow-hidden"
+                className="w-full max-w-3xl bg-white bg-opacity-95 rounded-2xl shadow-2xl overflow-hidden"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
             >
                 {/* Header with gradient background */}
-                <div className="relative h-40 bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800">
+                <div className="relative h-32 bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800">
                     <div className="absolute inset-0 bg-black opacity-20"></div>
                     <div className="relative h-full flex flex-col items-center justify-center">
-                        <h2 className="text-4xl font-bold text-white text-center mb-2">
+                        <h2 className="text-3xl font-bold text-white text-center mb-2">
                             Vehicle Emergency Request
                         </h2>
-                        <p className="text-blue-100 text-center max-w-2xl">
+                        <p className="text-blue-100 text-center max-w-2xl text-sm">
                             Please fill out this form with accurate information about your emergency situation
                         </p>
                     </div>
                 </div>
 
-                <div className="p-8">
-                    <form onSubmit={handleSubmit} className="space-y-8">
+                <div className="p-6">
+                    <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Personal Information Section */}
-                        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-                            <div className="flex items-center mb-6">
-                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                                    <FaUser className="text-blue-600 text-xl" />
+                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                            <div className="flex items-center mb-4">
+                                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                    <FaUser className="text-blue-600 text-base" />
                                 </div>
-                                <h3 className="text-2xl font-semibold text-gray-800">Personal Information</h3>
+                                <h3 className="text-xl font-semibold text-gray-800">Personal Information</h3>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label htmlFor="name" className="block font-medium text-gray-700 mb-2">
+                                    <label htmlFor="name" className="block font-medium text-gray-700 mb-1">
                                         Full Name
                                     </label>
                                     <input
@@ -333,13 +333,13 @@ const EmergencyForm = () => {
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
-                                        className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 text-lg"
+                                        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
                                         placeholder="Enter your full name"
                                     />
-                                    {errors.name && <p className="text-red-500 text-sm mt-2">{errors.name}</p>}
+                                    {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                                 </div>
                                 <div>
-                                    <label htmlFor="contactNumber" className="block font-medium text-gray-700 mb-2">
+                                    <label htmlFor="contactNumber" className="block font-medium text-gray-700 mb-1">
                                         Contact Number
                                     </label>
                                     <input
@@ -348,25 +348,25 @@ const EmergencyForm = () => {
                                         name="contactNumber"
                                         value={formData.contactNumber}
                                         onChange={handleChange}
-                                        className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 text-lg"
+                                        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
                                         placeholder="Enter your contact number"
                                     />
-                                    {errors.contactNumber && <p className="text-red-500 text-sm mt-2">{errors.contactNumber}</p>}
+                                    {errors.contactNumber && <p className="text-red-500 text-sm mt-1">{errors.contactNumber}</p>}
                                 </div>
                             </div>
                         </div>
 
                         {/* Vehicle Information Section */}
-                        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-                            <div className="flex items-center mb-6">
-                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                                    <FaCar className="text-blue-600 text-xl" />
+                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                            <div className="flex items-center mb-4">
+                                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                    <FaCar className="text-blue-600 text-base" />
                                 </div>
-                                <h3 className="text-2xl font-semibold text-gray-800">Vehicle Information</h3>
+                                <h3 className="text-xl font-semibold text-gray-800">Vehicle Information</h3>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label htmlFor="vehicleNumber" className="block font-medium text-gray-700 mb-2">
+                                    <label htmlFor="vehicleNumber" className="block font-medium text-gray-700 mb-1">
                                         Vehicle Number
                                     </label>
                                     <input
@@ -375,13 +375,13 @@ const EmergencyForm = () => {
                                         name="vehicleNumber"
                                         value={formData.vehicleNumber}
                                         onChange={handleChange}
-                                        className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 text-lg"
+                                        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
                                         placeholder="Enter vehicle number"
                                     />
-                                    {errors.vehicleNumber && <p className="text-red-500 text-sm mt-2">{errors.vehicleNumber}</p>}
+                                    {errors.vehicleNumber && <p className="text-red-500 text-sm mt-1">{errors.vehicleNumber}</p>}
                                 </div>
                                 <div>
-                                    <label htmlFor="vehicleType" className="block font-medium text-gray-700 mb-2">
+                                    <label htmlFor="vehicleType" className="block font-medium text-gray-700 mb-1">
                                         Vehicle Type
                                     </label>
                                     <select
@@ -389,7 +389,7 @@ const EmergencyForm = () => {
                                         name="vehicleType"
                                         value={formData.vehicleType}
                                         onChange={handleChange}
-                                        className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 text-lg"
+                                        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
                                     >
                                         <option value="">Select Vehicle Type</option>
                                         <option value="car">Car</option>
@@ -399,40 +399,40 @@ const EmergencyForm = () => {
                                         <option value="van">Van</option>
                                         <option value="other">Other</option>
                                     </select>
-                                    {errors.vehicleType && <p className="text-red-500 text-sm mt-2">{errors.vehicleType}</p>}
+                                    {errors.vehicleType && <p className="text-red-500 text-sm mt-1">{errors.vehicleType}</p>}
                                 </div>
                                 <div>
-                                    <label htmlFor="vehicleColor" className="block font-medium text-gray-700 mb-2">
+                                    <label htmlFor="vehicleColor" className="block font-medium text-gray-700 mb-1">
                                         Vehicle Color
                                     </label>
-                                    <div className="flex items-center space-x-4">
+                                    <div className="flex items-center space-x-3">
                                         <input
                                             type="color"
                                             id="vehicleColor"
                                             name="vehicleColor"
                                             value={formData.vehicleColor}
                                             onChange={handleChange}
-                                            className="w-20 h-12 rounded-lg cursor-pointer border-2 border-gray-300 hover:border-blue-400 transition-all duration-200"
+                                            className="w-16 h-10 rounded-lg cursor-pointer border-2 border-gray-300 hover:border-blue-400 transition-all duration-200"
                                         />
-                                        <span className="font-mono text-lg bg-gray-50 px-4 py-2 rounded-lg border border-gray-200">
+                                        <span className="font-mono text-sm bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200">
                                             {formData.vehicleColor || '#000000'}
                                         </span>
                                     </div>
-                                    {errors.vehicleColor && <p className="text-red-500 text-sm mt-2">{errors.vehicleColor}</p>}
+                                    {errors.vehicleColor && <p className="text-red-500 text-sm mt-1">{errors.vehicleColor}</p>}
                                 </div>
                             </div>
                         </div>
 
                         {/* Location Section */}
-                        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-                            <div className="flex items-center mb-6">
-                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                                    <FaMapMarkerAlt className="text-blue-600 text-xl" />
+                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                            <div className="flex items-center mb-4">
+                                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                    <FaMapMarkerAlt className="text-blue-600 text-base" />
                                 </div>
-                                <h3 className="text-2xl font-semibold text-gray-800">Location Details</h3>
+                                <h3 className="text-xl font-semibold text-gray-800">Location Details</h3>
                             </div>
-                            <div className="space-y-6">
-                                <div className="flex space-x-4">
+                            <div className="space-y-4">
+                                <div className="flex space-x-3">
                                     <div className="flex-1 relative">
                                         <input
                                             type="text"
@@ -440,7 +440,7 @@ const EmergencyForm = () => {
                                             name="location.address"
                                             value={formData.location.address}
                                             onChange={handleChange}
-                                            className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 text-lg"
+                                            className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
                                             placeholder="Click on map or use current location"
                                             readOnly
                                         />
@@ -448,41 +448,41 @@ const EmergencyForm = () => {
                                             type="button"
                                             onClick={getCurrentLocation}
                                             disabled={isFetchingLocation}
-                                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500 hover:text-blue-600 transition-colors duration-200"
+                                            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-blue-500 hover:text-blue-600 transition-colors duration-200"
                                             title="Get Current Location"
                                         >
-                                            <FaMapMarkerAlt size={24} />
+                                            <FaMapMarkerAlt size={20} />
                                         </button>
                                     </div>
                                     <button
                                         type="button"
                                         onClick={() => setShowMap(!showMap)}
-                                        className="px-6 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 flex items-center space-x-2 shadow-md hover:shadow-lg text-lg"
+                                        className="px-4 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 flex items-center space-x-2 shadow-md hover:shadow-lg"
                                     >
                                         <FaMap />
                                         <span>{showMap ? 'Hide Map' : 'Show Map'}</span>
                                     </button>
                                 </div>
                                 {showMap && (
-                                    <div className="mt-4 h-[400px] rounded-lg overflow-hidden border-2 border-gray-300 shadow-lg">
+                                    <div className="mt-2 h-80 rounded-lg overflow-hidden border-2 border-gray-300 shadow-lg">
                                         <Map position={mapPosition} onLocationSelect={handleMapClick} />
                                     </div>
                                 )}
-                                {errors.location && <p className="text-red-500 text-sm mt-2">{errors.location}</p>}
+                                {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location}</p>}
                             </div>
                         </div>
 
                         {/* Emergency Details Section */}
-                        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-                            <div className="flex items-center mb-6">
-                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                                    <FaInfoCircle className="text-blue-600 text-xl" />
+                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                            <div className="flex items-center mb-4">
+                                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                    <FaInfoCircle className="text-blue-600 text-base" />
                                 </div>
-                                <h3 className="text-2xl font-semibold text-gray-800">Emergency Details</h3>
+                                <h3 className="text-xl font-semibold text-gray-800">Emergency Details</h3>
                             </div>
-                            <div className="space-y-6">
+                            <div className="space-y-4">
                                 <div>
-                                    <label htmlFor="emergencyType" className="block font-medium text-gray-700 mb-2">
+                                    <label htmlFor="emergencyType" className="block font-medium text-gray-700 mb-1">
                                         Emergency Type
                                     </label>
                                     <select
@@ -490,7 +490,7 @@ const EmergencyForm = () => {
                                         name="emergencyType"
                                         value={formData.emergencyType}
                                         onChange={handleChange}
-                                        className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 text-lg"
+                                        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
                                     >
                                         <option value="">Select Emergency Type</option>
                                         <option value="breakdown">Breakdown</option>
@@ -498,10 +498,10 @@ const EmergencyForm = () => {
                                         <option value="flat_tire">Flat Tire</option>
                                         <option value="other">Other</option>
                                     </select>
-                                    {errors.emergencyType && <p className="text-red-500 text-sm mt-2">{errors.emergencyType}</p>}
+                                    {errors.emergencyType && <p className="text-red-500 text-sm mt-1">{errors.emergencyType}</p>}
                                 </div>
                                 <div>
-                                    <label htmlFor="description" className="block font-medium text-gray-700 mb-2">
+                                    <label htmlFor="description" className="block font-medium text-gray-700 mb-1">
                                         Description
                                     </label>
                                     <textarea
@@ -509,24 +509,24 @@ const EmergencyForm = () => {
                                         name="description"
                                         value={formData.description}
                                         onChange={handleChange}
-                                        className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 text-lg min-h-[150px]"
+                                        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 min-h-[100px]"
                                         placeholder="Describe the emergency situation in detail"
                                     ></textarea>
-                                    {errors.description && <p className="text-red-500 text-sm mt-2">{errors.description}</p>}
+                                    {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
                                 </div>
                             </div>
                         </div>
 
                         {/* Photos Section */}
-                        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-                            <div className="flex items-center mb-6">
-                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                                    <FaCamera className="text-blue-600 text-xl" />
+                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                            <div className="flex items-center mb-4">
+                                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                    <FaCamera className="text-blue-600 text-base" />
                                 </div>
-                                <h3 className="text-2xl font-semibold text-gray-800">Photos</h3>
+                                <h3 className="text-xl font-semibold text-gray-800">Photos</h3>
                             </div>
-                            <div className="space-y-6">
-                                <div className="flex flex-wrap gap-6">
+                            <div className="space-y-4">
+                                <div className="flex flex-wrap gap-4">
                                     {previewPhotos.map((preview, index) => (
                                         <motion.div
                                             key={index}
@@ -538,24 +538,24 @@ const EmergencyForm = () => {
                                             <img
                                                 src={preview}
                                                 alt={`Preview ${index + 1}`}
-                                                className="w-40 h-40 object-cover rounded-lg shadow-md"
+                                                className="w-32 h-32 object-cover rounded-lg shadow-md"
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => removePhoto(index)}
-                                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-all duration-200 opacity-0 group-hover:opacity-100 transform translate-y-1 group-hover:translate-y-0"
+                                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-all duration-200 opacity-0 group-hover:opacity-100 transform translate-y-1 group-hover:translate-y-0"
                                             >
-                                                <FaTrash size={16} />
+                                                <FaTrash size={14} />
                                             </button>
                                         </motion.div>
                                     ))}
                                 </div>
-                                <div className="flex items-center space-x-6">
-                                    <label className="flex items-center justify-center w-40 h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-all duration-200 group">
+                                <div className="flex items-center space-x-4">
+                                    <label className="flex items-center justify-center w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-all duration-200 group">
                                         <div className="text-center">
-                                            <FaCamera className="mx-auto h-10 w-10 text-gray-400 group-hover:text-blue-500 transition-colors duration-200" />
-                                            <span className="mt-3 block text-lg text-gray-600 group-hover:text-blue-500">Add Photo</span>
-                                            <span className="mt-2 block text-sm text-gray-500">Max 5 photos</span>
+                                            <FaCamera className="mx-auto h-8 w-8 text-gray-400 group-hover:text-blue-500 transition-colors duration-200" />
+                                            <span className="mt-2 block text-sm text-gray-600 group-hover:text-blue-500">Add Photo</span>
+                                            <span className="mt-1 block text-xs text-gray-500">Max 5 photos</span>
                                         </div>
                                         <input
                                             type="file"
@@ -566,27 +566,27 @@ const EmergencyForm = () => {
                                         />
                                     </label>
                                     <div className="text-gray-500">
-                                        <p className="text-lg font-medium">{formData.photos.length}/5 photos</p>
-                                        <p className="text-sm mt-1">Supported formats: JPG, JPEG, PNG</p>
-                                        <p className="text-sm">Max size: 5MB per photo</p>
+                                        <p className="text-sm font-medium">{formData.photos.length}/5 photos</p>
+                                        <p className="text-xs mt-1">Supported formats: JPG, JPEG, PNG</p>
+                                        <p className="text-xs">Max size: 5MB per photo</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex space-x-6">
+                        <div className="flex space-x-4">
                             <button
                                 type="button"
                                 onClick={handleBack}
-                                className="flex-1 px-8 py-4 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-200 flex items-center justify-center space-x-2 shadow-md hover:shadow-lg text-lg"
+                                className="flex-1 px-6 py-2.5 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-200 flex items-center justify-center space-x-2 shadow-md hover:shadow-lg"
                             >
                                 <FaArrowLeft />
                                 <span>Back</span>
                             </button>
                             <button
                                 type="submit"
-                                className="flex-1 px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg text-lg font-medium"
+                                className="flex-1 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg font-medium"
                             >
                                 Submit Emergency Request
                             </button>
