@@ -47,7 +47,7 @@ const Navbar = () => {
         <nav className="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4">
                 <div className="flex justify-between h-16">
-                    <div className="flex items-center -ml-8">
+                    <div className="flex items-center -ml-28">
                         <Link to="/" className="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-0">
                             <img 
                                 src={logo} 
