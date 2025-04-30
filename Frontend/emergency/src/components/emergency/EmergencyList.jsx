@@ -3,7 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, Link } from 'react-router-dom';
-import { FaEdit, FaTrash, FaSearch, FaFilter, FaDownload, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaSearch, FaFilter, FaDownload, FaEye, FaEyeSlash, FaMapMarkerAlt } from 'react-icons/fa';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -408,9 +408,38 @@ const EmergencyList = () => {
                                             </td>
                                             <td className="px-4 py-3 whitespace-nowrap text-gray-900 group-hover:text-gray-700 transition-colors duration-200 text-sm">{item.contactNumber || 'N/A'}</td>
                                             <td className="px-4 py-3 whitespace-nowrap text-gray-900 group-hover:text-gray-700 transition-colors duration-200 text-sm">
-                                                {typeof item.location === 'object' 
-                                                    ? item.location.address || 'N/A'
-                                                    : item.location || 'N/A'}
+                                                <div className="flex items-center space-x-2">
+                                                    {typeof item.location === 'object' 
+                                                        ? (
+                                                            <div className="flex items-center space-x-2">
+                                                                <span>{item.location.address || 'N/A'}</span>
+                                                                <button
+                                                                    onClick={() => {
+                                                                        const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location.address)}`;
+                                                                        window.open(url, '_blank');
+                                                                    }}
+                                                                    className="text-blue-600 hover:text-blue-800 transition-colors duration-200 group/map"
+                                                                >
+                                                                    <FaMapMarkerAlt className="w-4 h-4 group-hover/map:scale-110 transition-transform duration-200" />
+                                                                </button>
+                                                            </div>
+                                                        )
+                                                        : (
+                                                            <div className="flex items-center space-x-2">
+                                                                <span>{item.location || 'N/A'}</span>
+                                                                <button
+                                                                    onClick={() => {
+                                                                        const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}`;
+                                                                        window.open(url, '_blank');
+                                                                    }}
+                                                                    className="text-blue-600 hover:text-blue-800 transition-colors duration-200 group/map"
+                                                                >
+                                                                    <FaMapMarkerAlt className="w-4 h-4 group-hover/map:scale-110 transition-transform duration-200" />
+                                                                </button>
+                                                            </div>
+                                                        )
+                                                    }
+                                                </div>
                                             </td>
                                             <td className="px-4 py-3 whitespace-nowrap text-gray-900 group-hover:text-gray-700 transition-colors duration-200 text-sm">{item.vehicleType || 'N/A'}</td>
                                             <td className="px-4 py-3 whitespace-nowrap text-gray-900 group-hover:text-gray-700 transition-colors duration-200 text-sm">
