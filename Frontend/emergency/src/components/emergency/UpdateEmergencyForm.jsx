@@ -148,10 +148,36 @@ const UpdateEmergencyForm = () => {
         }
 
         try {
-            await axios.put(`http://localhost:5000/api/emergency/${id}`, formData);
+            const formDataToSend = new FormData();
+            
+            // Add all form fields to FormData
+            formDataToSend.append('name', formData.name.trim());
+            formDataToSend.append('contactNumber', formData.contactNumber.trim());
+            formDataToSend.append('vehicleNumber', formData.vehicleNumber.trim());
+            formDataToSend.append('location', JSON.stringify(formData.location));
+            formDataToSend.append('vehicleType', formData.vehicleType);
+            formDataToSend.append('vehicleColor', formData.vehicleColor.trim());
+            formDataToSend.append('emergencyType', formData.emergencyType);
+            formDataToSend.append('description', formData.description.trim());
+
+            // Add photos if they exist
+            if (formData.photos && formData.photos.length > 0) {
+                formData.photos.forEach((photo, index) => {
+                    if (photo instanceof File) {
+                        formDataToSend.append('photos', photo);
+                    }
+                });
+            }
+
+            await axios.put(`http://localhost:5000/api/emergency/${id}`, formDataToSend, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
             toast.success('Emergency request updated successfully!');
             navigate('/list');
         } catch (error) {
+            console.error('Error updating emergency request:', error);
             if (error.response && error.response.data && error.response.data.errors) {
                 const errorData = error.response.data.errors.reduce((acc, err) => ({ ...acc, [err.path]: err.msg }), {});
                 setErrors(errorData);
