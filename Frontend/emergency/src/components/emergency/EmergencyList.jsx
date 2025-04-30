@@ -190,13 +190,6 @@ const EmergencyList = () => {
                         </h2>
                         <div className="flex gap-4">
                             <button
-                                onClick={() => setShowRequestNo(!showRequestNo)}
-                                className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300"
-                            >
-                                {showRequestNo ? <FaEyeSlash className="mr-2" /> : <FaEye className="mr-2" />}
-                                {showRequestNo ? 'Hide Request No' : 'Show Request No'}
-                            </button>
-                            <button
                                 onClick={handleDownload}
                                 className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300"
                             >
@@ -271,9 +264,17 @@ const EmergencyList = () => {
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gradient-to-r from-blue-600 to-indigo-600">
                                     <tr>
-                                        {showRequestNo && (
-                                            <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Request No</th>
-                                        )}
+                                        <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
+                                            <div className="flex items-center gap-2">
+                                                Request No
+                                                <button
+                                                    onClick={() => setShowRequestNo(!showRequestNo)}
+                                                    className="text-white hover:text-gray-200 transition-colors duration-200"
+                                                >
+                                                    {showRequestNo ? <FaEyeSlash /> : <FaEye />}
+                                                </button>
+                                            </div>
+                                        </th>
                                         <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Photos</th>
                                         <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Name</th>
                                         <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Contact</th>
@@ -292,9 +293,9 @@ const EmergencyList = () => {
                                 <tbody className="bg-white divide-y divide-gray-200">
                                     {filteredEmergency.map((item) => (
                                         <tr key={item._id} className="hover:bg-gray-50 transition-colors duration-200">
-                                            {showRequestNo && (
-                                                <td className="px-8 py-4 whitespace-nowrap text-gray-900 font-medium">{item.emergencyRequestNo || 'N/A'}</td>
-                                            )}
+                                            <td className="px-8 py-4 whitespace-nowrap text-gray-900 font-medium">
+                                                {showRequestNo ? (item.emergencyRequestNo || 'N/A') : ' '}
+                                            </td>
                                             <td className="px-8 py-4 whitespace-nowrap">
                                                 <div className="flex space-x-2">
                                                     {item.photos && item.photos.length > 0 ? (
