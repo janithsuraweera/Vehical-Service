@@ -65,10 +65,12 @@ const Navbar = () => {
                         </Link>
                         {user && (
                             <>
-                                <Link to="/inventory" className={getTabStyle('store')}>
-                                    <span className="group-hover:opacity-0 transition-opacity duration-300">Store</span>
-                                    <FaStore className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
-                                </Link>
+                                {user.role !== 'admin' && (
+                                    <Link to="/inventory" className={getTabStyle('store')}>
+                                        <span className="group-hover:opacity-0 transition-opacity duration-300">Store</span>
+                                        <FaStore className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
+                                    </Link>
+                                )}
                                 {user.role === 'admin' ? (
                                     <Link to="/emergencylist" className={getTabStyle('emergency')}>
                                         <span className="group-hover:opacity-0 transition-opacity duration-300">Emergency List</span>
