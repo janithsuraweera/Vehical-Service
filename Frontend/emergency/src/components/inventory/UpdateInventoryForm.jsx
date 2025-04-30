@@ -116,7 +116,7 @@ const InventoryUpdateForm = () => {
                 }
             });
             toast.success('Inventory item updated successfully');
-            navigate('/inventory');
+            navigate('/inventory-List');
         } catch (error) {
             console.error('Error updating inventory item:', error);
             toast.error('Failed to update inventory item');
