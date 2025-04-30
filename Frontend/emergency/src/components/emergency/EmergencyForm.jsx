@@ -276,25 +276,41 @@ const EmergencyForm = () => {
         }
 
         try {
-            // Format data according to backend expectations
-            const formattedData = {
-                name: formData.name.trim(),
-                contactNumber: formData.contactNumber.trim(),
-                vehicleNumber: formData.vehicleNumber ? formData.vehicleNumber.trim() : undefined,
-                location: {
-                    type: 'Point',
-                    coordinates: formData.location.coordinates,
-                    address: formData.location.address.trim()
+            // Create FormData object to handle file uploads
+            const formDataToSend = new FormData();
+
+            // Add all form fields to FormData
+            formDataToSend.append('name', formData.name.trim());
+            formDataToSend.append('contactNumber', formData.contactNumber.trim());
+            if (formData.vehicleNumber) {
+                formDataToSend.append('vehicleNumber', formData.vehicleNumber.trim());
+            }
+            formDataToSend.append('location', JSON.stringify({
+                type: 'Point',
+                coordinates: formData.location.coordinates,
+                address: formData.location.address.trim()
+            }));
+            formDataToSend.append('vehicleType', formData.vehicleType);
+            formDataToSend.append('vehicleColor', formData.vehicleColor.trim());
+            formDataToSend.append('emergencyType', formData.emergencyType);
+            formDataToSend.append('description', formData.description.trim());
+
+            // Add photos to FormData
+            console.log('Photos to upload:', formData.photos);
+            formData.photos.forEach((photo, index) => {
+                console.log('Adding photo to FormData:', photo);
+                formDataToSend.append('photos', photo);
+            });
+
+            console.log('Sending FormData:', formDataToSend);
+
+            const response = await axios.post('http://localhost:5000/api/emergency', formDataToSend, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
                 },
-                vehicleType: formData.vehicleType,
-                vehicleColor: formData.vehicleColor.trim(),
-                emergencyType: formData.emergencyType,
-                description: formData.description.trim()
-            };
-
-            console.log('Sending data:', formattedData); // For debugging
-
-            const response = await axios.post('http://localhost:5000/api/emergency', formattedData);
+            });
+            
+            console.log('Server response:', response.data);
             
             if (response.status === 201) {
                 toast.success('Emergency request submitted successfully!');
@@ -303,7 +319,7 @@ const EmergencyForm = () => {
                 toast.error('Failed to submit emergency request.');
             }
         } catch (error) {
-            console.error('Error:', error.response?.data || error); // For debugging
+            console.error('Error details:', error.response?.data || error);
             if (error.response && error.response.data && error.response.data.errors) {
                 const errorData = error.response.data.errors.reduce(
                     (acc, err) => ({ ...acc, [err.path]: err.msg }),

@@ -20,6 +20,7 @@ const EmergencyList = () => {
         const fetchEmergencies = async () => {
             try {
                 const response = await axios.get('http://localhost:5000/api/emergency');
+                console.log('Fetched emergencies:', response.data);
                 const sortedEmergencies = response.data.sort((a, b) => {
                     const dateA = a.date ? new Date(a.date) : 0;
                     const dateB = b.date ? new Date(b.date) : 0;
@@ -156,7 +157,7 @@ const EmergencyList = () => {
 
                 <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
                     <div className="flex flex-wrap gap-2">
-                        <select value={vehicleFilter} onChange={(e) => setVehicleFilter(e.target.value)} className="p-2 border rounded">
+                        <select value={vehicleFilter} onChange={(e) => setVehicleFilter(e.target.value)} className="p-2 border rounded-lg bg-white shadow-sm hover:shadow-md transition-all duration-200">
                             <option value="">All Vehicle Types</option>
                             <option value="car">Car</option>
                             <option value="motorcycle">Motorcycle</option>
@@ -165,8 +166,8 @@ const EmergencyList = () => {
                             <option value="van">Van</option>
                             <option value="other">Other</option>
                         </select>
-                        <input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)} className="p-2 border rounded" />
-                        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="p-2 border rounded">
+                        <input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)} className="p-2 border rounded-lg bg-white shadow-sm hover:shadow-md transition-all duration-200" />
+                        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="p-2 border rounded-lg bg-white shadow-sm hover:shadow-md transition-all duration-200">
                             <option value="">All Statuses</option>
                             <option value="pending">Pending</option>
                             <option value="Processing">Processing</option>
@@ -180,9 +181,9 @@ const EmergencyList = () => {
                             placeholder="Search by Vehicle Number or Name"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="p-3 border border-gray-300 rounded-lg w-full pr-20 transition-shadow duration-300 focus:ring focus:ring-indigo-200 focus:shadow-md"
+                            className="p-3 pl-10 border border-gray-300 rounded-lg w-full bg-white shadow-sm hover:shadow-md transition-all duration-200 focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                         />
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                             <FaSearch className="h-5 w-5 text-gray-400" />
                         </div>
                     </div>
@@ -193,6 +194,7 @@ const EmergencyList = () => {
                         <thead>
                             <tr className="bg-gray-100">
                                 <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Request No</th>
+                                <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Photos</th>
                                 <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Name</th>
                                 <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Contact</th>
                                 <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Address</th>
@@ -209,56 +211,95 @@ const EmergencyList = () => {
                         </thead>
                         <tbody>
                             {filteredEmergencies.length > 0 ? (
-                                filteredEmergencies.map((emergency) => (
-                                    <tr key={emergency._id} className="hover:bg-red-50 text-sm">
-                                        <td className="py-2 px-4 md:py-4 md:px-6 border-b">{emergency.emergencyRequestNo || 'N/A'}</td>
-                                        <td className="py-2 px-4 md:py-4 md:px-6 border-b">
-                                            <Link to={`/emergency/${emergency._id}`} className="text-black-600 hover:underline">
-                                                {emergency.name}
-                                            </Link>
-                                        </td>
-                                        <td className="py-2 px-4 md:py-4 md:px-6 border-b">{emergency.contactNumber}</td>
-                                        <td className="py-2 px-4 md:py-4 md:px-6 border-b">{emergency.location?.address || 'N/A'}</td>
-                                        <td className="py-2 px-4 md:py-4 md:px-6 border-b">{emergency.vehicleType}</td>
-                                        <td className="py-2 px-4 md:py-4 md:px-6 border-b text-center">
-                                            <div
-                                                className="w-6 h-6 md:w-8 md:h-8 rounded-full inline-block align-middle mx-auto"
-                                                style={{
-                                                    backgroundColor: emergency.vehicleColor || 'transparent',
-                                                    border: '1px solid #ccc',
-                                                }}
-                                                title={emergency.vehicleColor}
-                                            ></div>
-                                        </td>
-                                        <td className="py-2 px-4 md:py-4 md:px-6 border-b">{emergency.emergencyType}</td>
-                                        <td className="py-2 px-4 md:py-4 md:px-6 border-b">{emergency.description}</td>
-                                        <td className="py-2 px-4 md:py-4 md:px-6 border-b">{emergency.status}</td>
-                                        <td className="py-2 px-4 md:py-4 md:px-6 border-b">{emergency.vehicleNumber}</td>
-                                        <td className="py-2 px-4 md:py-4 md:px-6 border-b">{emergency.date ? new Date(emergency.date).toLocaleDateString() : 'N/A'}</td>
-                                        <td className="py-2 px-4 md:py-4 md:px-6 border-b">{emergency.time}</td>
-                                        <td className="py-2 px-4 md:py-4 md:px-6 border-b">
-                                            <div className="flex flex-col md:flex-row gap-1 md:space-x-2">
-                                                <button
-                                                    onClick={() => handleUpdate(emergency._id)}
-                                                    className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-1 px-2 md:py-4 md:px-4 rounded text-xs md:text-sm flex items-center justify-center"
-                                                    title="Update"
-                                                >
-                                                    <FaEdit />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(emergency._id)}
-                                                    className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 md:py-4 md:px-4 rounded text-xs md:text-sm flex items-center justify-center"
-                                                    title="Delete"
-                                                >
-                                                    <FaTrash />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
+                                filteredEmergencies.map((emergency) => {
+                                    console.log('Rendering emergency:', emergency);
+                                    console.log('Emergency photos:', emergency.photos);
+                                    return (
+                                        <tr key={emergency._id} className="hover:bg-gray-50">
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.emergencyRequestNo}</td>
+                                            <td className="py-3 px-4 md:px-6 border-b">
+                                                <div className="flex space-x-2">
+                                                    {emergency.photos && emergency.photos.length > 0 ? (
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {emergency.photos.map((photo, index) => (
+                                                                <div key={index} className="relative group">
+                                                                    <img
+                                                                        src={photo}
+                                                                        alt={`Emergency photo ${index + 1}`}
+                                                                        className="w-16 h-16 object-cover rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-110"
+                                                                        onClick={() => window.open(photo, '_blank')}
+                                                                        onError={(e) => {
+                                                                            console.error('Error loading image:', photo);
+                                                                            e.target.src = '/error-image.png';
+                                                                            e.target.onerror = null;
+                                                                        }}
+                                                                    />
+                                                                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 rounded-lg transition-all duration-200"></div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    ) : (
+                                                        <span className="text-gray-400 italic">No photos</span>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
+                                                <Link to={`/emergency/${emergency._id}`} className="text-blue-600 hover:text-blue-800 hover:underline">
+                                                    {emergency.name}
+                                                </Link>
+                                            </td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.contactNumber}</td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.location?.address || 'N/A'}</td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.vehicleType}</td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
+                                                <div className="flex items-center space-x-2">
+                                                    <div
+                                                        className="w-6 h-6 rounded-full border border-gray-200"
+                                                        style={{ backgroundColor: emergency.vehicleColor }}
+                                                    ></div>
+                                                    <span>{emergency.vehicleColor}</span>
+                                                </div>
+                                            </td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.emergencyType}</td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.description}</td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
+                                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                                    emergency.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                                    emergency.status === 'Processing' ? 'bg-blue-100 text-blue-800' :
+                                                    'bg-green-100 text-green-800'
+                                                }`}>
+                                                    {emergency.status}
+                                                </span>
+                                            </td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.vehicleNumber || 'N/A'}</td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
+                                                {emergency.date ? new Date(emergency.date).toLocaleDateString() : 'N/A'}
+                                            </td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.time}</td>
+                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
+                                                <div className="flex space-x-2">
+                                                    <button
+                                                        onClick={() => handleUpdate(emergency._id)}
+                                                        className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                                                        title="Update"
+                                                    >
+                                                        <FaEdit size={18} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(emergency._id)}
+                                                        className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all duration-200"
+                                                        title="Delete"
+                                                    >
+                                                        <FaTrash size={18} />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
                             ) : (
                                 <tr>
-                                    <td colSpan="13" className="text-center py-4 text-gray-500">
+                                    <td colSpan="14" className="text-center py-4 text-gray-500">
                                         No matching emergencies found.
                                     </td>
                                 </tr>
