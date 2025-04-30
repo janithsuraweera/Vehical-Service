@@ -69,7 +69,7 @@ const App = () => {
             <Route path="/emergency/:id" element={<ProtectedRoute><EmergencyDetails /></ProtectedRoute>} />
 
             {/* Inventory Routes */}
-            <Route path="/inventory" element={<ProtectedRoute><InventoryHomePage /></ProtectedRoute>} />
+            <Route path="/inventory" element={<ProtectedRoute><ProductDisplay /></ProtectedRoute>} />
             <Route path="/inventory-form" element={<ProtectedRoute><InventoryForm /></ProtectedRoute>} />
             <Route path="/inventory-list" element={<ProtectedRoute><InventoryList /></ProtectedRoute>} />
             <Route path="/update-inventory/:id" element={<ProtectedRoute><UpdateInventoryForm /></ProtectedRoute>} />

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useDarkMode } from '../context/DarkModeContext';
-import { FaHome, FaStore, FaExclamationTriangle, FaCar, FaWrench, FaInfoCircle, FaUser, FaSignOutAlt, FaMoon, FaSun } from 'react-icons/fa';
+import { FaHome, FaStore, FaExclamationTriangle, FaCar, FaWrench, FaInfoCircle, FaUser, FaSignOutAlt, FaMoon, FaSun, FaShoppingCart } from 'react-icons/fa';
 import logo from '/logo.png';
 const Navbar = () => {
     const [showDropdown, setShowDropdown] = useState(false);
@@ -97,6 +97,11 @@ const Navbar = () => {
                     </div>
                     
                     <div className="flex items-center space-x-4">
+                        {user && user.role !== 'admin' && (
+                            <Link to="/cart" className="p-2 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline-none hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <FaShoppingCart size={18} />
+                            </Link>
+                        )}
                         <button
                             onClick={toggleDarkMode}
                             className="p-2 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
