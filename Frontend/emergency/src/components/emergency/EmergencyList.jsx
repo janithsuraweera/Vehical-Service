@@ -3,7 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, Link } from 'react-router-dom';
-import { FaEdit, FaTrash, FaSearch, FaFilter, FaPlus, FaDownload } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaSearch, FaFilter, FaPlus, FaDownload, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -15,6 +15,7 @@ const EmergencyList = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
     const [filteredEmergency, setFilteredEmergency] = useState([]);
+    const [showRequestNo, setShowRequestNo] = useState(false);
 
     // Define status options
     const statusOptions = [
@@ -188,6 +189,13 @@ const EmergencyList = () => {
                             Emergency Service Management
                         </h2>
                         <div className="flex gap-4">
+                            <button
+                                onClick={() => setShowRequestNo(!showRequestNo)}
+                                className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300"
+                            >
+                                {showRequestNo ? <FaEyeSlash className="mr-2" /> : <FaEye className="mr-2" />}
+                                {showRequestNo ? 'Hide Request No' : 'Show Request No'}
+                            </button>
                             <Link 
                                 to="/emergency-form" 
                                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300"
@@ -269,7 +277,9 @@ const EmergencyList = () => {
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gradient-to-r from-blue-600 to-indigo-600">
                                     <tr>
-                                        <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Request No</th>
+                                        {showRequestNo && (
+                                            <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Request No</th>
+                                        )}
                                         <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Photos</th>
                                         <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Name</th>
                                         <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Contact</th>
@@ -288,7 +298,9 @@ const EmergencyList = () => {
                                 <tbody className="bg-white divide-y divide-gray-200">
                                     {filteredEmergency.map((item) => (
                                         <tr key={item._id} className="hover:bg-gray-50 transition-colors duration-200">
-                                            <td className="px-8 py-4 whitespace-nowrap text-gray-900 font-medium">{item.emergencyRequestNo || 'N/A'}</td>
+                                            {showRequestNo && (
+                                                <td className="px-8 py-4 whitespace-nowrap text-gray-900 font-medium">{item.emergencyRequestNo || 'N/A'}</td>
+                                            )}
                                             <td className="px-8 py-4 whitespace-nowrap">
                                                 <div className="flex space-x-2">
                                                     {item.photos && item.photos.length > 0 ? (
@@ -317,7 +329,7 @@ const EmergencyList = () => {
                                             </td>
                                             <td className="px-8 py-4 whitespace-nowrap text-gray-900 font-medium">
                                                 <Link to={`/emergency/${item._id}`} className="text-blue-600 hover:text-blue-800 hover:underline">
-                                                    {item.customerName || 'N/A'}
+                                                    {item.name || item.customerName || 'N/A'}
                                                 </Link>
                                             </td>
                                             <td className="px-8 py-4 whitespace-nowrap text-gray-900">{item.contactNumber || 'N/A'}</td>
@@ -337,7 +349,9 @@ const EmergencyList = () => {
                                                 </div>
                                             </td>
                                             <td className="px-8 py-4 whitespace-nowrap text-gray-900">{item.emergencyType || 'N/A'}</td>
-                                            <td className="px-8 py-4 text-gray-900">{item.issueDescription || 'N/A'}</td>
+                                            <td className="px-8 py-4 text-gray-900">
+                                                {item.description || item.issueDescription || 'N/A'}
+                                            </td>
                                             <td className="px-8 py-4 whitespace-nowrap">
                                                 <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                                                     item.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
