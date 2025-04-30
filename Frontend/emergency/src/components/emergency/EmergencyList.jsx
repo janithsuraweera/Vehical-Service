@@ -3,7 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, Link } from 'react-router-dom';
-import { FaEdit, FaTrash, FaSearch, FaFilter, FaDownload, FaEye, FaEyeSlash, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaSearch, FaFilter, FaDownload, FaEye, FaEyeSlash, FaMapMarkerAlt, FaMoon, FaSun } from 'react-icons/fa';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -18,6 +18,7 @@ const EmergencyList = () => {
     const [dateFilter, setDateFilter] = useState('');
     const [filteredEmergency, setFilteredEmergency] = useState([]);
     const [showRequestNo, setShowRequestNo] = useState(false);
+    const [darkMode, setDarkMode] = useState(false);
 
     // Define status options
     const statusOptions = [
@@ -37,6 +38,20 @@ const EmergencyList = () => {
         { value: 'van', label: 'Van' },
         { value: 'other', label: 'Other' }
     ];
+
+    useEffect(() => {
+        // Check for saved dark mode preference
+        const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+        setDarkMode(savedDarkMode);
+        document.documentElement.classList.toggle('dark', savedDarkMode);
+    }, []);
+
+    const toggleDarkMode = () => {
+        const newDarkMode = !darkMode;
+        setDarkMode(newDarkMode);
+        localStorage.setItem('darkMode', newDarkMode);
+        document.documentElement.classList.toggle('dark', newDarkMode);
+    };
 
     useEffect(() => {
         fetchData();
@@ -208,36 +223,44 @@ const EmergencyList = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4">
+        <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-blue-50 to-indigo-50'} p-4`}>
             <div className="w-full h-full">
-                <div className="bg-white rounded-2xl shadow-xl p-6 backdrop-blur-sm bg-opacity-90">
+                <div className={`rounded-2xl shadow-xl p-6 backdrop-blur-sm ${darkMode ? 'bg-gray-800' : 'bg-white bg-opacity-90'}`}>
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
+                        <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text'}`}>
                             Emergency Service Management
                         </h2>
                         <div className="flex gap-4">
                             <button
+                                onClick={toggleDarkMode}
+                                className={`p-2 rounded-lg ${darkMode ? 'bg-gray-700 text-yellow-400 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition-colors duration-300`}
+                            >
+                                {darkMode ? <FaSun className="w-5 h-5" /> : <FaMoon className="w-5 h-5" />}
+                            </button>
+                            <button
                                 onClick={handleDownload}
-                                className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-2 px-4 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300"
+                                className={`bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-2 px-4 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300`}
                             >
                                 <FaDownload className="mr-2" /> Download Report
                             </button>
                         </div>
                     </div>
 
-                    <div className="mb-6 bg-white p-4 rounded-xl shadow-lg border border-gray-100">
+                    <div className={`mb-6 p-4 rounded-xl shadow-lg border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-100'}`}>
                         <div className="relative group mb-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                            <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Search</label>
                             <div className="relative">
                                 <input
                                     type="text"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     placeholder="Search by vehicle no., name or contact..."
-                                    className="w-full pl-12 pr-4 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 group-hover:border-blue-300"
+                                    className={`w-full pl-12 pr-4 py-2 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 group-hover:border-blue-300 ${
+                                        darkMode ? 'bg-gray-600 border-gray-500 text-white placeholder-gray-400' : 'border-gray-200'
+                                    }`}
                                 />
                                 <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                                    <FaSearch className="text-gray-400 group-hover:text-blue-500 transition-colors duration-300" />
+                                    <FaSearch className={`${darkMode ? 'text-gray-400' : 'text-gray-400'} group-hover:text-blue-500 transition-colors duration-300`} />
                                 </div>
                                 {searchTerm && (
                                     <button
@@ -254,11 +277,13 @@ const EmergencyList = () => {
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="relative group">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                                <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Status</label>
                                 <select
                                     value={statusFilter}
                                     onChange={(e) => setStatusFilter(e.target.value)}
-                                    className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 group-hover:border-blue-300"
+                                    className={`w-full px-4 py-2 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 group-hover:border-blue-300 ${
+                                        darkMode ? 'bg-gray-600 border-gray-500 text-white' : 'border-gray-200'
+                                    }`}
                                 >
                                     {statusOptions.map((status) => (
                                         <option key={status.value} value={status.value}>
@@ -267,18 +292,20 @@ const EmergencyList = () => {
                                     ))}
                                 </select>
                                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                                    <svg className="h-5 w-5 text-gray-400 group-hover:text-blue-500 transition-colors duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <svg className={`h-5 w-5 ${darkMode ? 'text-gray-400' : 'text-gray-400'} group-hover:text-blue-500 transition-colors duration-300`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                         <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                                     </svg>
                                 </div>
                             </div>
 
                             <div className="relative group">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Vehicle Type</label>
+                                <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Vehicle Type</label>
                                 <select
                                     value={vehicleTypeFilter}
                                     onChange={(e) => setVehicleTypeFilter(e.target.value)}
-                                    className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 group-hover:border-blue-300"
+                                    className={`w-full px-4 py-2 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 group-hover:border-blue-300 ${
+                                        darkMode ? 'bg-gray-600 border-gray-500 text-white' : 'border-gray-200'
+                                    }`}
                                 >
                                     {vehicleTypeOptions.map((type) => (
                                         <option key={type.value} value={type.value}>
@@ -287,22 +314,24 @@ const EmergencyList = () => {
                                     ))}
                                 </select>
                                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                                    <svg className="h-5 w-5 text-gray-400 group-hover:text-blue-500 transition-colors duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <svg className={`h-5 w-5 ${darkMode ? 'text-gray-400' : 'text-gray-400'} group-hover:text-blue-500 transition-colors duration-300`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                         <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                                     </svg>
                                 </div>
                             </div>
 
                             <div className="relative group">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                                <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Date</label>
                                 <input
                                     type="date"
                                     value={dateFilter}
                                     onChange={(e) => setDateFilter(e.target.value)}
-                                    className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 group-hover:border-blue-300"
+                                    className={`w-full px-4 py-2 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 group-hover:border-blue-300 ${
+                                        darkMode ? 'bg-gray-600 border-gray-500 text-white' : 'border-gray-200'
+                                    }`}
                                 />
                                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                                    <svg className="h-5 w-5 text-gray-400 group-hover:text-blue-500 transition-colors duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <svg className={`h-5 w-5 ${darkMode ? 'text-gray-400' : 'text-gray-400'} group-hover:text-blue-500 transition-colors duration-300`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                         <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                                     </svg>
                                 </div>
@@ -312,7 +341,7 @@ const EmergencyList = () => {
                         <div className="flex justify-end mt-4">
                             <button
                                 onClick={resetFilters}
-                                className="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white font-semibold py-2 px-4 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300"
+                                className={`bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white font-semibold py-2 px-4 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300`}
                             >
                                 <FaFilter className="mr-2" /> Reset Filters
                             </button>
@@ -320,28 +349,28 @@ const EmergencyList = () => {
                     </div>
 
                     {error ? (
-                        <div className="text-center py-8 bg-red-50 rounded-xl shadow-lg">
-                            <p className="text-red-600 text-lg">{error}</p>
+                        <div className={`text-center py-8 rounded-xl shadow-lg ${darkMode ? 'bg-red-900/50' : 'bg-red-50'}`}>
+                            <p className={`${darkMode ? 'text-red-300' : 'text-red-600'} text-lg`}>{error}</p>
                             <button
                                 onClick={fetchData}
-                                className="mt-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2 px-4 rounded-lg"
+                                className={`mt-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2 px-4 rounded-lg`}
                             >
                                 Retry
                             </button>
                         </div>
                     ) : loading ? (
                         <div className="text-center py-8">
-                            <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mx-auto"></div>
-                            <p className="mt-4 text-gray-600 text-lg">Loading emergency requests...</p>
+                            <div className={`animate-spin rounded-full h-12 w-12 border-4 ${darkMode ? 'border-blue-400' : 'border-blue-500'} border-t-transparent mx-auto`}></div>
+                            <p className={`mt-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} text-lg`}>Loading emergency requests...</p>
                         </div>
                     ) : filteredEmergency.length === 0 ? (
-                        <div className="text-center py-8 bg-white rounded-xl shadow-lg">
-                            <p className="text-gray-600 text-lg">No emergency requests found</p>
+                        <div className={`text-center py-8 rounded-xl shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-white'}`}>
+                            <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} text-lg`}>No emergency requests found</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto rounded-xl shadow-lg">
                             <table className="w-full divide-y divide-gray-200">
-                                <thead className="bg-gradient-to-r from-blue-600 to-indigo-600">
+                                <thead className={`${darkMode ? 'bg-gray-700' : 'bg-gradient-to-r from-blue-600 to-indigo-600'}`}>
                                     <tr>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-24">
                                             <div className="flex items-center gap-2">
@@ -369,10 +398,10 @@ const EmergencyList = () => {
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-40">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
+                                <tbody className={`divide-y ${darkMode ? 'divide-gray-600 bg-gray-800' : 'divide-gray-200 bg-white'}`}>
                                     {filteredEmergency.map((item) => (
-                                        <tr key={item._id} className="hover:bg-gray-50 transition-colors duration-200 group">
-                                            <td className="px-4 py-3 whitespace-nowrap text-gray-900 font-medium text-sm">
+                                        <tr key={item._id} className={`transition-colors duration-200 group ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'}`}>
                                                 {showRequestNo ? (item.emergencyRequestNo || 'N/A') : ' '}
                                             </td>
                                             <td className="px-4 py-3 whitespace-nowrap">
@@ -397,17 +426,17 @@ const EmergencyList = () => {
                                                             ))}
                                                         </div>
                                                     ) : (
-                                                        <span className="text-gray-400 italic text-sm">No photos</span>
+                                                        <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-400'} italic`}>No photos</span>
                                                     )}
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-gray-900 font-medium text-sm">
-                                                <Link to={`/emergency/${item._id}`} className="text-blue-600 hover:text-blue-800 hover:underline group-hover:text-blue-700 transition-colors duration-200">
+                                            <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'}`}>
+                                                <Link to={`/emergency/${item._id}`} className={`${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'} hover:underline group-hover:text-blue-700 transition-colors duration-200`}>
                                                     {item.name || item.customerName || 'N/A'}
                                                 </Link>
                                             </td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-gray-900 group-hover:text-gray-700 transition-colors duration-200 text-sm">{item.contactNumber || 'N/A'}</td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-gray-900 group-hover:text-gray-700 transition-colors duration-200 text-sm">
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>{item.contactNumber || 'N/A'}</td>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
                                                 <div className="flex items-center space-x-2">
                                                     {typeof item.location === 'object' 
                                                         ? (
@@ -418,7 +447,7 @@ const EmergencyList = () => {
                                                                         const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location.address)}`;
                                                                         window.open(url, '_blank');
                                                                     }}
-                                                                    className="text-blue-600 hover:text-blue-800 transition-colors duration-200 group/map"
+                                                                    className={`${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'} transition-colors duration-200 group/map`}
                                                                 >
                                                                     <FaMapMarkerAlt className="w-4 h-4 group-hover/map:scale-110 transition-transform duration-200" />
                                                                 </button>
@@ -432,7 +461,7 @@ const EmergencyList = () => {
                                                                         const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}`;
                                                                         window.open(url, '_blank');
                                                                     }}
-                                                                    className="text-blue-600 hover:text-blue-800 transition-colors duration-200 group/map"
+                                                                    className={`${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'} transition-colors duration-200 group/map`}
                                                                 >
                                                                     <FaMapMarkerAlt className="w-4 h-4 group-hover/map:scale-110 transition-transform duration-200" />
                                                                 </button>
@@ -441,34 +470,34 @@ const EmergencyList = () => {
                                                     }
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-gray-900 group-hover:text-gray-700 transition-colors duration-200 text-sm">{item.vehicleType || 'N/A'}</td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-gray-900 group-hover:text-gray-700 transition-colors duration-200 text-sm">
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>{item.vehicleType || 'N/A'}</td>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
                                                 <div className="flex items-center space-x-2">
                                                     <div
-                                                        className="w-4 h-4 rounded-full border border-gray-200 group-hover:border-gray-300 transition-colors duration-200"
+                                                        className={`w-4 h-4 rounded-full border ${darkMode ? 'border-gray-500 group-hover:border-gray-400' : 'border-gray-200 group-hover:border-gray-300'} transition-colors duration-200`}
                                                         style={{ backgroundColor: item.vehicleColor }}
                                                     ></div>
                                                     <span>{item.vehicleColor || 'N/A'}</span>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-gray-900 group-hover:text-gray-700 transition-colors duration-200 text-sm">{item.emergencyType || 'N/A'}</td>
-                                            <td className="px-4 py-3 text-gray-900 group-hover:text-gray-700 transition-colors duration-200 text-sm">
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>{item.emergencyType || 'N/A'}</td>
+                                            <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
                                                 {item.description || item.issueDescription || 'N/A'}
                                             </td>
                                             <td className="px-4 py-3 whitespace-nowrap">
                                                 <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                                    item.status === 'pending' ? 'bg-yellow-100 text-yellow-800 group-hover:bg-yellow-200 group-hover:text-yellow-900 animate-[pulse_1.5s_ease-in-out_infinite]' :
-                                                    item.status === 'Processing' ? 'bg-red-100 text-red-800 group-hover:bg-red-200 group-hover:text-red-900 animate-[pulse_1.5s_ease-in-out_infinite]' :
-                                                    'bg-green-100 text-green-800 group-hover:bg-green-200 group-hover:text-green-900'
+                                                    item.status === 'pending' ? `${darkMode ? 'bg-yellow-900/50 text-yellow-300 group-hover:bg-yellow-900/70 group-hover:text-yellow-200' : 'bg-yellow-100 text-yellow-800 group-hover:bg-yellow-200 group-hover:text-yellow-900'} animate-[pulse_1.5s_ease-in-out_infinite]` :
+                                                    item.status === 'Processing' ? `${darkMode ? 'bg-red-900/50 text-red-300 group-hover:bg-red-900/70 group-hover:text-red-200' : 'bg-red-100 text-red-800 group-hover:bg-red-200 group-hover:text-red-900'} animate-[pulse_1.5s_ease-in-out_infinite]` :
+                                                    `${darkMode ? 'bg-green-900/50 text-green-300 group-hover:bg-green-900/70 group-hover:text-green-200' : 'bg-green-100 text-green-800 group-hover:bg-green-200 group-hover:text-green-900'}`
                                                 } transition-colors duration-200`}>
                                                     {item.status || 'Unknown'}
                                                 </span>
                                             </td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-gray-900 group-hover:text-gray-700 transition-colors duration-200 text-sm">{item.vehicleNumber || 'N/A'}</td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-gray-900 group-hover:text-gray-700 transition-colors duration-200 text-sm">
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>{item.vehicleNumber || 'N/A'}</td>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
                                                 {item.date ? new Date(item.date).toLocaleDateString() : 'N/A'}
                                             </td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-gray-900 group-hover:text-gray-700 transition-colors duration-200 text-sm">{item.time || 'N/A'}</td>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>{item.time || 'N/A'}</td>
                                             <td className="px-4 py-3 whitespace-nowrap">
                                                 <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                                     <button
