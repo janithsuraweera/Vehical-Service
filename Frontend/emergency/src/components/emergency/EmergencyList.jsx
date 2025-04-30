@@ -4,8 +4,8 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaEdit, FaTrash, FaSearch, FaFilter, FaPlus, FaDownload } from 'react-icons/fa';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const EmergencyList = () => {
     const navigate = useNavigate();
@@ -89,31 +89,38 @@ const EmergencyList = () => {
         try {
             const doc = new jsPDF();
             
+            // Add title
             doc.setFontSize(20);
             doc.text('Emergency Service Report', 105, 20, { align: 'center' });
             
+            // Add date
             doc.setFontSize(12);
             doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 105, 30, { align: 'center' });
             
+            // Add company info
             doc.setFontSize(14);
             doc.text('Vehicle Service Center', 105, 40, { align: 'center' });
             
-            doc.autoTable({
+            // Add table
+            const tableData = filteredEmergency.map(item => [
+                item.emergencyRequestNo || 'N/A',
+                item.customerName || 'N/A',
+                item.contactNumber || 'N/A',
+                item.vehicleNumber || 'N/A',
+                typeof item.location === 'object' 
+                    ? item.location.address || 'N/A'
+                    : item.location || 'N/A',
+                item.status || 'N/A',
+                item.date ? new Date(item.date).toLocaleDateString() : 'N/A'
+            ]);
+
+            autoTable(doc, {
                 startY: 50,
-                head: [['Vehicle No.', 'Customer Name', 'Contact', 'Location', 'Issue', 'Status']],
-                body: filteredEmergency.map(item => [
-                    item.vehicleNumber || 'N/A',
-                    item.customerName || 'N/A',
-                    item.contactNumber || 'N/A',
-                    typeof item.location === 'object' 
-                        ? item.location.address || 'N/A'
-                        : item.location || 'N/A',
-                    item.issueDescription || 'N/A',
-                    item.status || 'N/A'
-                ]),
+                head: [['Request No', 'Name', 'Contact', 'Vehicle No', 'Location', 'Status', 'Date']],
+                body: tableData,
                 theme: 'grid',
                 headStyles: {
-                    fillColor: [34, 139, 34],
+                    fillColor: [34, 139, 34], // Green color
                     textColor: 255,
                     fontSize: 10,
                     fontStyle: 'bold'
@@ -121,13 +128,49 @@ const EmergencyList = () => {
                 styles: {
                     fontSize: 9,
                     cellPadding: 3
+                },
+                columnStyles: {
+                    0: { cellWidth: 25 }, // Request No
+                    1: { cellWidth: 40 }, // Name
+                    2: { cellWidth: 30 }, // Contact
+                    3: { cellWidth: 30 }, // Vehicle No
+                    4: { cellWidth: 50 }, // Location
+                    5: { cellWidth: 25 }, // Status
+                    6: { cellWidth: 25 }  // Date
                 }
             });
 
-            doc.save('emergency_report.pdf');
+            // Add summary
+            const finalY = doc.lastAutoTable.finalY || 50;
+            doc.setFontSize(12);
+            doc.text('Summary', 14, finalY + 20);
+            
+            const totalRequests = filteredEmergency.length;
+            const pendingRequests = filteredEmergency.filter(item => item.status === 'pending').length;
+            const processingRequests = filteredEmergency.filter(item => item.status === 'Processing').length;
+            const completedRequests = filteredEmergency.filter(item => item.status === 'completed').length;
+            
+            doc.setFontSize(10);
+            doc.text(`Total Requests: ${totalRequests}`, 14, finalY + 30);
+            doc.text(`Pending Requests: ${pendingRequests}`, 14, finalY + 40);
+            doc.text(`Processing Requests: ${processingRequests}`, 14, finalY + 50);
+            doc.text(`Completed Requests: ${completedRequests}`, 14, finalY + 60);
+            
+            // Add footer
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(8);
+                doc.text(`Page ${i} of ${pageCount}`, 105, 285, { align: 'center' });
+            }
+
+            // Save the PDF
+            const today = new Date();
+            const formattedDate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            doc.save(`Emergency_Report_${formattedDate}.pdf`);
         } catch (error) {
             console.error('Error generating PDF:', error);
-            toast.error('Failed to generate PDF report');
+            toast.error('Failed to generate PDF report. Please try again.');
         }
     };
 
