@@ -25,21 +25,41 @@ const InventoryForm = () => {
 
     const handleChange = (e) => {
         const { name, value, type, files } = e.target;
+        
         if (type === 'file') {
             const file = files[0];
-            if (file && file.size > 5 * 1024 * 1024) { // 5MB limit
-                toast.error('Image size should be less than 5MB');
-                return;
-            }
-            setFormData({ ...formData, [name]: file });
             if (file) {
+                // Validate file type and size immediately
+                const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
+                const maxSize = 5 * 1024 * 1024; // 5MB
+
+                if (!validTypes.includes(file.type)) {
+                    toast.error('Please upload a valid image file (JPEG, PNG, GIF, or SVG)');
+                    return;
+                }
+
+                if (file.size > maxSize) {
+                    toast.error('Image size should be less than 5MB');
+                    return;
+                }
+
+                setFormData({ ...formData, [name]: file });
                 setPreviewImage(URL.createObjectURL(file));
             } else {
                 setPreviewImage(null);
             }
         } else {
-            setFormData({ ...formData, [name]: value });
+            // Validate numeric fields immediately
+            if (name === 'productPrice' || name === 'productQuantity') {
+                if (value === '' || (!isNaN(value) && parseFloat(value) >= 0)) {
+                    setFormData({ ...formData, [name]: value });
+                }
+            } else {
+                setFormData({ ...formData, [name]: value });
+            }
         }
+
+        // Clear error for the changed field
         setErrors({ ...errors, [name]: '' });
     };
 
@@ -59,15 +79,73 @@ const InventoryForm = () => {
 
     const validateForm = () => {
         const newErrors = {};
-        if (!formData.productId) newErrors.productId = 'Product ID is required';
-        if (!formData.productName) newErrors.productName = 'Product Name is required';
-        if (!formData.productPrice) newErrors.productPrice = 'Product Price is required';
-        if (formData.productPrice && formData.productPrice <= 0) newErrors.productPrice = 'Price must be greater than 0';
-        if (!formData.productQuantity) newErrors.productQuantity = 'Product Quantity is required';
-        if (formData.productQuantity && formData.productQuantity <= 0) newErrors.productQuantity = 'Quantity must be greater than 0';
-        if (!formData.productDescription) newErrors.productDescription = 'Product Description is required';
-        if (!formData.productImage) newErrors.productImage = 'Product Image is required';
-        if (!formData.category) newErrors.category = 'Category is required';
+        
+        // Product ID validation
+        if (!formData.productId || formData.productId.trim() === '') {
+            newErrors.productId = 'Product ID is required';
+        } else if (formData.productId.trim().length < 3) {
+            newErrors.productId = 'Product ID must be at least 3 characters long';
+        } else if (formData.productId.trim().length > 50) {
+            newErrors.productId = 'Product ID cannot exceed 50 characters';
+        }
+
+        // Product Name validation
+        if (!formData.productName || formData.productName.trim() === '') {
+            newErrors.productName = 'Product name is required';
+        } else if (formData.productName.trim().length < 3) {
+            newErrors.productName = 'Product name must be at least 3 characters long';
+        } else if (formData.productName.trim().length > 100) {
+            newErrors.productName = 'Product name cannot exceed 100 characters';
+        }
+
+        // Category validation
+        if (!formData.category || formData.category.trim() === '') {
+            newErrors.category = 'Please select a category';
+        }
+
+        // Product Price validation
+        if (!formData.productPrice) {
+            newErrors.productPrice = 'Product price is required';
+        } else if (isNaN(formData.productPrice)) {
+            newErrors.productPrice = 'Product price must be a number';
+        } else if (parseFloat(formData.productPrice) <= 0) {
+            newErrors.productPrice = 'Product price must be greater than 0';
+        } else if (parseFloat(formData.productPrice) > 1000000) {
+            newErrors.productPrice = 'Product price cannot exceed Rs. 1,000,000';
+        }
+
+        // Product Quantity validation
+        if (!formData.productQuantity) {
+            newErrors.productQuantity = 'Product quantity is required';
+        } else if (!Number.isInteger(Number(formData.productQuantity))) {
+            newErrors.productQuantity = 'Product quantity must be a whole number';
+        } else if (Number(formData.productQuantity) <= 0) {
+            newErrors.productQuantity = 'Product quantity must be greater than 0';
+        } else if (Number(formData.productQuantity) > 10000) {
+            newErrors.productQuantity = 'Product quantity cannot exceed 10,000';
+        }
+
+        // Product Description validation
+        if (!formData.productDescription || formData.productDescription.trim() === '') {
+            newErrors.productDescription = 'Product description is required';
+        } else if (formData.productDescription.trim().length < 10) {
+            newErrors.productDescription = 'Product description must be at least 10 characters long';
+        } else if (formData.productDescription.trim().length > 500) {
+            newErrors.productDescription = 'Product description cannot exceed 500 characters';
+        }
+
+        // Image validation
+        if (formData.productImage) {
+            const file = formData.productImage;
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+
+            if (!validTypes.includes(file.type)) {
+                newErrors.productImage = 'Please upload a valid image file (JPEG, PNG, GIF, or SVG)';
+            } else if (file.size > maxSize) {
+                newErrors.productImage = 'Image size should be less than 5MB';
+            }
+        }
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -79,28 +157,68 @@ const InventoryForm = () => {
 
         setIsSubmitting(true);
         const formDataToSend = new FormData();
-        for (const key in formData) {
-            formDataToSend.append(key, formData[key]);
+        
+        // Convert price and quantity to numbers before sending
+        formDataToSend.append('productId', formData.productId.trim());
+        formDataToSend.append('productName', formData.productName.trim());
+        formDataToSend.append('productPrice', parseFloat(formData.productPrice));
+        formDataToSend.append('productQuantity', parseInt(formData.productQuantity));
+        formDataToSend.append('productDescription', formData.productDescription.trim());
+        formDataToSend.append('category', formData.category.trim());
+        if (formData.productImage) {
+            formDataToSend.append('productImage', formData.productImage);
         }
 
+        // Log the form data being sent
+        console.log('Form data being sent:', Object.fromEntries(formDataToSend));
+
         try {
-            await axios.post('http://localhost:5000/api/inventory', formDataToSend, {
+            const response = await axios.post('http://localhost:5000/api/inventory', formDataToSend, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
+            console.log('Response from server:', response.data);
             toast.success('Inventory item added successfully!');
-            navigate('/inventory');
+            navigate('/inventory-list');
         } catch (error) {
             console.error('Error adding inventory item:', error);
-            toast.error(error.response?.data?.message || 'Failed to add inventory item.');
+            if (error.response) {
+                console.error('Error response data:', error.response.data);
+                console.error('Error response status:', error.response.status);
+                console.error('Error response headers:', error.response.headers);
+                
+                // Handle validation errors
+                if (error.response.data.errors && Array.isArray(error.response.data.errors)) {
+                    const validationErrors = error.response.data.errors;
+                    console.log('Validation errors:', validationErrors);
+                    validationErrors.forEach(err => {
+                        if (err.msg) {
+                            console.log('Error message:', err.msg);
+                            toast.error(err.msg);
+                        } else if (err.message) {
+                            console.log('Error message:', err.message);
+                            toast.error(err.message);
+                        }
+                    });
+                } else if (error.response.data.message) {
+                    console.log('Error message:', error.response.data.message);
+                    toast.error(error.response.data.message);
+                } else {
+                    console.log('No specific error message found');
+                    toast.error('Failed to add inventory item. Please check your input.');
+                }
+            } else {
+                console.error('No response received from server');
+                toast.error('Network error. Please check your connection and try again.');
+            }
         } finally {
             setIsSubmitting(false);
         }
     };
 
     const handleBack = () => {
-        navigate('/inventory');
+        navigate('/inventory-list');
     };
 
     return (
