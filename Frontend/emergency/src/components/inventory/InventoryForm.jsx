@@ -16,16 +16,21 @@ const InventoryForm = () => {
         productQuantity: '',
         productDescription: '',
         productImage: null,
+        category: '',
     });
-
 
     const [errors, setErrors] = useState({});
     const [previewImage, setPreviewImage] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleChange = (e) => {
         const { name, value, type, files } = e.target;
         if (type === 'file') {
             const file = files[0];
+            if (file && file.size > 5 * 1024 * 1024) { // 5MB limit
+                toast.error('Image size should be less than 5MB');
+                return;
+            }
             setFormData({ ...formData, [name]: file });
             if (file) {
                 setPreviewImage(URL.createObjectURL(file));
@@ -38,8 +43,6 @@ const InventoryForm = () => {
         setErrors({ ...errors, [name]: '' });
     };
 
-    //resets everything back to empty or default values
-
     const resetForm = () => {
         setFormData({
             productId: '',
@@ -48,27 +51,33 @@ const InventoryForm = () => {
             productQuantity: '',
             productDescription: '',
             productImage: null,
+            category: '',
         });
         setPreviewImage(null);
         setErrors({});
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();   //Stops the form from refreshing the page
-        const newErrors = {};  //Creates a blank object to store any input errors
-        if (!formData.productId) newErrors.productId = 'Product ID is required';  //Field Checks
+    const validateForm = () => {
+        const newErrors = {};
+        if (!formData.productId) newErrors.productId = 'Product ID is required';
         if (!formData.productName) newErrors.productName = 'Product Name is required';
         if (!formData.productPrice) newErrors.productPrice = 'Product Price is required';
+        if (formData.productPrice && formData.productPrice <= 0) newErrors.productPrice = 'Price must be greater than 0';
         if (!formData.productQuantity) newErrors.productQuantity = 'Product Quantity is required';
+        if (formData.productQuantity && formData.productQuantity <= 0) newErrors.productQuantity = 'Quantity must be greater than 0';
         if (!formData.productDescription) newErrors.productDescription = 'Product Description is required';
         if (!formData.productImage) newErrors.productImage = 'Product Image is required';
+        if (!formData.category) newErrors.category = 'Category is required';
 
-        if (Object.keys(newErrors).length > 0) {
-            setErrors(newErrors);
-            return;
-        }
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!validateForm()) return;
 
+        setIsSubmitting(true);
         const formDataToSend = new FormData();
         for (const key in formData) {
             formDataToSend.append(key, formData[key]);
@@ -84,7 +93,9 @@ const InventoryForm = () => {
             navigate('/inventory');
         } catch (error) {
             console.error('Error adding inventory item:', error);
-            toast.error('Failed to add inventory item.');
+            toast.error(error.response?.data?.message || 'Failed to add inventory item.');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -105,39 +116,109 @@ const InventoryForm = () => {
                 <form onSubmit={handleSubmit} encType="multipart/form-data">
                     <div className="mb-4">
                         <label htmlFor="productId" className="block text-gray-700 text-sm font-bold mb-2">Product ID</label>
-                        <input type="text" id="productId" name="productId" value={formData.productId} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        <input
+                            type="text"
+                            id="productId"
+                            name="productId"
+                            value={formData.productId}
+                            onChange={handleChange}
+                            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.productId ? 'border-red-500' : ''}`}
+                        />
                         {errors.productId && <p className="text-red-500 text-xs italic">{errors.productId}</p>}
                     </div>
+
                     <div className="mb-4">
                         <label htmlFor="productName" className="block text-gray-700 text-sm font-bold mb-2">Product Name</label>
-                        <input type="text" id="productName" name="productName" value={formData.productName} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        <input
+                            type="text"
+                            id="productName"
+                            name="productName"
+                            value={formData.productName}
+                            onChange={handleChange}
+                            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.productName ? 'border-red-500' : ''}`}
+                        />
                         {errors.productName && <p className="text-red-500 text-xs italic">{errors.productName}</p>}
                     </div>
+
                     <div className="mb-4">
-                        <label htmlFor="productPrice" className="block text-gray-700 text-sm font-bold mb-2">Product Price</label>
-                        <input type="number" id="productPrice" name="productPrice" value={formData.productPrice} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        <label htmlFor="category" className="block text-gray-700 text-sm font-bold mb-2">Category</label>
+                        <select
+                            id="category"
+                            name="category"
+                            value={formData.category}
+                            onChange={handleChange}
+                            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.category ? 'border-red-500' : ''}`}
+                        >
+                            <option value="">Select a category</option>
+                            <option value="oils">Oils</option>
+                            <option value="vehicle lights">Vehicle lights</option>
+                            <option value="shock absorbers">Shock Absorbers</option>
+                            <option value="tire">Tire</option>
+                        </select>
+                        {errors.category && <p className="text-red-500 text-xs italic">{errors.category}</p>}
+                    </div>
+
+                    <div className="mb-4">
+                        <label htmlFor="productPrice" className="block text-gray-700 text-sm font-bold mb-2">Product Price (Rs.)</label>
+                        <input
+                            type="number"
+                            id="productPrice"
+                            name="productPrice"
+                            value={formData.productPrice}
+                            onChange={handleChange}
+                            min="0"
+                            step="0.01"
+                            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.productPrice ? 'border-red-500' : ''}`}
+                        />
                         {errors.productPrice && <p className="text-red-500 text-xs italic">{errors.productPrice}</p>}
                     </div>
+
                     <div className="mb-4">
                         <label htmlFor="productQuantity" className="block text-gray-700 text-sm font-bold mb-2">Product Quantity</label>
-                        <input type="number" id="productQuantity" name="productQuantity" value={formData.productQuantity} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        <input
+                            type="number"
+                            id="productQuantity"
+                            name="productQuantity"
+                            value={formData.productQuantity}
+                            onChange={handleChange}
+                            min="0"
+                            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.productQuantity ? 'border-red-500' : ''}`}
+                        />
                         {errors.productQuantity && <p className="text-red-500 text-xs italic">{errors.productQuantity}</p>}
                     </div>
+
                     <div className="mb-4">
                         <label htmlFor="productDescription" className="block text-gray-700 text-sm font-bold mb-2">Product Description</label>
-                        <textarea id="productDescription" name="productDescription" value={formData.productDescription} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        <textarea
+                            id="productDescription"
+                            name="productDescription"
+                            value={formData.productDescription}
+                            onChange={handleChange}
+                            rows="3"
+                            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.productDescription ? 'border-red-500' : ''}`}
+                        />
                         {errors.productDescription && <p className="text-red-500 text-xs italic">{errors.productDescription}</p>}
                     </div>
+
                     <div className="mb-6">
                         <label htmlFor="productImage" className="block text-gray-700 text-sm font-bold mb-2">Product Image</label>
                         <div className="flex items-center justify-center w-full">
-                            <label htmlFor="productImage" className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                            <label htmlFor="productImage" className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
                                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                    <FaImage className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" />
-                                    <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                                    <FaImage className="w-8 h-8 mb-4 text-gray-500" />
+                                    <p className="mb-2 text-sm text-gray-500">
+                                        <span className="font-semibold">Click to upload</span> or drag and drop
+                                    </p>
+                                    <p className="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 5MB)</p>
                                 </div>
-                                <input id="productImage" type="file" name="productImage" className="hidden" onChange={handleChange} />
+                                <input
+                                    id="productImage"
+                                    type="file"
+                                    name="productImage"
+                                    className="hidden"
+                                    onChange={handleChange}
+                                    accept="image/*"
+                                />
                             </label>
                             {previewImage && (
                                 <img src={previewImage} alt="Preview" className="w-20 h-20 object-cover rounded ml-4" />
@@ -145,11 +226,22 @@ const InventoryForm = () => {
                         </div>
                         {errors.productImage && <p className="text-red-500 text-xs italic">{errors.productImage}</p>}
                     </div>
+
                     <div className="flex justify-between">
-                        <button type="button" onClick={handleBack} className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline">
+                        <button
+                            type="button"
+                            onClick={handleBack}
+                            className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline flex items-center"
+                        >
                             <FaArrowLeft className="mr-2" /> Back
                         </button>
-                        <button type="submit" className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline">Add</button>
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className={`bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                            {isSubmitting ? 'Adding...' : 'Add Item'}
+                        </button>
                     </div>
                 </form>
             </div>

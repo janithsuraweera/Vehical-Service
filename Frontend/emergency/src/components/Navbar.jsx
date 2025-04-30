@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useDarkMode } from '../context/DarkModeContext';
-import { FaHome, FaStore, FaExclamationTriangle, FaCar, FaWrench, FaInfoCircle, FaUser, FaSignOutAlt, FaMoon, FaSun } from 'react-icons/fa';
+import { FaHome, FaStore, FaExclamationTriangle, FaCar, FaWrench, FaInfoCircle, FaUser, FaSignOutAlt, FaMoon, FaSun, FaShoppingCart } from 'react-icons/fa';
 import logo from '/logo.png';
 const Navbar = () => {
     const [showDropdown, setShowDropdown] = useState(false);
@@ -65,10 +65,12 @@ const Navbar = () => {
                         </Link>
                         {user && (
                             <>
-                                <Link to="/inventory" className={getTabStyle('store')}>
-                                    <span className="group-hover:opacity-0 transition-opacity duration-300">Store</span>
-                                    <FaStore className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
-                                </Link>
+                                {user.role !== 'admin' && (
+                                    <Link to="/inventory" className={getTabStyle('store')}>
+                                        <span className="group-hover:opacity-0 transition-opacity duration-300">Store</span>
+                                        <FaStore className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
+                                    </Link>
+                                )}
                                 {user.role === 'admin' ? (
                                     <Link to="/emergencylist" className={getTabStyle('emergency')}>
                                         <span className="group-hover:opacity-0 transition-opacity duration-300">Emergency List</span>
@@ -97,6 +99,11 @@ const Navbar = () => {
                     </div>
                     
                     <div className="flex items-center space-x-4">
+                        {user && user.role !== 'admin' && (
+                            <Link to="/cart" className="p-2 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline-none hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <FaShoppingCart size={18} />
+                            </Link>
+                        )}
                         <button
                             onClick={toggleDarkMode}
                             className="p-2 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
