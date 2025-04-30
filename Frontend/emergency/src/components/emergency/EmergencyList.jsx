@@ -457,8 +457,8 @@ const EmergencyList = () => {
                                             </td>
                                             <td className="px-4 py-3 whitespace-nowrap">
                                                 <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                                    item.status === 'pending' ? 'bg-yellow-100 text-yellow-800 group-hover:bg-yellow-200 group-hover:text-yellow-900' :
-                                                    item.status === 'Processing' ? 'bg-blue-100 text-blue-800 group-hover:bg-blue-200 group-hover:text-blue-900' :
+                                                    item.status === 'pending' ? 'bg-yellow-100 text-yellow-800 group-hover:bg-yellow-200 group-hover:text-yellow-900 animate-[pulse_1.5s_ease-in-out_infinite]' :
+                                                    item.status === 'Processing' ? 'bg-red-100 text-red-800 group-hover:bg-red-200 group-hover:text-red-900 animate-[pulse_1.5s_ease-in-out_infinite]' :
                                                     'bg-green-100 text-green-800 group-hover:bg-green-200 group-hover:text-green-900'
                                                 } transition-colors duration-200`}>
                                                     {item.status || 'Unknown'}
