@@ -1,227 +1,256 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { FaEdit, FaTrash, FaArrowLeft, FaDownload, FaSearch } from 'react-icons/fa';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate, Link } from 'react-router-dom';
+import { FaEdit, FaTrash, FaSearch, FaFilter, FaPlus, FaDownload } from 'react-icons/fa';
 import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
-
+import 'jspdf-autotable';
 
 const EmergencyList = () => {
-    const [emergencies, setEmergencies] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [vehicleFilter, setVehicleFilter] = useState('');
-    const [dateFilter, setDateFilter] = useState('');
-    const [statusFilter, setStatusFilter] = useState('');
     const navigate = useNavigate();
-    const searchInputRef = useRef(null);
+    const [emergencyItems, setEmergencyItems] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState('');
+    const [filteredEmergency, setFilteredEmergency] = useState([]);
+
+    // Define status options
+    const statusOptions = [
+        { value: '', label: 'All Status' },
+        { value: 'pending', label: 'Pending' },
+        { value: 'in-progress', label: 'In Progress' },
+        { value: 'completed', label: 'Completed' }
+    ];
 
     useEffect(() => {
-        const fetchEmergencies = async () => {
-            try {
-                const response = await axios.get('http://localhost:5000/api/emergency');
-                console.log('Fetched emergencies:', response.data);
-                const sortedEmergencies = response.data.sort((a, b) => {
-                    const dateA = a.date ? new Date(a.date) : 0;
-                    const dateB = b.date ? new Date(b.date) : 0;
-                    return dateB - dateA;
-                });
-                setEmergencies(sortedEmergencies);
-            } catch (error) {
-                console.error("Error fetching emergencies:", error);
-                toast.error("Failed to load emergency list.");
-            }
-        };
-        fetchEmergencies();
+        fetchData();
     }, []);
 
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const response = await axios.get('http://localhost:5000/api/emergency');
+            if (response.data && Array.isArray(response.data)) {
+                setEmergencyItems(response.data);
+                setFilteredEmergency(response.data);
+            } else {
+                throw new Error('Invalid data format received from server');
+            }
+        } catch (error) {
+            console.error("Error fetching emergency items:", error);
+            setError(error.message || "Failed to load emergency list");
+            toast.error("Failed to load emergency list. Please try again later.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (emergencyItems.length > 0) {
+            let filtered = [...emergencyItems];
+
+            if (searchTerm) {
+                filtered = filtered.filter(item =>
+                    (item.vehicleNumber?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+                    (item.customerName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+                    (item.contactNumber?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+                );
+            }
+
+            if (statusFilter) {
+                filtered = filtered.filter(item => item.status === statusFilter);
+            }
+
+            setFilteredEmergency(filtered);
+        }
+    }, [emergencyItems, searchTerm, statusFilter]);
+
     const handleDelete = async (id) => {
-        if (window.confirm("Are you sure you want to delete this emergency?")) {
+        if (window.confirm('Are you sure you want to delete this emergency request?')) {
             try {
                 await axios.delete(`http://localhost:5000/api/emergency/${id}`);
-                setEmergencies(emergencies.filter(emergency => emergency._id !== id));
-                toast.success("Emergency deleted successfully!");
+                toast.success('Emergency request deleted successfully');
+                await fetchData();
             } catch (error) {
-                console.error("Error deleting emergency:", error);
-                toast.error("Failed to delete emergency.");
+                console.error('Error deleting emergency request:', error);
+                toast.error('Failed to delete emergency request');
             }
         }
     };
 
-    const handleUpdate = (id) => {
+    const handleEdit = (id) => {
         navigate(`/update-emergency/${id}`);
     };
 
-    const handleBack = () => {
-        navigate('/login');
-    };
-
     const handleDownload = () => {
-        const doc = new jsPDF();
-        const img = new Image();
-        img.src = '/logo.png';
-
-        const generatePdf = () => {
-            doc.setFontSize(18);
-            doc.text('Emergency Report', 50, 25);
-            doc.setFontSize(10);
-            doc.text(`Date: ${new Date().toLocaleDateString()}`, 50, 32);
-
-            const head = [['Name', 'Contact Number', 'Address', 'Vehicle Type', 'Vehicle Color', 'Emergency Type', 'Description', 'Status', 'Vehicle Number', 'Date', 'Time']];
-            const body = filteredEmergencies.map(emergency => [emergency.name, emergency.contactNumber, emergency.location?.address || 'N/A', emergency.vehicleType, emergency.vehicleColor, emergency.emergencyType, emergency.description, emergency.status, emergency.vehicleNumber, emergency.date ? new Date(emergency.date).toLocaleDateString() : 'N/A', emergency.time]);
-
-            autoTable(doc, {
-                startY: 45,
-                head: head,
-                body: body,
-                theme: 'striped',
-                styles: { fontSize: 7, cellPadding: 2 },
-                didDrawCell: (data) => {
-                    if (data.section === 'body' && data.column.index === 4) {
-                        const color = data.cell.raw;
-                        const cell = data.cell;
-                        const doc = data.doc;
-
-                        if (color && typeof color === 'string') {
-                            const bgColor = data.row.index % 2 === 0 ? [255, 255, 255] : [245, 245, 245];
-                            doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
-                            doc.rect(cell.x, cell.y, cell.width, cell.height, 'F');
-
-                            const squareSize = 6;
-                            const rectX = cell.x + (cell.width - squareSize) / 2;
-                            const rectY = cell.y + (cell.height - squareSize) / 2;
-
-                            try {
-                                doc.setFillColor(color);
-                                doc.rect(rectX, rectY, squareSize, squareSize, 'F');
-                                doc.setDrawColor(0); doc.setLineWidth(0.1);
-                                doc.rect(rectX, rectY, squareSize, squareSize, 'S');
-                            } catch (e) {
-                                console.warn(`PDF Draw Error: Invalid color '${color}'?`, e);
-                                doc.setTextColor(150); doc.setFontSize(6);
-                                doc.text('?', cell.x + cell.width / 2, cell.y + cell.height / 2, { align: 'center', baseline: 'middle' });
-                                doc.setTextColor(0);
-                            }
-                            doc.setDrawColor(0);
-                        } else {
-                            const bgColor = data.row.index % 2 === 0 ? [255, 255, 255] : [245, 245, 245];
-                            doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
-                            doc.rect(cell.x, cell.y, cell.width, cell.height, 'F');
-                        }
-                    }
+        try {
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.text('Emergency Service Report', 105, 20, { align: 'center' });
+            
+            doc.setFontSize(12);
+            doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 105, 30, { align: 'center' });
+            
+            doc.setFontSize(14);
+            doc.text('Vehicle Service Center', 105, 40, { align: 'center' });
+            
+            doc.autoTable({
+                startY: 50,
+                head: [['Vehicle No.', 'Customer Name', 'Contact', 'Location', 'Issue', 'Status']],
+                body: filteredEmergency.map(item => [
+                    item.vehicleNumber || 'N/A',
+                    item.customerName || 'N/A',
+                    item.contactNumber || 'N/A',
+                    typeof item.location === 'object' 
+                        ? item.location.address || 'N/A'
+                        : item.location || 'N/A',
+                    item.issueDescription || 'N/A',
+                    item.status || 'N/A'
+                ]),
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [34, 139, 34],
+                    textColor: 255,
+                    fontSize: 10,
+                    fontStyle: 'bold'
                 },
-                didDrawPage: (data) => {
-                    const pageCount = doc.internal.getNumberOfPages();
-                    doc.setFontSize(9);
-                    doc.text(`Page ${doc.internal.getCurrentPageInfo().pageNumber} of ${pageCount}`, data.settings.margin.left, doc.internal.pageSize.height - 10);
+                styles: {
+                    fontSize: 9,
+                    cellPadding: 3
                 }
             });
-        };
 
-        img.onload = () => {
-            try {
-                doc.addImage(img, 'PNG', 10, 10, 30, 30);
-            } catch (e) {
-                console.error("Error adding image to PDF:", e);
-                toast.warn("Could not add logo to the report.");
-            }
-            generatePdf();
-        };
-
-        img.onerror = () => {
-            console.error("Logo image could not be loaded for PDF generation.");
-            toast.error("Failed to load logo. Report will be generated without it.");
-            generatePdf();
-        };
-
-        const today = new Date();
-        const formattedDate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-        const fileName = `Emergency Report (${formattedDate}).pdf`;
-
-        img.onload();
-        doc.save(fileName);
+            doc.save('emergency_report.pdf');
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            toast.error('Failed to generate PDF report');
+        }
     };
 
-    const filteredEmergencies = emergencies.filter(emergency => {
-        const searchMatch = emergency.vehicleNumber?.toLowerCase().includes(searchTerm.toLowerCase()) || emergency.name.toLowerCase().includes(searchTerm.toLowerCase());
-        const vehicleMatch = vehicleFilter ? emergency.vehicleType === vehicleFilter : true;
-        const dateMatch = dateFilter ? (emergency.date && new Date(emergency.date).toLocaleDateString() === new Date(dateFilter).toLocaleDateString()) : true;
-        const statusMatch = statusFilter ? emergency.status === statusFilter : true;
-        return searchMatch && vehicleMatch && dateMatch && statusMatch;
-    });
+    const resetFilters = () => {
+        setSearchTerm('');
+        setStatusFilter('');
+    };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-purple-400 via-indigo-500 to-blue-600">
-            <div className="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-7xl">
-                <h2 className="text-4xl font-bold mb-10 text-center text-indigo-700">Emergency List</h2>
-
-                <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
-                    <div className="flex flex-wrap gap-2">
-                        <select value={vehicleFilter} onChange={(e) => setVehicleFilter(e.target.value)} className="p-2 border rounded-lg bg-white shadow-sm hover:shadow-md transition-all duration-200">
-                            <option value="">All Vehicle Types</option>
-                            <option value="car">Car</option>
-                            <option value="motorcycle">Motorcycle</option>
-                            <option value="bus">Bus</option>
-                            <option value="truck">Truck</option>
-                            <option value="van">Van</option>
-                            <option value="other">Other</option>
-                        </select>
-                        <input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)} className="p-2 border rounded-lg bg-white shadow-sm hover:shadow-md transition-all duration-200" />
-                        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="p-2 border rounded-lg bg-white shadow-sm hover:shadow-md transition-all duration-200">
-                            <option value="">All Statuses</option>
-                            <option value="pending">Pending</option>
-                            <option value="Processing">Processing</option>
-                            <option value="completed">Completed</option>
-                        </select>
-                    </div>
-                    <div className="relative w-full md:w-auto">
-                        <input
-                            ref={searchInputRef}
-                            type="text"
-                            placeholder="Search by Vehicle Number or Name"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="p-3 pl-10 border border-gray-300 rounded-lg w-full bg-white shadow-sm hover:shadow-md transition-all duration-200 focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                        />
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <FaSearch className="h-5 w-5 text-gray-400" />
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
+            <div className="max-w-7xl mx-auto">
+                <div className="bg-white rounded-2xl shadow-xl p-8 backdrop-blur-sm bg-opacity-90">
+                    <div className="flex justify-between items-center mb-10">
+                        <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
+                            Emergency Service Management
+                        </h2>
+                        <div className="flex gap-4">
+                            <Link 
+                                to="/emergency-form" 
+                                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300"
+                            >
+                                <FaPlus className="mr-2" /> Add New Request
+                            </Link>
+                            <button
+                                onClick={handleDownload}
+                                className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300"
+                            >
+                                <FaDownload className="mr-2" /> Download Report
+                            </button>
                         </div>
                     </div>
-                </div>
 
-                <div className="overflow-x-auto">
-                    <table className="min-w-full bg-white rounded-lg shadow-md">
-                        <thead>
-                            <tr className="bg-gray-100">
-                                <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Request No</th>
-                                <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Photos</th>
-                                <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Name</th>
-                                <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Contact</th>
-                                <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Address</th>
-                                <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Vehicle Type</th>
-                                <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Color</th>
-                                <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Emergency Type</th>
-                                <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Description</th>
-                                <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Status</th>
-                                <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Vehicle No</th>
-                                <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Date</th>
-                                <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Time</th>
-                                <th className="py-3 px-4 md:px-6 border-b text-left text-sm md:text-lg font-semibold text-gray-700">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredEmergencies.length > 0 ? (
-                                filteredEmergencies.map((emergency) => {
-                                    console.log('Rendering emergency:', emergency);
-                                    console.log('Emergency photos:', emergency.photos);
-                                    return (
-                                        <tr key={emergency._id} className="hover:bg-gray-50">
-                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.emergencyRequestNo}</td>
-                                            <td className="py-3 px-4 md:px-6 border-b">
+                    <div className="mb-8 bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <div className="flex flex-wrap gap-6 items-center">
+                            <div className="flex-1 min-w-[250px]">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        placeholder="Search by vehicle no., name or contact..."
+                                        className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                                    />
+                                    <FaSearch className="absolute left-4 top-4 text-gray-400" />
+                                </div>
+                            </div>
+
+                            <div className="flex-1 min-w-[250px]">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                                <select
+                                    value={statusFilter}
+                                    onChange={(e) => setStatusFilter(e.target.value)}
+                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                                >
+                                    {statusOptions.map((status) => (
+                                        <option key={status.value} value={status.value}>
+                                            {status.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="flex items-end">
+                                <button
+                                    onClick={resetFilters}
+                                    className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300"
+                                >
+                                    <FaFilter className="mr-2" /> Reset Filters
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {error ? (
+                        <div className="text-center py-12 bg-red-50 rounded-xl shadow-lg">
+                            <p className="text-red-600 text-lg">{error}</p>
+                            <button
+                                onClick={fetchData}
+                                className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg"
+                            >
+                                Retry
+                            </button>
+                        </div>
+                    ) : loading ? (
+                        <div className="text-center py-12">
+                            <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent mx-auto"></div>
+                            <p className="mt-4 text-gray-600 text-lg">Loading emergency requests...</p>
+                        </div>
+                    ) : filteredEmergency.length === 0 ? (
+                        <div className="text-center py-12 bg-white rounded-xl shadow-lg">
+                            <p className="text-gray-600 text-lg">No emergency requests found</p>
+                        </div>
+                    ) : (
+                        <div className="overflow-x-auto rounded-xl shadow-lg">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gradient-to-r from-blue-600 to-indigo-600">
+                                    <tr>
+                                        <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Request No</th>
+                                        <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Photos</th>
+                                        <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Name</th>
+                                        <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Contact</th>
+                                        <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Address</th>
+                                        <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Vehicle Type</th>
+                                        <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Color</th>
+                                        <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Emergency Type</th>
+                                        <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Description</th>
+                                        <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Status</th>
+                                        <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Vehicle No</th>
+                                        <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Date</th>
+                                        <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Time</th>
+                                        <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {filteredEmergency.map((item) => (
+                                        <tr key={item._id} className="hover:bg-gray-50 transition-colors duration-200">
+                                            <td className="px-8 py-4 whitespace-nowrap text-gray-900 font-medium">{item.emergencyRequestNo || 'N/A'}</td>
+                                            <td className="px-8 py-4 whitespace-nowrap">
                                                 <div className="flex space-x-2">
-                                                    {emergency.photos && emergency.photos.length > 0 ? (
+                                                    {item.photos && item.photos.length > 0 ? (
                                                         <div className="flex flex-wrap gap-2">
-                                                            {emergency.photos.map((photo, index) => (
+                                                            {item.photos.map((photo, index) => (
                                                                 <div key={index} className="relative group">
                                                                     <img
                                                                         src={photo}
@@ -243,86 +272,65 @@ const EmergencyList = () => {
                                                     )}
                                                 </div>
                                             </td>
-                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
-                                                <Link to={`/emergency/${emergency._id}`} className="text-blue-600 hover:text-blue-800 hover:underline">
-                                                    {emergency.name}
+                                            <td className="px-8 py-4 whitespace-nowrap text-gray-900 font-medium">
+                                                <Link to={`/emergency/${item._id}`} className="text-blue-600 hover:text-blue-800 hover:underline">
+                                                    {item.customerName || 'N/A'}
                                                 </Link>
                                             </td>
-                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.contactNumber}</td>
-                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.location?.address || 'N/A'}</td>
-                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.vehicleType}</td>
-                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
+                                            <td className="px-8 py-4 whitespace-nowrap text-gray-900">{item.contactNumber || 'N/A'}</td>
+                                            <td className="px-8 py-4 whitespace-nowrap text-gray-900">
+                                                {typeof item.location === 'object' 
+                                                    ? item.location.address || 'N/A'
+                                                    : item.location || 'N/A'}
+                                            </td>
+                                            <td className="px-8 py-4 whitespace-nowrap text-gray-900">{item.vehicleType || 'N/A'}</td>
+                                            <td className="px-8 py-4 whitespace-nowrap text-gray-900">
                                                 <div className="flex items-center space-x-2">
                                                     <div
                                                         className="w-6 h-6 rounded-full border border-gray-200"
-                                                        style={{ backgroundColor: emergency.vehicleColor }}
+                                                        style={{ backgroundColor: item.vehicleColor }}
                                                     ></div>
-                                                    <span>{emergency.vehicleColor}</span>
+                                                    <span>{item.vehicleColor || 'N/A'}</span>
                                                 </div>
                                             </td>
-                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.emergencyType}</td>
-                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.description}</td>
-                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
-                                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                                    emergency.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                                    emergency.status === 'Processing' ? 'bg-blue-100 text-blue-800' :
+                                            <td className="px-8 py-4 whitespace-nowrap text-gray-900">{item.emergencyType || 'N/A'}</td>
+                                            <td className="px-8 py-4 text-gray-900">{item.issueDescription || 'N/A'}</td>
+                                            <td className="px-8 py-4 whitespace-nowrap">
+                                                <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                                    item.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                                    item.status === 'Processing' ? 'bg-blue-100 text-blue-800' :
                                                     'bg-green-100 text-green-800'
                                                 }`}>
-                                                    {emergency.status}
+                                                    {item.status || 'Unknown'}
                                                 </span>
                                             </td>
-                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.vehicleNumber || 'N/A'}</td>
-                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
-                                                {emergency.date ? new Date(emergency.date).toLocaleDateString() : 'N/A'}
+                                            <td className="px-8 py-4 whitespace-nowrap text-gray-900">{item.vehicleNumber || 'N/A'}</td>
+                                            <td className="px-8 py-4 whitespace-nowrap text-gray-900">
+                                                {item.date ? new Date(item.date).toLocaleDateString() : 'N/A'}
                                             </td>
-                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">{emergency.time}</td>
-                                            <td className="py-3 px-4 md:px-6 border-b text-sm md:text-base">
-                                                <div className="flex space-x-2">
+                                            <td className="px-8 py-4 whitespace-nowrap text-gray-900">{item.time || 'N/A'}</td>
+                                            <td className="px-8 py-4 whitespace-nowrap">
+                                                <div className="flex space-x-3">
                                                     <button
-                                                        onClick={() => handleUpdate(emergency._id)}
-                                                        className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all duration-200"
-                                                        title="Update"
+                                                        onClick={() => handleEdit(item._id)}
+                                                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300"
                                                     >
-                                                        <FaEdit size={18} />
+                                                        <FaEdit className="mr-2" /> Edit
                                                     </button>
                                                     <button
-                                                        onClick={() => handleDelete(emergency._id)}
-                                                        className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all duration-200"
-                                                        title="Delete"
+                                                        onClick={() => handleDelete(item._id)}
+                                                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300"
                                                     >
-                                                        <FaTrash size={18} />
+                                                        <FaTrash className="mr-2" /> Delete
                                                     </button>
                                                 </div>
                                             </td>
                                         </tr>
-                                    );
-                                })
-                            ) : (
-                                <tr>
-                                    <td colSpan="14" className="text-center py-4 text-gray-500">
-                                        No matching emergencies found.
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-
-                <div className="flex flex-col md:flex-row justify-between mt-6 gap-4">
-                    <button
-                        onClick={handleBack}
-                        className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 md:py-3 md:px-6 rounded-lg flex items-center justify-center"
-                        title="Back to Login"
-                    >
-                        <FaArrowLeft />
-                    </button>
-                    <button
-                        onClick={handleDownload}
-                        className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 md:py-3 md:px-6 rounded-lg flex items-center justify-center"
-                        title="Download"
-                    >
-                        <FaDownload />
-                    </button>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
