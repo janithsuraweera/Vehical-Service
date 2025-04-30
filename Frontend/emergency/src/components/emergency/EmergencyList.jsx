@@ -3,7 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, Link } from 'react-router-dom';
-import { FaEdit, FaTrash, FaSearch, FaFilter, FaPlus, FaDownload, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaSearch, FaFilter, FaDownload, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -196,12 +196,6 @@ const EmergencyList = () => {
                                 {showRequestNo ? <FaEyeSlash className="mr-2" /> : <FaEye className="mr-2" />}
                                 {showRequestNo ? 'Hide Request No' : 'Show Request No'}
                             </button>
-                            <Link 
-                                to="/emergency-form" 
-                                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300"
-                            >
-                                <FaPlus className="mr-2" /> Add New Request
-                            </Link>
                             <button
                                 onClick={handleDownload}
                                 className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300"
