@@ -28,17 +28,13 @@ const UpdateVehicleForm = () => {
     useEffect(() => {
         const fetchVehicle = async () => {
             try {
-                // Making a GET request to fetch vehicle data
-                const response = await axios.get(`http://localhost:5000/api/vehicles/${id}`);
-                // Update form data state with fetched data
+                const response = await axios.get(`http://localhost:5000/api/vehicle-registration/${id}`);
                 setFormData(response.data);
             } catch (error) {
-                // Log error and display toast message
                 console.error('Error fetching vehicle data:', error);
                 toast.error('Failed to load vehicle data.');
             }
         };
-        // Calling fetchVehicle function
         fetchVehicle();
     }, [id]);
 
