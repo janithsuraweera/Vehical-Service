@@ -9,23 +9,49 @@ const emergencyRoutes = require('./routes/emergencyRoutes');
 const vehicleRegistrationRequestRoutes = require('./routes/vehicleRegistrationRequestRoutes');
 const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
+const fs = require('fs');
 
 require('dotenv').config();
 
 const app = express();
+
+// Connect to MongoDB
+connectDB();
+
+// Middleware
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve static files from the uploads directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Create uploads directory if it doesn't exist
+const uploadsDir = path.join(__dirname, 'uploads');
+const inventoryDir = path.join(uploadsDir, 'inventory');
+const emergencyDir = path.join(uploadsDir, 'emergency');
 
-connectDB(); // Connect to MongoDB
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+if (!fs.existsSync(inventoryDir)) {
+    fs.mkdirSync(inventoryDir, { recursive: true });
+}
+if (!fs.existsSync(emergencyDir)) {
+    fs.mkdirSync(emergencyDir, { recursive: true });
+}
+
+// Serve static files from uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg') || filePath.endsWith('.png')) {
+            res.setHeader('Content-Type', 'image/jpeg');
+        }
+    }
+}));
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/emergency', emergencyRoutes);
 app.use('/api/inventory', inventoryRoutes);
+app.use('/api/emergency', emergencyRoutes);
 app.use('/api/vehicle-registration', vehicleRegistrationRequestRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 
 app.get('/', (req, res) => {res.send('Welcome DB');
