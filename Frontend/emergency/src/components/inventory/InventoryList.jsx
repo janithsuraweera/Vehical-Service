@@ -111,9 +111,9 @@ const InventoryList = () => {
                 <div className="flex justify-between items-center mb-8">
                     <h2 className="text-4xl font-bold text-green-700">Inventory Management</h2>
                     <div className="flex gap-4">
-                        <button onClick={handleAddNew} className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center">
+                        <Link to="/inventory-form" className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center">
                             <FaPlus className="mr-2" /> Add New Item
-                        </button>
+                        </Link>
                         <button onClick={handleDownload} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center">
                             <FaDownload className="mr-2" /> Download Report
                         </button>
@@ -161,6 +161,9 @@ const InventoryList = () => {
                 </div>
 
                 <div className="overflow-x-auto">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-2xl font-semibold">Inventory List</h2>
+                    </div>
                     <table className="min-w-full bg-white rounded-lg shadow-md">
                         <thead>
                             <tr className="bg-gray-100">
