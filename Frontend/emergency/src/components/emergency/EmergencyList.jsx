@@ -239,9 +239,12 @@ const EmergencyList = () => {
                             </button>
                             <button
                                 onClick={handleDownload}
-                                className={`bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-2 px-4 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300`}
+                                className={`bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-2 px-2 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300 group w-10 hover:w-40 overflow-hidden`}
                             >
-                                <FaDownload className="mr-2" /> Download Report
+                                <FaDownload className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
+                                <span className="absolute opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-5 whitespace-nowrap">
+                                    Download Report
+                                </span>
                             </button>
                         </div>
                     </div>
