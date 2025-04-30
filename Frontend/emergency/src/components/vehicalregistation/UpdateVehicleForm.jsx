@@ -15,11 +15,12 @@ const UpdateVehicleForm = () => {
     // Initialize form data state
     const [formData, setFormData] = useState({
         _id: id,
+        name: '',
+        customerNIC: '',
         vehicleNumber: '',
         vehicleType: '',
+        vehicleModel: '',
         vehicleColor: '',
-        ownerName: '',
-        ownerContact: '',
     });
     // Initializing error state
     const [errors, setErrors] = useState({});
@@ -41,88 +42,61 @@ const UpdateVehicleForm = () => {
     // Handling form input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
-        // Handle contact number input, allowing only numeric value
-        if (name === 'ownerContact') {
-            const numericValue = value.replace(/[^0-9]/g, '');
-            setFormData({ ...formData, [name]: numericValue.slice(0, 10) });
-        }
-        // Handle vehicle number input, limiting to 6 characters
-        else if (name === 'vehicleNumber') {
-            setFormData({ ...formData, [name]: value.slice(0, 6) });
-        }
-        // Handling the other form input fields
-        else {
-
-            setFormData({ ...formData, [name]: value });
-        }
-        // Clears the corresponding error message
+        setFormData({ ...formData, [name]: value });
         setErrors({ ...errors, [name]: '' });
     };
 
     // Handling form submissions
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Initialize error object and validation flag
         let formErrors = {};
         let isValid = true;
 
-        // Validate vehicle number
+        if (!formData.name.trim()) {
+            formErrors.name = 'Name is required.';
+            isValid = false;
+        }
+
+        if (!formData.customerNIC.trim()) {
+            formErrors.customerNIC = 'Customer NIC is required.';
+            isValid = false;
+        }
+
         if (!formData.vehicleNumber.trim()) {
             formErrors.vehicleNumber = 'Vehicle number is required.';
             isValid = false;
         }
 
-        // Validate vehicle color
-        if (!formData.vehicleColor.trim()) {
-            formErrors.vehicleColor = 'Vehicle color is required.';
-            isValid = false;
-        }
-
-        // Validate owner's name
-        if (!formData.ownerName.trim()) {
-            formErrors.ownerName = 'Owner name is required.';
-            isValid = false;
-        } else if (!/^[A-Za-z\s]+$/.test(formData.ownerName)) {
-            formErrors.ownerName = 'Owner name should contain only English letters.';
-            isValid = false;
-        }
-
-        // Validate owner's contact number
-        if (!formData.ownerContact.trim()) {
-            formErrors.ownerContact = 'Owner contact number is required.';
-            isValid = false;
-        } else if (formData.ownerContact.length !== 10) {
-            formErrors.ownerContact = 'Owner contact number should be 10 digits.';
-            isValid = false;
-        }
-
-        // Validate vehicle type 
         if (!formData.vehicleType) {
             formErrors.vehicleType = 'Vehicle type is required.';
             isValid = false;
         }
 
-        // Update error state
+        if (!formData.vehicleModel) {
+            formErrors.vehicleModel = 'Vehicle model is required.';
+            isValid = false;
+        }
+
+        if (!formData.vehicleColor.trim()) {
+            formErrors.vehicleColor = 'Vehicle color is required.';
+            isValid = false;
+        }
+
         setErrors(formErrors);
 
-        // If form is invalid, return
         if (!isValid) {
             return;
         }
 
         try {
-            // Making a PUT request to update vehicle data
-            await axios.put(`http://localhost:5000/api/vehicles/${id}`, formData);
-            // Display a success toast message and navigate to vehicle list
+            await axios.put(`http://localhost:5000/api/vehicle-registration/${id}`, formData);
             toast.success('Vehicle information updated successfully!');
-            navigate('/vehicle-list');
+            navigate('/view-registrations');
         } catch (error) {
-            // Handle API errors
             if (error.response && error.response.data && error.response.data.errors) {
                 const errorData = error.response.data.errors.reduce((acc, err) => ({ ...acc, [err.path]: err.msg }), {});
                 setErrors(errorData);
             } else {
-                // Display generic error toast message
                 toast.error('Failed to update vehicle information.');
             }
         }
@@ -147,15 +121,30 @@ const UpdateVehicleForm = () => {
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label htmlFor="_id" className="block font-medium mb-1">ID</label>
+                        <label htmlFor="name" className="block font-medium mb-1">Name</label>
                         <input
                             type="text"
-                            id="_id"
-                            name="_id"
-                            value={formData._id}
-                            disabled
+                            id="name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
                             className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+                            placeholder="Enter your name"
                         />
+                        {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                    </div>
+                    <div>
+                        <label htmlFor="customerNIC" className="block font-medium mb-1">Customer NIC</label>
+                        <input
+                            type="text"
+                            id="customerNIC"
+                            name="customerNIC"
+                            value={formData.customerNIC}
+                            onChange={handleChange}
+                            className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+                            placeholder="Enter customer NIC"
+                        />
+                        {errors.customerNIC && <p className="text-red-500 text-sm mt-1">{errors.customerNIC}</p>}
                     </div>
                     <div>
                         <label htmlFor="vehicleNumber" className="block font-medium mb-1">Vehicle Number</label>
@@ -166,7 +155,7 @@ const UpdateVehicleForm = () => {
                             value={formData.vehicleNumber}
                             onChange={handleChange}
                             className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                            placeholder="Enter vehicle number (max 6 characters)"
+                            placeholder="Enter vehicle number"
                         />
                         {errors.vehicleNumber && <p className="text-red-500 text-sm mt-1">{errors.vehicleNumber}</p>}
                     </div>
@@ -190,6 +179,26 @@ const UpdateVehicleForm = () => {
                         {errors.vehicleType && <p className="text-red-500 text-sm mt-1">{errors.vehicleType}</p>}
                     </div>
                     <div>
+                        <label htmlFor="vehicleModel" className="block font-medium mb-1">Vehicle Model</label>
+                        <select
+                            id="vehicleModel"
+                            name="vehicleModel"
+                            value={formData.vehicleModel}
+                            onChange={handleChange}
+                            className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+                        >
+                            <option value="">Select Vehicle Model</option>
+                            <option value="Toyota">Toyota</option>
+                            <option value="Honda">Honda</option>
+                            <option value="Nissan">Nissan</option>
+                            <option value="Suzuki">Suzuki</option>
+                            <option value="BMW">BMW</option>
+                            <option value="Benz">Benz</option>
+                            <option value="other">Other</option>
+                        </select>
+                        {errors.vehicleModel && <p className="text-red-500 text-sm mt-1">{errors.vehicleModel}</p>}
+                    </div>
+                    <div>
                         <label htmlFor="vehicleColor" className="block font-medium mb-1">Vehicle Color</label>
                         <div className="flex items-center space-x-4">
                             <input
@@ -203,32 +212,6 @@ const UpdateVehicleForm = () => {
                             <span className="text-gray-700">{formData.vehicleColor || '#000000'}</span>
                         </div>
                         {errors.vehicleColor && <p className="text-red-500 text-sm mt-1">{errors.vehicleColor}</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="ownerName" className="block font-medium mb-1">Owner Name</label>
-                        <input
-                            type="text"
-                            id="ownerName"
-                            name="ownerName"
-                            value={formData.ownerName}
-                            onChange={handleChange}
-                            className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                            placeholder="Enter owner name"
-                        />
-                        {errors.ownerName && <p className="text-red-500 text-sm mt-1">{errors.ownerName}</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="ownerContact" className="block font-medium mb-1">Owner Contact Number</label>
-                        <input
-                            type="text"
-                            id="ownerContact"
-                            name="ownerContact"
-                            value={formData.ownerContact}
-                            onChange={handleChange}
-                            className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-                            placeholder="Enter owner contact number"
-                        />
-                        {errors.ownerContact && <p className="text-red-500 text-sm mt-1">{errors.ownerContact}</p>}
                     </div>
                     <button
                         type="submit"
