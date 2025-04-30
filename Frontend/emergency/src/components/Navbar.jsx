@@ -90,10 +90,18 @@ const Navbar = () => {
                                         <FaExclamationTriangle className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                     </Link>
                                 )}
-                                <Link to="/rvhome" className={getTabStyle('register')}>
-                                    <span className="group-hover:opacity-0 transition-opacity duration-300">Register</span>
-                                    <FaCar className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
-                                </Link>
+                                {user && user.role !== 'admin' && (
+                                    <Link to="/registrationform" className={getTabStyle('register')}>
+                                        <span className="group-hover:opacity-0 transition-opacity duration-300">Vehicle Register</span>
+                                        <FaCar className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
+                                    </Link>
+                                )}
+                                {user.role === 'admin' && (
+                                    <Link to="/view-registrations" className={getTabStyle('view-registrations')}>
+                                        <span className="group-hover:opacity-0 transition-opacity duration-300">Vehicle Registrations</span>
+                                        <FaListAlt className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
+                                    </Link>
+                                )}
                                 <Link to="/vehicle-errors" className={getTabStyle('vehicle-errors')}>
                                     <span className="group-hover:opacity-0 transition-opacity duration-300">Vehicle Errors</span>
                                     <FaWrench className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
