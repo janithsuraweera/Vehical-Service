@@ -20,15 +20,21 @@ const inventoryRequestSchema = new mongoose.Schema({
     },
     productDescription: {
         type: String,
+        required: true,
     },
     productImage: {
-        type: String, // This will store the image path or URL
+        type: String, // This will store the image path
+    },
+    category: {
+        type: String,
+        required: true,
+        enum: ['oils', 'vehicle lights', 'shock absorbers', 'tire', 'other']
     },
     createdAt: {
         type: Date,
         default: Date.now,
     },
-}, { timestamps: false }); // timestamps option is set to false to disable createdAt and updatedAt fields
+}, { timestamps: false });
 
 module.exports = mongoose.model('InventoryRequest', inventoryRequestSchema);
 //test new one again
