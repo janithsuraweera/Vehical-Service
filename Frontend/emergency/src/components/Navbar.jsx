@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useDarkMode } from '../context/DarkModeContext';
-import { FaHome, FaStore, FaExclamationTriangle, FaCar, FaWrench, FaInfoCircle, FaUser, FaSignOutAlt, FaMoon, FaSun, FaShoppingCart } from 'react-icons/fa';
+import { FaHome, FaStore, FaExclamationTriangle, FaCar, FaWrench, FaInfoCircle, FaUser, FaSignOutAlt, FaMoon, FaSun, FaShoppingCart, FaListAlt } from 'react-icons/fa';
 import logo from '/logo.png';
 const Navbar = () => {
     const [showDropdown, setShowDropdown] = useState(false);
@@ -69,6 +69,12 @@ const Navbar = () => {
                                     <Link to="/inventory" className={getTabStyle('store')}>
                                         <span className="group-hover:opacity-0 transition-opacity duration-300">Store</span>
                                         <FaStore className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
+                                    </Link>
+                                )}
+                                {user.role === 'admin' && (
+                                    <Link to="/inventory-list" className={getTabStyle('inventory-list')}>
+                                        <span className="group-hover:opacity-0 transition-opacity duration-300">Inventory List</span>
+                                        <FaListAlt className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                     </Link>
                                 )}
                                 {user.role === 'admin' ? (
