@@ -10,7 +10,6 @@ const AdminDashboard = () => {
     const [stats, setStats] = useState({
         totalUsers: 0,
         totalServices: 0,
-        totalBookings: 0,
         totalVehicles: 0,
         totalEmergencies: 0,
         totalErrors: 0,
@@ -39,7 +38,6 @@ const AdminDashboard = () => {
                 totalEmergencies: Array.isArray(emergenciesRes.data) ? emergenciesRes.data.length : 0,
                 totalErrors: 0,
                 totalInventory: Array.isArray(inventoryRes.data) ? inventoryRes.data.length : 0,
-                totalBookings: 0
             });
         } catch (error) {
             console.error('Error fetching stats:', error);
@@ -103,13 +101,6 @@ const AdminDashboard = () => {
             color: 'bg-purple-500',
             link: '/inventory-list',
             description: 'View and manage inventory items'
-        },
-        {
-            title: 'Total Bookings',
-            value: stats.totalBookings,
-            icon: <FaChartLine className="h-8 w-8" />,
-            color: 'bg-indigo-500',
-            link: '/bookings'
         }
     ];
 
