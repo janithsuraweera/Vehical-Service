@@ -1,32 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { FaUsers, FaTools, FaClipboardList, FaCar, FaExclamationTriangle, FaChartLine } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 
 const AdminDashboard = () => {
     const { user } = useAuth();
-    const [totalUsers, setTotalUsers] = useState(0);
+    const [stats, setStats] = useState({
+        totalUsers: 0,
+        totalServices: 0,
+        totalBookings: 0,
+        totalVehicles: 0,
+        totalEmergencies: 0,
+        totalErrors: 0
+    });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchTotalUsers = async () => {
+        const fetchStats = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/users/count', {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
+                const token = localStorage.getItem('token');
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                };
+
+                const [usersRes, vehiclesRes, emergenciesRes, errorsRes] = await Promise.all([
+                    axios.get('http://localhost:5000/api/users/count', { headers }),
+                    axios.get('http://localhost:5000/api/vehicle-registration/count', { headers }),
+                    axios.get('http://localhost:5000/api/emergency/count', { headers }),
+                    axios.get('http://localhost:5000/api/vehicle-errors/count', { headers })
+                ]);
+
+                setStats({
+                    totalUsers: usersRes.data.count,
+                    totalVehicles: vehiclesRes.data.count,
+                    totalEmergencies: emergenciesRes.data.count,
+                    totalErrors: errorsRes.data.count,
+                    totalServices: 0, // Placeholder for future implementation
+                    totalBookings: 0  // Placeholder for future implementation
                 });
-                setTotalUsers(response.data.count);
                 setLoading(false);
             } catch (error) {
-                console.error('Error fetching total users:', error);
-                setError('Error fetching total users');
+                console.error('Error fetching stats:', error);
+                setError('Error fetching dashboard data');
                 setLoading(false);
             }
         };
 
-        fetchTotalUsers();
+        fetchStats();
     }, []);
 
     // Redirect if not admin
@@ -34,90 +58,150 @@ const AdminDashboard = () => {
         return <Navigate to="/" replace />;
     }
 
+    const statCards = [
+        {
+            title: 'Total Users',
+            value: stats.totalUsers,
+            icon: <FaUsers className="h-8 w-8" />,
+            color: 'bg-blue-500',
+            link: '/admin/users'
+        },
+        {
+            title: 'Vehicle Errors',
+            value: stats.totalErrors,
+            icon: <FaExclamationTriangle className="h-8 w-8" />,
+            color: 'bg-red-500',
+            link: '/vehicle-errors'
+        },
+        {
+            title: 'Emergency Cases',
+            value: stats.totalEmergencies,
+            icon: <FaClipboardList className="h-8 w-8" />,
+            color: 'bg-yellow-500',
+            link: '/emergencylist'
+        },
+        {
+            title: 'Registered Vehicles',
+            value: stats.totalVehicles,
+            icon: <FaCar className="h-8 w-8" />,
+            color: 'bg-green-500',
+            link: '/view-registrations'
+        },
+        {
+            title: 'Total Services',
+            value: stats.totalServices,
+            icon: <FaTools className="h-8 w-8" />,
+            color: 'bg-purple-500',
+            link: '/services'
+        },
+        {
+            title: 'Total Bookings',
+            value: stats.totalBookings,
+            icon: <FaChartLine className="h-8 w-8" />,
+            color: 'bg-indigo-500',
+            link: '/bookings'
+        }
+    ];
+
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
             <div className="py-6">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-                    <h1 className="text-2xl font-semibold text-gray-900">Admin Dashboard</h1>
-                </div>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-                    <div className="py-4">
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                            {/* Users Card */}
-                            <div className="bg-white overflow-hidden shadow rounded-lg">
-                                <div className="p-5">
-                                    <div className="flex items-center">
-                                        <div className="flex-shrink-0">
-                                            <svg className="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                            </svg>
-                                        </div>
-                                        <div className="ml-5 w-0 flex-1">
-                                            <dl>
-                                                <dt className="text-sm font-medium text-gray-500 truncate">
-                                                    Total Users
-                                                </dt>
-                                                <dd className="flex items-baseline">
-                                                    <div className="text-2xl font-semibold text-gray-900">
-                                                        {loading ? 'Loading...' : error ? 'Error' : totalUsers}
-                                                    </div>
-                                                </dd>
-                                            </dl>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="mb-8">
+                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Admin Dashboard</h1>
+                        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                            Welcome back, {user.username}! Here's an overview of your system.
+                        </p>
+                    </div>
 
-                            {/* Services Card */}
-                            <div className="bg-white overflow-hidden shadow rounded-lg">
-                                <div className="p-5">
-                                    <div className="flex items-center">
-                                        <div className="flex-shrink-0">
-                                            <svg className="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                            </svg>
-                                        </div>
-                                        <div className="ml-5 w-0 flex-1">
-                                            <dl>
-                                                <dt className="text-sm font-medium text-gray-500 truncate">
-                                                    Total Services
-                                                </dt>
-                                                <dd className="flex items-baseline">
-                                                    <div className="text-2xl font-semibold text-gray-900">
-                                                        0
-                                                    </div>
-                                                </dd>
-                                            </dl>
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        {statCards.map((card, index) => (
+                            <motion.div
+                                key={index}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, delay: index * 0.1 }}
+                            >
+                                <Link to={card.link}>
+                                    <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg hover:shadow-lg transition-shadow duration-300">
+                                        <div className="p-5">
+                                            <div className="flex items-center">
+                                                <div className={`flex-shrink-0 ${card.color} rounded-md p-3 text-white`}>
+                                                    {card.icon}
+                                                </div>
+                                                <div className="ml-5 w-0 flex-1">
+                                                    <dl>
+                                                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                                                            {card.title}
+                                                        </dt>
+                                                        <dd className="flex items-baseline">
+                                                            <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+                                                                {loading ? '...' : error ? 'Error' : card.value}
+                                                            </div>
+                                                        </dd>
+                                                    </dl>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+                                </Link>
+                            </motion.div>
+                        ))}
+                    </div>
 
-                            {/* Bookings Card */}
-                            <div className="bg-white overflow-hidden shadow rounded-lg">
-                                <div className="p-5">
-                                    <div className="flex items-center">
-                                        <div className="flex-shrink-0">
-                                            <svg className="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                        </div>
-                                        <div className="ml-5 w-0 flex-1">
-                                            <dl>
-                                                <dt className="text-sm font-medium text-gray-500 truncate">
-                                                    Total Bookings
-                                                </dt>
-                                                <dd className="flex items-baseline">
-                                                    <div className="text-2xl font-semibold text-gray-900">
-                                                        0
-                                                    </div>
-                                                </dd>
-                                            </dl>
-                                        </div>
-                                    </div>
+                    <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.5 }}
+                            className="bg-white dark:bg-gray-800 shadow rounded-lg p-6"
+                        >
+                            <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Quick Actions</h2>
+                            <div className="grid grid-cols-2 gap-4">
+                                <Link
+                                    to="/vehicle-errors"
+                                    className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+                                >
+                                    <FaExclamationTriangle className="h-6 w-6 text-blue-500 mb-2" />
+                                    <span className="text-sm font-medium text-gray-900 dark:text-white">Manage Errors</span>
+                                </Link>
+                                <Link
+                                    to="/emergencylist"
+                                    className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg hover:bg-yellow-100 dark:hover:bg-yellow-900/30 transition-colors"
+                                >
+                                    <FaClipboardList className="h-6 w-6 text-yellow-500 mb-2" />
+                                    <span className="text-sm font-medium text-gray-900 dark:text-white">View Emergencies</span>
+                                </Link>
+                                <Link
+                                    to="/view-registrations"
+                                    className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors"
+                                >
+                                    <FaCar className="h-6 w-6 text-green-500 mb-2" />
+                                    <span className="text-sm font-medium text-gray-900 dark:text-white">Vehicle Registrations</span>
+                                </Link>
+                                <Link
+                                    to="/inventory-list"
+                                    className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
+                                >
+                                    <FaTools className="h-6 w-6 text-purple-500 mb-2" />
+                                    <span className="text-sm font-medium text-gray-900 dark:text-white">Inventory</span>
+                                </Link>
+                            </div>
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.5 }}
+                            className="bg-white dark:bg-gray-800 shadow rounded-lg p-6"
+                        >
+                            <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Recent Activity</h2>
+                            <div className="space-y-4">
+                                <div className="text-sm text-gray-500 dark:text-gray-400">
+                                    No recent activity to display
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
                 </div>
             </div>
