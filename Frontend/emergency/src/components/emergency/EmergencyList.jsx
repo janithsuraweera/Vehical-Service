@@ -369,7 +369,6 @@ const EmergencyList = () => {
                                                 </button>
                                             </div>
                                         </th>
-                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Photos</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-40">Name</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Contact</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-48">Address</th>
@@ -389,32 +388,6 @@ const EmergencyList = () => {
                                         <tr key={item._id} className={`transition-colors duration-200 group ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
                                             <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'}`}>
                                                 {showRequestNo ? (item.emergencyRequestNo || 'N/A') : ' '}
-                                            </td>
-                                            <td className="px-4 py-3 whitespace-nowrap">
-                                                <div className="flex space-x-2">
-                                                    {item.photos && item.photos.length > 0 ? (
-                                                        <div className="flex flex-wrap gap-2">
-                                                            {item.photos.map((photo, index) => (
-                                                                <div key={index} className="relative group">
-                                                                    <img
-                                                                        src={photo}
-                                                                        alt={`Emergency photo ${index + 1}`}
-                                                                        className="w-12 h-12 object-cover rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-110"
-                                                                        onClick={() => window.open(photo, '_blank')}
-                                                                        onError={(e) => {
-                                                                            console.error('Error loading image:', photo);
-                                                                            e.target.src = '/error-image.png';
-                                                                            e.target.onerror = null;
-                                                                        }}
-                                                                    />
-                                                                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 rounded-lg transition-all duration-200"></div>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    ) : (
-                                                        <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-400'} italic`}>No photos</span>
-                                                    )}
-                                                </div>
                                             </td>
                                             <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'}`}>
                                                 <Link to={`/emergency/${item._id}`} className={`${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'} hover:underline group-hover:text-blue-700 transition-colors duration-200`}>
