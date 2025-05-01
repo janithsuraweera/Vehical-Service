@@ -409,9 +409,9 @@ const EmergencyList = () => {
                                                 {item.contactNumber || 'N/A'}
                                             </td>
                                             <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
-                                                <div className="flex items-center space-x-2">
+                                                <div className="flex items-center justify-center space-x-2">
                                                     {typeof item.location === 'object' ? (
-                                                        <div className="flex items-center space-x-2">
+                                                        <div className={`flex items-center ${showAddress ? 'justify-start' : 'justify-center w-full'} space-x-2`}>
                                                             {showAddress && <span>{item.location.address || 'N/A'}</span>}
                                                             <button
                                                                 onClick={() => {
@@ -421,11 +421,11 @@ const EmergencyList = () => {
                                                                 className={`${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'} transition-colors duration-200 group/map`}
                                                                 title={!showAddress ? item.location.address : ''}
                                                             >
-                                                                <FaMapMarkerAlt className="w-4 h-4 group-hover/map:scale-110 transition-transform duration-200" />
+                                                                <FaMapMarkerAlt className="w-5 h-5 group-hover/map:scale-110 transition-transform duration-200" />
                                                             </button>
                                                         </div>
                                                     ) : (
-                                                        <div className="flex items-center space-x-2">
+                                                        <div className={`flex items-center ${showAddress ? 'justify-start' : 'justify-center w-full'} space-x-2`}>
                                                             {showAddress && <span>{item.location || 'N/A'}</span>}
                                                             <button
                                                                 onClick={() => {
@@ -435,7 +435,7 @@ const EmergencyList = () => {
                                                                 className={`${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'} transition-colors duration-200 group/map`}
                                                                 title={!showAddress ? item.location : ''}
                                                             >
-                                                                <FaMapMarkerAlt className="w-4 h-4 group-hover/map:scale-110 transition-transform duration-200" />
+                                                                <FaMapMarkerAlt className="w-5 h-5 group-hover/map:scale-110 transition-transform duration-200" />
                                                             </button>
                                                         </div>
                                                     )}
