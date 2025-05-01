@@ -372,12 +372,11 @@ const EmergencyList = () => {
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-40">Name</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Contact</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-48">Address</th>
+                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Vehicle No</th>
+                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-40">Emergency Type</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Vehicle Type</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Color</th>
-                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-40">Emergency Type</th>
-                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-64">Description</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Status</th>
-                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Vehicle No</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Date</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Time</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-40">Actions</th>
@@ -394,7 +393,9 @@ const EmergencyList = () => {
                                                     {item.name || item.customerName || 'N/A'}
                                                 </Link>
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>{item.contactNumber || 'N/A'}</td>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                                {item.contactNumber || 'N/A'}
+                                            </td>
                                             <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
                                                 <div className="flex items-center space-x-2">
                                                     {typeof item.location === 'object' 
@@ -429,7 +430,15 @@ const EmergencyList = () => {
                                                     }
                                                 </div>
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>{item.vehicleType || 'N/A'}</td>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                                {item.vehicleNumber || 'N/A'}
+                                            </td>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                                {item.emergencyType || 'N/A'}
+                                            </td>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                                {item.vehicleType || 'N/A'}
+                                            </td>
                                             <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
                                                 <div className="flex items-center space-x-2">
                                                     <div
@@ -438,10 +447,6 @@ const EmergencyList = () => {
                                                     ></div>
                                                     <span>{item.vehicleColor || 'N/A'}</span>
                                                 </div>
-                                            </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>{item.emergencyType || 'N/A'}</td>
-                                            <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
-                                                {item.description || item.issueDescription || 'N/A'}
                                             </td>
                                             <td className="px-4 py-3 whitespace-nowrap">
                                                 <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -452,11 +457,12 @@ const EmergencyList = () => {
                                                     {item.status || 'Unknown'}
                                                 </span>
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>{item.vehicleNumber || 'N/A'}</td>
                                             <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
                                                 {item.date ? new Date(item.date).toLocaleDateString() : 'N/A'}
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>{item.time || 'N/A'}</td>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                                {item.time || 'N/A'}
+                                            </td>
                                             <td className="px-4 py-3 whitespace-nowrap">
                                                 <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                                     <button
