@@ -108,10 +108,12 @@ const Navbar = () => {
                                 )}
                             </>
                         )}
-                        <Link to="/aboutus" className={getTabStyle('about')}>
-                            <span className="group-hover:opacity-0 transition-opacity duration-300">About Us</span>
-                            <FaInfoCircle className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
-                        </Link>
+                        {(!user || user.role !== 'admin') && (
+                            <Link to="/aboutus" className={getTabStyle('about')}>
+                                <span className="group-hover:opacity-0 transition-opacity duration-300">About Us</span>
+                                <FaInfoCircle className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
+                            </Link>
+                        )}
                     </div>
                     
                     <div className="flex items-center space-x-4">
