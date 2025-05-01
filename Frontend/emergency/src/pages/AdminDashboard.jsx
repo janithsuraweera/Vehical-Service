@@ -16,44 +16,43 @@ const AdminDashboard = () => {
         totalErrors: 0
     });
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
+
+    const fetchStats = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const headers = {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            };
+
+            const [usersRes, vehiclesRes, emergenciesRes, errorsRes] = await Promise.all([
+                axios.get('http://localhost:5000/api/users/count', { headers }),
+                axios.get('http://localhost:5000/api/vehicle-registration/count', { headers }),
+                axios.get('http://localhost:5000/api/emergency', { headers }),
+                axios.get('http://localhost:5000/api/vehicle-errors/count', { headers })
+            ]);
+
+            setStats({
+                totalUsers: usersRes.data.count,
+                totalVehicles: vehiclesRes.data.count,
+                totalEmergencies: emergenciesRes.data.length,
+                totalErrors: errorsRes.data.count,
+                totalServices: 0,
+                totalBookings: 0
+            });
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchStats = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                const headers = {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                };
-
-                const [usersRes, vehiclesRes, emergenciesRes, errorsRes] = await Promise.all([
-                    axios.get('http://localhost:5000/api/users/count', { headers }),
-                    axios.get('http://localhost:5000/api/vehicle-registration/count', { headers }),
-                    axios.get('http://localhost:5000/api/emergency/count', { headers }),
-                    axios.get('http://localhost:5000/api/vehicle-errors/count', { headers })
-                ]);
-
-                setStats({
-                    totalUsers: usersRes.data.count,
-                    totalVehicles: vehiclesRes.data.count,
-                    totalEmergencies: emergenciesRes.data.count,
-                    totalErrors: errorsRes.data.count,
-                    totalServices: 0, // Placeholder for future implementation
-                    totalBookings: 0  // Placeholder for future implementation
-                });
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching stats:', error);
-                setError('Error fetching dashboard data');
-                setLoading(false);
-            }
-        };
-
         fetchStats();
+        const interval = setInterval(fetchStats, 30000);
+        return () => clearInterval(interval);
     }, []);
 
-    // Redirect if not admin
     if (!user || user.role !== 'admin') {
         return <Navigate to="/" replace />;
     }
@@ -64,7 +63,8 @@ const AdminDashboard = () => {
             value: stats.totalUsers,
             icon: <FaUsers className="h-8 w-8" />,
             color: 'bg-blue-500',
-            link: '/admin/users'
+            link: '/admin/users',
+            description: 'View and manage all system users'
         },
         {
             title: 'Vehicle Errors',
@@ -78,7 +78,8 @@ const AdminDashboard = () => {
             value: stats.totalEmergencies,
             icon: <FaClipboardList className="h-8 w-8" />,
             color: 'bg-yellow-500',
-            link: '/emergencylist'
+            link: '/emergencylist',
+            description: 'View all emergency cases'
         },
         {
             title: 'Registered Vehicles',
@@ -136,7 +137,7 @@ const AdminDashboard = () => {
                                                         </dt>
                                                         <dd className="flex items-baseline">
                                                             <div className="text-2xl font-semibold text-gray-900 dark:text-white">
-                                                                {loading ? '...' : error ? 'Error' : card.value}
+                                                                {loading ? '...' : card.value}
                                                             </div>
                                                         </dd>
                                                     </dl>
