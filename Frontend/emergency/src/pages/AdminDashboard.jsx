@@ -13,7 +13,8 @@ const AdminDashboard = () => {
         totalBookings: 0,
         totalVehicles: 0,
         totalEmergencies: 0,
-        totalErrors: 0
+        totalErrors: 0,
+        totalInventory: 0
     });
     const [loading, setLoading] = useState(true);
 
@@ -25,28 +26,29 @@ const AdminDashboard = () => {
                 'Content-Type': 'application/json'
             };
 
-            const [usersRes, vehiclesRes, emergenciesRes] = await Promise.all([
+            const [usersRes, vehiclesRes, emergenciesRes, inventoryRes] = await Promise.all([
                 axios.get('http://localhost:5000/api/users/count', { headers }),
                 axios.get('http://localhost:5000/api/vehicle-registration/count', { headers }),
-                axios.get('http://localhost:5000/api/emergency', { headers })
+                axios.get('http://localhost:5000/api/emergency', { headers }),
+                axios.get('http://localhost:5000/api/inventory', { headers })
             ]);
 
             setStats({
                 totalUsers: usersRes.data.count || 0,
                 totalVehicles: vehiclesRes.data.count || 0,
                 totalEmergencies: Array.isArray(emergenciesRes.data) ? emergenciesRes.data.length : 0,
-                totalErrors: 0, // Temporarily set to 0 until vehicle-errors endpoint is ready
-                totalServices: 0,
+                totalErrors: 0,
+                totalInventory: Array.isArray(inventoryRes.data) ? inventoryRes.data.length : 0,
                 totalBookings: 0
             });
         } catch (error) {
             console.error('Error fetching stats:', error);
-            // Keep the previous values if there's an error
             setStats(prevStats => ({
                 ...prevStats,
                 totalUsers: prevStats.totalUsers || 0,
                 totalVehicles: prevStats.totalVehicles || 0,
-                totalEmergencies: prevStats.totalEmergencies || 0
+                totalEmergencies: prevStats.totalEmergencies || 0,
+                totalInventory: prevStats.totalInventory || 0
             }));
         } finally {
             setLoading(false);
@@ -95,11 +97,12 @@ const AdminDashboard = () => {
             link: '/view-registrations'
         },
         {
-            title: 'Total Services',
-            value: stats.totalServices,
+            title: 'Inventory Items',
+            value: stats.totalInventory,
             icon: <FaTools className="h-8 w-8" />,
             color: 'bg-purple-500',
-            link: '/services'
+            link: '/inventory-list',
+            description: 'View and manage inventory items'
         },
         {
             title: 'Total Bookings',
