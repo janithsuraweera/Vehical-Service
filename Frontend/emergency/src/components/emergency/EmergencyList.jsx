@@ -19,6 +19,7 @@ const EmergencyList = () => {
     const [filteredEmergency, setFilteredEmergency] = useState([]);
     const [showRequestNo, setShowRequestNo] = useState(false);
     const [darkMode, setDarkMode] = useState(false);
+    const [showAddress, setShowAddress] = useState(true);
 
     // Define status options
     const statusOptions = [
@@ -371,7 +372,17 @@ const EmergencyList = () => {
                                         </th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-40">Name</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Contact</th>
-                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-48">Address</th>
+                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-48">
+                                            <div className="flex items-center gap-2">
+                                                Address
+                                                <button
+                                                    onClick={() => setShowAddress(!showAddress)}
+                                                    className="text-white hover:text-gray-200 transition-colors duration-200"
+                                                >
+                                                    {showAddress ? <FaEyeSlash /> : <FaEye />}
+                                                </button>
+                                            </div>
+                                        </th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Vehicle No</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-40">Emergency Type</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Vehicle Type</th>
@@ -399,36 +410,35 @@ const EmergencyList = () => {
                                             </td>
                                             <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
                                                 <div className="flex items-center space-x-2">
-                                                    {typeof item.location === 'object' 
-                                                        ? (
-                                                            <div className="flex items-center space-x-2">
-                                                                <span>{item.location.address || 'N/A'}</span>
-                                                                <button
-                                                                    onClick={() => {
-                                                                        const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location.address)}`;
-                                                                        window.open(url, '_blank');
-                                                                    }}
-                                                                    className={`${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'} transition-colors duration-200 group/map`}
-                                                                >
-                                                                    <FaMapMarkerAlt className="w-4 h-4 group-hover/map:scale-110 transition-transform duration-200" />
-                                                                </button>
-                                                            </div>
-                                                        )
-                                                        : (
-                                                            <div className="flex items-center space-x-2">
-                                                                <span>{item.location || 'N/A'}</span>
-                                                                <button
-                                                                    onClick={() => {
-                                                                        const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}`;
-                                                                        window.open(url, '_blank');
-                                                                    }}
-                                                                    className={`${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'} transition-colors duration-200 group/map`}
-                                                                >
-                                                                    <FaMapMarkerAlt className="w-4 h-4 group-hover/map:scale-110 transition-transform duration-200" />
-                                                                </button>
-                                                            </div>
-                                                        )
-                                                    }
+                                                    {typeof item.location === 'object' ? (
+                                                        <div className="flex items-center space-x-2">
+                                                            {showAddress && <span>{item.location.address || 'N/A'}</span>}
+                                                            <button
+                                                                onClick={() => {
+                                                                    const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location.address)}`;
+                                                                    window.open(url, '_blank');
+                                                                }}
+                                                                className={`${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'} transition-colors duration-200 group/map`}
+                                                                title={!showAddress ? item.location.address : ''}
+                                                            >
+                                                                <FaMapMarkerAlt className="w-4 h-4 group-hover/map:scale-110 transition-transform duration-200" />
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex items-center space-x-2">
+                                                            {showAddress && <span>{item.location || 'N/A'}</span>}
+                                                            <button
+                                                                onClick={() => {
+                                                                    const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}`;
+                                                                    window.open(url, '_blank');
+                                                                }}
+                                                                className={`${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'} transition-colors duration-200 group/map`}
+                                                                title={!showAddress ? item.location : ''}
+                                                            >
+                                                                <FaMapMarkerAlt className="w-4 h-4 group-hover/map:scale-110 transition-transform duration-200" />
+                                                            </button>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </td>
                                             <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
