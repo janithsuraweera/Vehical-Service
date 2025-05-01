@@ -25,23 +25,29 @@ const AdminDashboard = () => {
                 'Content-Type': 'application/json'
             };
 
-            const [usersRes, vehiclesRes, emergenciesRes, errorsRes] = await Promise.all([
+            const [usersRes, vehiclesRes, emergenciesRes] = await Promise.all([
                 axios.get('http://localhost:5000/api/users/count', { headers }),
                 axios.get('http://localhost:5000/api/vehicle-registration/count', { headers }),
-                axios.get('http://localhost:5000/api/emergency', { headers }),
-                axios.get('http://localhost:5000/api/vehicle-errors/count', { headers })
+                axios.get('http://localhost:5000/api/emergency', { headers })
             ]);
 
             setStats({
-                totalUsers: usersRes.data.count,
-                totalVehicles: vehiclesRes.data.count,
-                totalEmergencies: emergenciesRes.data.length,
-                totalErrors: errorsRes.data.count,
+                totalUsers: usersRes.data.count || 0,
+                totalVehicles: vehiclesRes.data.count || 0,
+                totalEmergencies: Array.isArray(emergenciesRes.data) ? emergenciesRes.data.length : 0,
+                totalErrors: 0, // Temporarily set to 0 until vehicle-errors endpoint is ready
                 totalServices: 0,
                 totalBookings: 0
             });
         } catch (error) {
             console.error('Error fetching stats:', error);
+            // Keep the previous values if there's an error
+            setStats(prevStats => ({
+                ...prevStats,
+                totalUsers: prevStats.totalUsers || 0,
+                totalVehicles: prevStats.totalVehicles || 0,
+                totalEmergencies: prevStats.totalEmergencies || 0
+            }));
         } finally {
             setLoading(false);
         }
