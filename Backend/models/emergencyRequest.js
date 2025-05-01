@@ -51,7 +51,9 @@ const emergencyRequestSchema = new mongoose.Schema({
         enum: ['pending', 'confirmed', 'completed'],
         default: 'pending',
     },
-
+    photos: [{
+        type: String
+    }],
     createdAt: {
         type: Date,
         default: Date.now,

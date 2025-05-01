@@ -464,21 +464,39 @@ const EmergencyList = () => {
                                                 {item.description || item.issueDescription || 'N/A'}
                                             </td>
                                             <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
-                                                {item.photos && item.photos.length > 0 ? (
-                                                    <div className="flex items-center space-x-2">
-                                                        {item.photos.map((photo, index) => (
-                                                            <img
-                                                                key={index}
-                                                                src={`http://localhost:5000/${photo}`}
-                                                                alt={`Emergency ${index + 1}`}
-                                                                className="w-10 h-10 object-cover rounded-lg cursor-pointer hover:scale-150 transition-transform duration-200"
-                                                                onClick={() => window.open(`http://localhost:5000/${photo}`, '_blank')}
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                ) : (
-                                                    'No photos'
-                                                )}
+                                                <div className="flex justify-center items-center">
+                                                    {item.photos && item.photos.length > 0 ? (
+                                                        <div className="flex items-center space-x-2 overflow-x-auto max-w-[150px]">
+                                                            {item.photos.map((photo, index) => (
+                                                                <div key={index} className="relative group/photo">
+                                                                    <img
+                                                                        src={photo}
+                                                                        alt={`Emergency ${index + 1}`}
+                                                                        className="w-10 h-10 object-cover rounded-lg cursor-pointer transition-all duration-200 hover:z-10"
+                                                                        onError={(e) => {
+                                                                            console.error('Error loading image:', photo);
+                                                                            e.target.src = 'https://via.placeholder.com/100?text=Error';
+                                                                        }}
+                                                                    />
+                                                                    <div className="hidden group-hover/photo:block absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full z-20">
+                                                                        <img
+                                                                            src={photo}
+                                                                            alt={`Emergency ${index + 1} Preview`}
+                                                                            className="w-32 h-32 object-cover rounded-lg shadow-xl border-2 border-white"
+                                                                            onClick={() => window.open(photo, '_blank')}
+                                                                            onError={(e) => {
+                                                                                console.error('Error loading preview image:', photo);
+                                                                                e.target.src = 'https://via.placeholder.com/300?text=Error';
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    ) : (
+                                                        <span className="text-gray-500 italic">No photos</span>
+                                                    )}
+                                                </div>
                                             </td>
                                             <td className="px-4 py-3 whitespace-nowrap">
                                                 <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
