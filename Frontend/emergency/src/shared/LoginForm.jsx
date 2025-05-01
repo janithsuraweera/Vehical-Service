@@ -38,7 +38,8 @@ const LoginForm = () => {
             login(response.data.user, response.data.token);
             
             toast.success('Login successful!');
-            navigate('/');
+            // Redirect to admin dashboard if user is admin, otherwise to home
+            navigate(response.data.user.role === 'admin' ? '/admin' : '/');
         } catch (error) {
             console.error('Login error:', error);
             const errorMessage = error.response?.data?.message || 'An error occurred during login';
