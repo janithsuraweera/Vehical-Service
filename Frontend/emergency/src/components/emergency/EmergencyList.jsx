@@ -280,76 +280,57 @@ const EmergencyList = () => {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="relative group">
-                                <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Status</label>
-                                <select
-                                    value={statusFilter}
-                                    onChange={(e) => setStatusFilter(e.target.value)}
-                                    className={`w-full px-4 py-2 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 group-hover:border-blue-300 ${
-                                        darkMode ? 'bg-gray-600 border-gray-500 text-white' : 'border-gray-200'
-                                    }`}
+                        <div className="flex items-center gap-4">
+                            <div className="flex flex-col">
+                                <label className="block text-sm font-medium mb-1 text-gray-700">Status</label>
+                                <select 
+                                    value={statusFilter} 
+                                    onChange={(e) => setStatusFilter(e.target.value)} 
+                                    className="w-48 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                                 >
-                                    {statusOptions.map((status) => (
-                                        <option key={status.value} value={status.value}>
-                                            {status.label}
-                                        </option>
-                                    ))}
+                                    <option value="">All Status</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="Processing">Processing</option>
+                                    <option value="completed">Completed</option>
                                 </select>
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                                    <svg className={`h-5 w-5 ${darkMode ? 'text-gray-400' : 'text-gray-400'} group-hover:text-blue-500 transition-colors duration-300`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                    </svg>
-                                </div>
                             </div>
 
-                            <div className="relative group">
-                                <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Vehicle Type</label>
-                                <select
-                                    value={vehicleTypeFilter}
-                                    onChange={(e) => setVehicleTypeFilter(e.target.value)}
-                                    className={`w-full px-4 py-2 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 group-hover:border-blue-300 ${
-                                        darkMode ? 'bg-gray-600 border-gray-500 text-white' : 'border-gray-200'
-                                    }`}
+                            <div className="flex flex-col">
+                                <label className="block text-sm font-medium mb-1 text-gray-700">Vehicle Type</label>
+                                <select 
+                                    value={vehicleTypeFilter} 
+                                    onChange={(e) => setVehicleTypeFilter(e.target.value)} 
+                                    className="w-48 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                                 >
-                                    {vehicleTypeOptions.map((type) => (
-                                        <option key={type.value} value={type.value}>
-                                            {type.label}
-                                        </option>
-                                    ))}
+                                    <option value="">All Vehicle Types</option>
+                                    <option value="car">Car</option>
+                                    <option value="motorcycle">Motorcycle</option>
+                                    <option value="bus">Bus</option>
+                                    <option value="truck">Truck</option>
+                                    <option value="van">Van</option>
+                                    <option value="other">Other</option>
                                 </select>
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                                    <svg className={`h-5 w-5 ${darkMode ? 'text-gray-400' : 'text-gray-400'} group-hover:text-blue-500 transition-colors duration-300`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                    </svg>
-                                </div>
                             </div>
 
-                            <div className="relative group">
-                                <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Date</label>
-                                <input
-                                    type="date"
-                                    value={dateFilter}
-                                    onChange={(e) => setDateFilter(e.target.value)}
-                                    className={`w-full px-4 py-2 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 group-hover:border-blue-300 ${
-                                        darkMode ? 'bg-gray-600 border-gray-500 text-white' : 'border-gray-200'
-                                    }`}
+                            <div className="flex flex-col">
+                                <label className="block text-sm font-medium mb-1 text-gray-700">Date</label>
+                                <input 
+                                    type="date" 
+                                    value={dateFilter} 
+                                    onChange={(e) => setDateFilter(e.target.value)} 
+                                    className="w-48 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                                 />
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                                    <svg className={`h-5 w-5 ${darkMode ? 'text-gray-400' : 'text-gray-400'} group-hover:text-blue-500 transition-colors duration-300`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                                    </svg>
-                                </div>
                             </div>
-                        </div>
 
-                        <div className="flex justify-end mt-4">
-                            <button
-                                onClick={resetFilters}
-                                className={`bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white font-semibold py-2 px-4 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300`}
-                            >
-                                <FaFilter className="mr-2" /> Reset Filters
-                            </button>
+                            <div className="flex items-center self-end">
+                                <button
+                                    onClick={resetFilters}
+                                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2.5 px-6 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300 group"
+                                >
+                                    <FaFilter className="mr-2 group-hover:rotate-12 transition-transform duration-300" />
+                                    <span className="group-hover:translate-x-1 transition-transform duration-300">Reset Filters</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
