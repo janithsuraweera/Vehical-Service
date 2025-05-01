@@ -81,24 +81,35 @@ const EmergencyList = () => {
         if (emergencyItems.length > 0) {
             let filtered = [...emergencyItems];
 
+            // Fix search functionality
             if (searchTerm) {
+                const searchLower = searchTerm.toLowerCase();
                 filtered = filtered.filter(item =>
-                    (item.vehicleNumber?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-                    (item.customerName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-                    (item.contactNumber?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+                    (item.vehicleNumber?.toLowerCase() || '').includes(searchLower) ||
+                    (item.customerName?.toLowerCase() || '').includes(searchLower) ||
+                    (item.contactNumber?.toString() || '').includes(searchLower) ||
+                    (item.name?.toLowerCase() || '').includes(searchLower)
                 );
             }
 
+            // Status filter
             if (statusFilter) {
-                filtered = filtered.filter(item => item.status === statusFilter);
+                filtered = filtered.filter(item => 
+                    item.status?.toLowerCase() === statusFilter.toLowerCase()
+                );
             }
 
+            // Vehicle type filter
             if (vehicleTypeFilter) {
-                filtered = filtered.filter(item => item.vehicleType === vehicleTypeFilter);
+                filtered = filtered.filter(item => 
+                    item.vehicleType?.toLowerCase() === vehicleTypeFilter.toLowerCase()
+                );
             }
 
+            // Date filter
             if (dateFilter) {
                 filtered = filtered.filter(item => {
+                    if (!item.date) return false;
                     const itemDate = new Date(item.date).toLocaleDateString();
                     const filterDate = new Date(dateFilter).toLocaleDateString();
                     return itemDate === filterDate;
@@ -106,6 +117,8 @@ const EmergencyList = () => {
             }
 
             setFilteredEmergency(filtered);
+        } else {
+            setFilteredEmergency([]);
         }
     }, [emergencyItems, searchTerm, statusFilter, vehicleTypeFilter, dateFilter]);
 
