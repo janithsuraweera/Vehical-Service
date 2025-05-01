@@ -3,7 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, Link } from 'react-router-dom';
-import { FaEdit, FaTrash, FaSearch, FaFilter, FaDownload, FaEye, FaEyeSlash, FaMapMarkerAlt, FaMoon, FaSun } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaSearch, FaFilter, FaDownload, FaEye, FaEyeSlash, FaMapMarkerAlt, FaMoon, FaSun, FaImages, FaTimes } from 'react-icons/fa';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -19,6 +19,8 @@ const EmergencyList = () => {
     const [filteredEmergency, setFilteredEmergency] = useState([]);
     const [showRequestNo, setShowRequestNo] = useState(false);
     const [darkMode, setDarkMode] = useState(false);
+    const [showAddress, setShowAddress] = useState(true);
+    const [selectedPhotos, setSelectedPhotos] = useState(null);
 
     // Define status options
     const statusOptions = [
@@ -82,10 +84,12 @@ const EmergencyList = () => {
             let filtered = [...emergencyItems];
 
             if (searchTerm) {
+                const searchLower = searchTerm.toLowerCase();
                 filtered = filtered.filter(item =>
-                    (item.vehicleNumber?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-                    (item.customerName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-                    (item.contactNumber?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+                    (item.vehicleNumber?.toLowerCase() || '').includes(searchLower) ||
+                    (item.customerName?.toLowerCase() || '').includes(searchLower) ||
+                    (item.contactNumber?.toString() || '').includes(searchLower) ||
+                    (item.name?.toLowerCase() || '').includes(searchLower)
                 );
             }
 
@@ -130,85 +134,138 @@ const EmergencyList = () => {
         try {
             const doc = new jsPDF();
             
-            // Add title
-            doc.setFontSize(20);
-            doc.text('Emergency Service Report', 105, 20, { align: 'center' });
+            // Add company logo and header
+            doc.setFontSize(24);
+            doc.setTextColor(0, 48, 135); // Dark blue color
+            doc.text('Vehicle Service Center', 105, 20, { align: 'center' });
             
-            // Add date
+            // Add subtitle
+            doc.setFontSize(16);
+            doc.setTextColor(231, 76, 60); // Red color
+            doc.text('Emergency Service Report', 105, 30, { align: 'center' });
+            
+            // Add report info
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Generated Date: ${new Date().toLocaleDateString()}`, 15, 40);
+            doc.text(`Generated Time: ${new Date().toLocaleTimeString()}`, 15, 45);
+            doc.text(`Total Requests: ${filteredEmergency.length}`, 15, 50);
+
+            // Add status summary
+            const pendingCount = filteredEmergency.filter(item => item.status === 'pending').length;
+            const processingCount = filteredEmergency.filter(item => item.status === 'Processing').length;
+            const completedCount = filteredEmergency.filter(item => item.status === 'completed').length;
+
             doc.setFontSize(12);
-            doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 105, 30, { align: 'center' });
-            
-            // Add company info
-            doc.setFontSize(14);
-            doc.text('Vehicle Service Center', 105, 40, { align: 'center' });
-            
+            doc.setTextColor(0, 48, 135); // Dark blue color
+            doc.text('Status Summary:', 150, 40);
+            doc.setFontSize(10);
+            doc.setTextColor(243, 156, 18); // Orange color for pending
+            doc.text(`Pending: ${pendingCount}`, 150, 45);
+            doc.setTextColor(231, 76, 60); // Red color for processing
+            doc.text(`Processing: ${processingCount}`, 150, 50);
+            doc.setTextColor(46, 204, 113); // Green color for completed
+            doc.text(`Completed: ${completedCount}`, 150, 55);
+
             // Add table
             const tableData = filteredEmergency.map(item => [
                 item.emergencyRequestNo || 'N/A',
-                item.customerName || 'N/A',
+                item.name || item.customerName || 'N/A',
                 item.contactNumber || 'N/A',
+                typeof item.location === 'object' ? item.location.address || 'N/A' : item.location || 'N/A',
                 item.vehicleNumber || 'N/A',
-                typeof item.location === 'object' 
-                    ? item.location.address || 'N/A'
-                    : item.location || 'N/A',
+                item.emergencyType || 'N/A',
+                item.vehicleType || 'N/A',
+                item.vehicleColor || 'N/A',
+                item.description || item.issueDescription || 'N/A',
                 item.status || 'N/A',
-                item.date ? new Date(item.date).toLocaleDateString() : 'N/A'
+                item.date ? new Date(item.date).toLocaleDateString() : 'N/A',
+                item.time || 'N/A'
             ]);
 
+            // Define the table headers and styles
             autoTable(doc, {
-                startY: 50,
-                head: [['Request No', 'Name', 'Contact', 'Vehicle No', 'Location', 'Status', 'Date']],
+                startY: 65,
+                head: [[
+                    'Request No',
+                    'Name',
+                    'Contact',
+                    'Location',
+                    'Vehicle No',
+                    'Emergency',
+                    'Vehicle Type',
+                    'Color',
+                    'Description',
+                    'Status',
+                    'Date',
+                    'Time'
+                ]],
                 body: tableData,
                 theme: 'grid',
                 headStyles: {
-                    fillColor: [34, 139, 34], // Green color
+                    fillColor: [0, 48, 135],
                     textColor: 255,
-                    fontSize: 10,
-                    fontStyle: 'bold'
+                    fontSize: 8,
+                    fontStyle: 'bold',
+                    halign: 'center'
                 },
-                styles: {
-                    fontSize: 9,
+                bodyStyles: {
+                    fontSize: 8,
+                    textColor: 50,
                     cellPadding: 3
                 },
                 columnStyles: {
-                    0: { cellWidth: 25 }, // Request No
-                    1: { cellWidth: 40 }, // Name
-                    2: { cellWidth: 30 }, // Contact
-                    3: { cellWidth: 30 }, // Vehicle No
-                    4: { cellWidth: 50 }, // Location
-                    5: { cellWidth: 25 }, // Status
-                    6: { cellWidth: 25 }  // Date
+                    0: { cellWidth: 20 }, // Request No
+                    1: { cellWidth: 25 }, // Name
+                    2: { cellWidth: 20 }, // Contact
+                    3: { cellWidth: 35 }, // Location
+                    4: { cellWidth: 20 }, // Vehicle No
+                    5: { cellWidth: 20 }, // Emergency
+                    6: { cellWidth: 20 }, // Vehicle Type
+                    7: { cellWidth: 15 }, // Color
+                    8: { cellWidth: 35 }, // Description
+                    9: { cellWidth: 15, 
+                         fontStyle: 'bold',
+                         customFunction: (cell, data) => {
+                             if (data.text[0] === 'pending') {
+                                 cell.styles.textColor = [243, 156, 18]; // Orange
+                             } else if (data.text[0] === 'Processing') {
+                                 cell.styles.textColor = [231, 76, 60]; // Red
+                             } else if (data.text[0] === 'completed') {
+                                 cell.styles.textColor = [46, 204, 113]; // Green
+                             }
+                         }
+                    }, // Status
+                    10: { cellWidth: 20 }, // Date
+                    11: { cellWidth: 15 }  // Time
+                },
+                alternateRowStyles: {
+                    fillColor: [245, 247, 250]
+                },
+                margin: { top: 65, right: 15, bottom: 30, left: 15 },
+                didDrawPage: (data) => {
+                    // Add footer on each page
+                    doc.setFontSize(8);
+                    doc.setTextColor(128);
+                    doc.text(
+                        'Vehicle Service Center - Emergency Service Report',
+                        data.settings.margin.left,
+                        doc.internal.pageSize.height - 10
+                    );
+                    doc.text(
+                        `Page ${doc.internal.getCurrentPageInfo().pageNumber}`,
+                        doc.internal.pageSize.width - data.settings.margin.right,
+                        doc.internal.pageSize.height - 10,
+                        { align: 'right' }
+                    );
                 }
             });
 
-            // Add summary
-            const finalY = doc.lastAutoTable.finalY || 50;
-            doc.setFontSize(12);
-            doc.text('Summary', 14, finalY + 20);
-            
-            const totalRequests = filteredEmergency.length;
-            const pendingRequests = filteredEmergency.filter(item => item.status === 'pending').length;
-            const processingRequests = filteredEmergency.filter(item => item.status === 'Processing').length;
-            const completedRequests = filteredEmergency.filter(item => item.status === 'completed').length;
-            
-            doc.setFontSize(10);
-            doc.text(`Total Requests: ${totalRequests}`, 14, finalY + 30);
-            doc.text(`Pending Requests: ${pendingRequests}`, 14, finalY + 40);
-            doc.text(`Processing Requests: ${processingRequests}`, 14, finalY + 50);
-            doc.text(`Completed Requests: ${completedRequests}`, 14, finalY + 60);
-            
-            // Add footer
-            const pageCount = doc.internal.getNumberOfPages();
-            for (let i = 1; i <= pageCount; i++) {
-                doc.setPage(i);
-                doc.setFontSize(8);
-                doc.text(`Page ${i} of ${pageCount}`, 105, 285, { align: 'center' });
-            }
-
             // Save the PDF
-            const today = new Date();
-            const formattedDate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-            doc.save(`Emergency_Report_${formattedDate}.pdf`);
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            doc.save(`Emergency_Service_Report_${timestamp}.pdf`);
+            
+            toast.success('Report generated successfully!');
         } catch (error) {
             console.error('Error generating PDF:', error);
             toast.error('Failed to generate PDF report. Please try again.');
@@ -258,7 +315,7 @@ const EmergencyList = () => {
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     placeholder="Search by vehicle no., name or contact..."
-                                    className={`w-full pl-12 pr-4 py-2.5 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 group-hover:border-blue-300 ${
+                                    className={`w-full pl-12 pr-4 py-2 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 group-hover:border-blue-300 ${
                                         darkMode ? 'bg-gray-600 border-gray-500 text-white placeholder-gray-400' : 'border-gray-200'
                                     }`}
                                 />
@@ -367,16 +424,26 @@ const EmergencyList = () => {
                                                 </button>
                                             </div>
                                         </th>
-                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Photos</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-40">Name</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Contact</th>
-                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-48">Address</th>
+                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-48">
+                                            <div className="flex items-center gap-2">
+                                                Address
+                                                <button
+                                                    onClick={() => setShowAddress(!showAddress)}
+                                                    className="text-white hover:text-gray-200 transition-colors duration-200"
+                                                >
+                                                    {showAddress ? <FaEyeSlash /> : <FaEye />}
+                                                </button>
+                                            </div>
+                                        </th>
+                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Vehicle No</th>
+                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-40">Emergency Type</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Vehicle Type</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Color</th>
-                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-40">Emergency Type</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-64">Description</th>
+                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Photos</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Status</th>
-                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Vehicle No</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Date</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Time</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-40">Actions</th>
@@ -384,194 +451,125 @@ const EmergencyList = () => {
                                 </thead>
                                 <tbody className={`divide-y ${darkMode ? 'divide-gray-600 bg-gray-800' : 'divide-gray-200 bg-white'}`}>
                                     {filteredEmergency.map((item) => (
-                                        <tr key={item._id} className={`transition-colors duration-200 group ${
-                                            darkMode 
-                                            ? 'hover:bg-gray-700/70 text-gray-300' 
-                                            : 'hover:bg-gray-50 text-gray-900'
-                                        }`}>
-                                            <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${
-                                                darkMode 
-                                                ? 'text-gray-300 group-hover:text-gray-100' 
-                                                : 'text-gray-900 group-hover:text-gray-900'
-                                            }`}>
+                                        <tr key={item._id} className={`transition-colors duration-200 group ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'}`}>
                                                 {showRequestNo ? (item.emergencyRequestNo || 'N/A') : ' '}
                                             </td>
-                                            <td className="px-4 py-3 whitespace-nowrap">
-                                                <div className="flex space-x-2">
-                                                    {item.photos && item.photos.length > 0 ? (
-                                                        <div className="flex flex-wrap gap-2">
-                                                            {item.photos.map((photo, index) => (
-                                                                <div key={index} className="relative group">
-                                                                    <img
-                                                                        src={photo}
-                                                                        alt={`Emergency photo ${index + 1}`}
-                                                                        className="w-32 h-32 object-cover rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-150"
-                                                                        onClick={() => window.open(photo, '_blank')}
-                                                                        onError={(e) => {
-                                                                            console.error('Error loading image:', photo);
-                                                                            e.target.src = '/error-image.png';
-                                                                            e.target.onerror = null;
-                                                                        }}
-                                                                    />
-                                                                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 rounded-lg transition-all duration-200"></div>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    ) : (
-                                                        <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-400'} italic`}>No photos</span>
-                                                    )}
-                                                </div>
-                                            </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${
-                                                darkMode 
-                                                ? 'text-gray-300 group-hover:text-gray-100' 
-                                                : 'text-gray-900 group-hover:text-gray-900'
-                                            }`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'}`}>
                                                 <Link to={`/emergency/${item._id}`} className={`${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'} hover:underline group-hover:text-blue-700 transition-colors duration-200`}>
                                                     {item.name || item.customerName || 'N/A'}
                                                 </Link>
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${
-                                                darkMode 
-                                                ? 'text-gray-300 group-hover:text-gray-100' 
-                                                : 'text-gray-900 group-hover:text-gray-900'
-                                            }`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
                                                 {item.contactNumber || 'N/A'}
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${
-                                                darkMode 
-                                                ? 'text-gray-300 group-hover:text-gray-100' 
-                                                : 'text-gray-900 group-hover:text-gray-900'
-                                            }`}>
-                                                <div className="flex items-center space-x-2">
-                                                    {typeof item.location === 'object' 
-                                                        ? (
-                                                            <div className="flex items-center space-x-2">
-                                                                <span>{item.location.address || 'N/A'}</span>
-                                                                <button
-                                                                    onClick={() => {
-                                                                        const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location.address)}`;
-                                                                        window.open(url, '_blank');
-                                                                    }}
-                                                                    className={`${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'} transition-colors duration-200 group/map`}
-                                                                >
-                                                                    <FaMapMarkerAlt className="w-4 h-4 group-hover/map:scale-110 transition-transform duration-200" />
-                                                                </button>
-                                                            </div>
-                                                        )
-                                                        : (
-                                                            <div className="flex items-center space-x-2">
-                                                                <span>{item.location || 'N/A'}</span>
-                                                                <button
-                                                                    onClick={() => {
-                                                                        const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}`;
-                                                                        window.open(url, '_blank');
-                                                                    }}
-                                                                    className={`${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'} transition-colors duration-200 group/map`}
-                                                                >
-                                                                    <FaMapMarkerAlt className="w-4 h-4 group-hover/map:scale-110 transition-transform duration-200" />
-                                                                </button>
-                                                            </div>
-                                                        )
-                                                    }
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                                <div className="flex items-center justify-center space-x-2">
+                                                    {typeof item.location === 'object' ? (
+                                                        <div className={`flex items-center ${showAddress ? 'justify-start' : 'justify-center w-full'} space-x-2`}>
+                                                            {showAddress && <span>{item.location.address || 'N/A'}</span>}
+                                                            <button
+                                                                onClick={() => {
+                                                                    const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location.address)}`;
+                                                                    window.open(url, '_blank');
+                                                                }}
+                                                                className={`${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'} transition-colors duration-200 group/map`}
+                                                                title={!showAddress ? item.location.address : ''}
+                                                            >
+                                                                <FaMapMarkerAlt className="w-5 h-5 group-hover/map:scale-110 transition-transform duration-200" />
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <div className={`flex items-center ${showAddress ? 'justify-start' : 'justify-center w-full'} space-x-2`}>
+                                                            {showAddress && <span>{item.location || 'N/A'}</span>}
+                                                            <button
+                                                                onClick={() => {
+                                                                    const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}`;
+                                                                    window.open(url, '_blank');
+                                                                }}
+                                                                className={`${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'} transition-colors duration-200 group/map`}
+                                                                title={!showAddress ? item.location : ''}
+                                                            >
+                                                                <FaMapMarkerAlt className="w-5 h-5 group-hover/map:scale-110 transition-transform duration-200" />
+                                                            </button>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${
-                                                darkMode 
-                                                ? 'text-gray-300 group-hover:text-gray-100' 
-                                                : 'text-gray-900 group-hover:text-gray-900'
-                                            }`}>
-                                                {item.vehicleType || 'N/A'}
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                                {item.vehicleNumber || 'N/A'}
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${
-                                                darkMode 
-                                                ? 'text-gray-300 group-hover:text-gray-100' 
-                                                : 'text-gray-900 group-hover:text-gray-900'
-                                            }`}>
-                                                <div className="flex items-center space-x-2">
-                                                    <div
-                                                        className={`w-4 h-4 rounded-full border ${darkMode ? 'border-gray-500 group-hover:border-gray-400' : 'border-gray-200 group-hover:border-gray-300'} transition-colors duration-200`}
-                                                        style={{ backgroundColor: item.vehicleColor }}
-                                                    ></div>
-                                                    <span>{item.vehicleColor || 'N/A'}</span>
-                                                </div>
-                                            </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${
-                                                darkMode 
-                                                ? 'text-gray-300 group-hover:text-gray-100' 
-                                                : 'text-gray-900 group-hover:text-gray-900'
-                                            }`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
                                                 {item.emergencyType || 'N/A'}
                                             </td>
-                                            <td className={`px-4 py-3 text-sm ${
-                                                darkMode 
-                                                ? 'text-gray-300 group-hover:text-gray-100' 
-                                                : 'text-gray-900 group-hover:text-gray-900'
-                                            }`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                                {item.vehicleType || 'N/A'}
+                                            </td>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                                <div className="flex items-center justify-center">
+                                                    <div
+                                                        className={`w-6 h-6 border ${darkMode ? 'border-gray-500' : 'border-gray-300'} cursor-help`}
+                                                        style={{ backgroundColor: item.vehicleColor }}
+                                                        title={item.vehicleColor || 'N/A'}
+                                                    ></div>
+                                                </div>
+                                            </td>
+                                            <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
                                                 {item.description || item.issueDescription || 'N/A'}
+                                            </td>
+                                            <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                                <div className="flex justify-center items-center">
+                                                    {item.photos && item.photos.length > 0 ? (
+                                                        <button
+                                                            onClick={() => setSelectedPhotos(item.photos)}
+                                                            className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg transition-all duration-200 ${
+                                                                darkMode 
+                                                                    ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                                                                    : 'bg-blue-100 hover:bg-blue-200 text-blue-600 hover:text-blue-700'
+                                                            }`}
+                                                        >
+                                                            <FaImages className="w-4 h-4" />
+                                                            <span>See Photos ({item.photos.length})</span>
+                                                        </button>
+                                                    ) : (
+                                                        <span className="text-gray-500 italic">No photos</span>
+                                                    )}
+                                                </div>
                                             </td>
                                             <td className="px-4 py-3 whitespace-nowrap">
                                                 <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                                    item.status === 'pending' 
-                                                        ? `${darkMode 
-                                                            ? 'bg-yellow-900/50 text-yellow-300 group-hover:bg-yellow-900/70 group-hover:text-yellow-200' 
-                                                            : 'bg-yellow-100 text-yellow-800 group-hover:bg-yellow-200 group-hover:text-yellow-900'
-                                                        } animate-[pulse_1.5s_ease-in-out_infinite]` 
-                                                    : item.status === 'Processing' 
-                                                        ? `${darkMode 
-                                                            ? 'bg-red-900/50 text-red-300 group-hover:bg-red-900/70 group-hover:text-red-200' 
-                                                            : 'bg-red-100 text-red-800 group-hover:bg-red-200 group-hover:text-red-900'
-                                                        } animate-[pulse_1.5s_ease-in-out_infinite]` 
-                                                    : `${darkMode 
-                                                        ? 'bg-green-900/50 text-green-300 group-hover:bg-green-900/70 group-hover:text-green-200' 
-                                                        : 'bg-green-100 text-green-800 group-hover:bg-green-200 group-hover:text-green-900'
-                                                    }`
+                                                    item.status === 'pending' ? `${darkMode ? 'bg-yellow-900/50 text-yellow-300 group-hover:bg-yellow-900/70 group-hover:text-yellow-200' : 'bg-yellow-100 text-yellow-800 group-hover:bg-yellow-200 group-hover:text-yellow-900'} animate-[pulse_1.5s_ease-in-out_infinite]` :
+                                                    item.status === 'Processing' ? `${darkMode ? 'bg-red-900/50 text-red-300 group-hover:bg-red-900/70 group-hover:text-red-200' : 'bg-red-100 text-red-800 group-hover:bg-red-200 group-hover:text-red-900'} animate-[pulse_1.5s_ease-in-out_infinite]` :
+                                                    `${darkMode ? 'bg-green-900/50 text-green-300 group-hover:bg-green-900/70 group-hover:text-green-200' : 'bg-green-100 text-green-800 group-hover:bg-green-200 group-hover:text-green-900'}`
                                                 } transition-colors duration-200`}>
                                                     {item.status || 'Unknown'}
                                                 </span>
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${
-                                                darkMode 
-                                                ? 'text-gray-300 group-hover:text-gray-100' 
-                                                : 'text-gray-900 group-hover:text-gray-900'
-                                            }`}>
-                                                {item.vehicleNumber || 'N/A'}
-                                            </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${
-                                                darkMode 
-                                                ? 'text-gray-300 group-hover:text-gray-100' 
-                                                : 'text-gray-900 group-hover:text-gray-900'
-                                            }`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
                                                 {item.date ? new Date(item.date).toLocaleDateString() : 'N/A'}
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${
-                                                darkMode 
-                                                ? 'text-gray-300 group-hover:text-gray-100' 
-                                                : 'text-gray-900 group-hover:text-gray-900'
-                                            }`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
                                                 {item.time || 'N/A'}
                                             </td>
                                             <td className="px-4 py-3 whitespace-nowrap">
                                                 <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                                     <button
                                                         onClick={() => handleEdit(item._id)}
-                                                        className={`${
-                                                            darkMode 
-                                                            ? 'bg-blue-600 hover:bg-blue-700' 
-                                                            : 'bg-blue-500 hover:bg-blue-600'
-                                                        } text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm group/btn`}
+                                                        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm group/btn"
                                                     >
                                                         <FaEdit className="mr-1 group-hover/btn:rotate-12 transition-transform duration-300" /> Edit
                                                     </button>
                                                     <button
                                                         onClick={() => handleDelete(item._id)}
-                                                        className={`${
-                                                            darkMode 
-                                                            ? 'bg-red-600 hover:bg-red-700' 
-                                                            : 'bg-red-500 hover:bg-red-600'
-                                                        } text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm group/btn`}
+                                                        className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm group/btn"
                                                     >
                                                         <FaTrash className="mr-1 group-hover/btn:rotate-12 transition-transform duration-300" /> Delete
+                                                    </button>
+                                                    <button
+                                                        onClick={() => navigate(`/emergency/${item._id}`)}
+                                                        className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm group/btn"
+                                                    >
+                                                        <FaEye className="mr-1 group-hover/btn:rotate-12 transition-transform duration-300" /> View
                                                     </button>
                                                 </div>
                                             </td>
@@ -583,6 +581,37 @@ const EmergencyList = () => {
                     )}
                 </div>
             </div>
+
+            {/* Photos Modal */}
+            {selectedPhotos && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+                    <div className={`relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 ${darkMode ? 'dark' : ''}`}>
+                        <button
+                            onClick={() => setSelectedPhotos(null)}
+                            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        >
+                            <FaTimes className="w-6 h-6" />
+                        </button>
+                        <h3 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Emergency Photos</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                            {selectedPhotos.map((photo, index) => (
+                                <div key={index} className="relative group aspect-square">
+                                    <img
+                                        src={photo}
+                                        alt={`Emergency ${index + 1}`}
+                                        className="w-full h-full object-cover rounded-lg cursor-pointer transition-transform duration-200 hover:scale-105"
+                                        onClick={() => window.open(photo, '_blank')}
+                                        onError={(e) => {
+                                            console.error('Error loading image:', photo);
+                                            e.target.src = 'https://via.placeholder.com/300?text=Error';
+                                        }}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

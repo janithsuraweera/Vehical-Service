@@ -175,7 +175,11 @@ const UpdateEmergencyForm = () => {
                 },
             });
             toast.success('Emergency request updated successfully!');
-            navigate('/list');
+            
+            navigate('/emergencylist'); // Redirect to the emergency list page
+
+
+            
         } catch (error) {
             console.error('Error updating emergency request:', error);
             if (error.response && error.response.data && error.response.data.errors) {
