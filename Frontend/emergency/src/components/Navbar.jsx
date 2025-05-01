@@ -77,6 +77,10 @@ const Navbar = () => {
                                             <span className="group-hover:opacity-0 transition-opacity duration-300">Inventory List</span>
                                             <FaListAlt className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                         </Link>
+                                        <Link to="/vehicle-errors" className={getTabStyle('vehicle-errors')}>
+                                            <span className="group-hover:opacity-0 transition-opacity duration-300">Vehicle Errors</span>
+                                            <FaWrench className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
+                                        </Link>
                                     </>
                                 )}
                                 {user.role === 'admin' ? (
@@ -102,10 +106,6 @@ const Navbar = () => {
                                         <FaListAlt className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                     </Link>
                                 )}
-                                <Link to="/vehicle-errors" className={getTabStyle('vehicle-errors')}>
-                                    <span className="group-hover:opacity-0 transition-opacity duration-300">Vehicle Errors</span>
-                                    <FaWrench className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
-                                </Link>
                             </>
                         )}
                         <Link to="/aboutus" className={getTabStyle('about')}>
