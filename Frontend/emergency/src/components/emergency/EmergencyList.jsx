@@ -453,12 +453,12 @@ const EmergencyList = () => {
                                                 {item.vehicleType || 'N/A'}
                                             </td>
                                             <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
-                                                <div className="flex items-center space-x-2">
+                                                <div className="flex items-center justify-center">
                                                     <div
-                                                        className={`w-4 h-4 rounded-full border ${darkMode ? 'border-gray-500 group-hover:border-gray-400' : 'border-gray-200 group-hover:border-gray-300'} transition-colors duration-200`}
+                                                        className={`w-6 h-6 border ${darkMode ? 'border-gray-500' : 'border-gray-300'} cursor-help`}
                                                         style={{ backgroundColor: item.vehicleColor }}
+                                                        title={item.vehicleColor || 'N/A'}
                                                     ></div>
-                                                    <span>{item.vehicleColor || 'N/A'}</span>
                                                 </div>
                                             </td>
                                             <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
