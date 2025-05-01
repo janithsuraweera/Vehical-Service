@@ -3,6 +3,16 @@ const router = express.Router();
 const VehicleRegistrationRequest = require('../models/vehicleRegistrationRequest');
 const { body, validationResult } = require('express-validator');
 
+// Get total count of vehicle registrations
+router.get('/count', async (req, res) => {
+  try {
+    const count = await VehicleRegistrationRequest.countDocuments();
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 //aluth registation ekk
 router.post('/', [
   body('name').notEmpty().withMessage('Name is required'),

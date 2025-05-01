@@ -39,6 +39,11 @@ import VehicleRegistrationList from './components/vehicalregistation/VehicleRegi
 import UpdateVehicleForm from './components/vehicalregistation/UpdateVehicleForm';
 import ProductDisplay from './components/inventory/ProductDisplay';
 
+// Vehicle Error Imports
+import VehicleErrorList from './components/vehicleerror/VehicleErrorList';
+import VehicleErrorForm from './components/vehicleerror/VehicleErrorForm';
+import VehicleErrorDetails from './components/vehicleerror/VehicleErrorDetails';
+
 const App = () => {
   return (
     <DarkModeProvider>
@@ -81,6 +86,11 @@ const App = () => {
             <Route path="/registrationform" element={<ProtectedRoute><VehicleRegistrationForm /></ProtectedRoute>} />
             <Route path="/view-registrations" element={<ProtectedRoute><VehicleRegistrationList /></ProtectedRoute>} />
             <Route path="/update-vehicle-registration/:id" element={<ProtectedRoute><UpdateVehicleForm /></ProtectedRoute>} />
+
+            {/* Vehicle Error Routes */}
+            <Route path="/vehicle-errors" element={<ProtectedRoute><VehicleErrorList /></ProtectedRoute>} />
+            <Route path="/vehicle-error-form" element={<ProtectedRoute><VehicleErrorForm /></ProtectedRoute>} />
+            <Route path="/vehicle-error/:id" element={<ProtectedRoute><VehicleErrorDetails /></ProtectedRoute>} />
 
             {/* Redirect to login if no other route matches */}
             <Route path="*" element={<Navigate to="/login" replace />} />
