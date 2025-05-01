@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import { AuthProvider } from './context/AuthContext';
 import { DarkModeProvider } from './context/DarkModeContext';
 import ProtectedRoute from './components/ProtectedRoute';
-
+import { ThemeProvider } from './context/ThemeContext';
 
 import SignupForm from './shared/SignupForm';
 import LoginForm from './shared/LoginForm';
@@ -46,7 +46,7 @@ import VehicleErrorDetails from './components/vehicleerror/VehicleErrorDetails';
 
 const App = () => {
   return (
-    <DarkModeProvider>
+    <ThemeProvider>
       <AuthProvider>
         <Router>
           <ToastContainer />
@@ -97,7 +97,7 @@ const App = () => {
           </Routes>
         </Router>
       </AuthProvider>
-    </DarkModeProvider>
+    </ThemeProvider>
   );
 };
 
