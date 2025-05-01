@@ -3,7 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, Link } from 'react-router-dom';
-import { FaEdit, FaTrash, FaSearch, FaFilter, FaDownload, FaEye, FaEyeSlash, FaMapMarkerAlt, FaMoon, FaSun } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaSearch, FaFilter, FaDownload, FaEye, FaEyeSlash, FaMapMarkerAlt, FaMoon, FaSun, FaImages, FaTimes } from 'react-icons/fa';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -20,6 +20,7 @@ const EmergencyList = () => {
     const [showRequestNo, setShowRequestNo] = useState(false);
     const [darkMode, setDarkMode] = useState(false);
     const [showAddress, setShowAddress] = useState(true);
+    const [selectedPhotos, setSelectedPhotos] = useState(null);
 
     // Define status options
     const statusOptions = [
@@ -466,33 +467,17 @@ const EmergencyList = () => {
                                             <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
                                                 <div className="flex justify-center items-center">
                                                     {item.photos && item.photos.length > 0 ? (
-                                                        <div className="flex items-center space-x-2 overflow-x-auto max-w-[150px]">
-                                                            {item.photos.map((photo, index) => (
-                                                                <div key={index} className="relative group/photo">
-                                                                    <img
-                                                                        src={photo}
-                                                                        alt={`Emergency ${index + 1}`}
-                                                                        className="w-10 h-10 object-cover rounded-lg cursor-pointer transition-all duration-200 hover:z-10"
-                                                                        onError={(e) => {
-                                                                            console.error('Error loading image:', photo);
-                                                                            e.target.src = 'https://via.placeholder.com/100?text=Error';
-                                                                        }}
-                                                                    />
-                                                                    <div className="hidden group-hover/photo:block absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full z-20">
-                                                                        <img
-                                                                            src={photo}
-                                                                            alt={`Emergency ${index + 1} Preview`}
-                                                                            className="w-32 h-32 object-cover rounded-lg shadow-xl border-2 border-white"
-                                                                            onClick={() => window.open(photo, '_blank')}
-                                                                            onError={(e) => {
-                                                                                console.error('Error loading preview image:', photo);
-                                                                                e.target.src = 'https://via.placeholder.com/300?text=Error';
-                                                                            }}
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            ))}
-                                                        </div>
+                                                        <button
+                                                            onClick={() => setSelectedPhotos(item.photos)}
+                                                            className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg transition-all duration-200 ${
+                                                                darkMode 
+                                                                    ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                                                                    : 'bg-blue-100 hover:bg-blue-200 text-blue-600 hover:text-blue-700'
+                                                            }`}
+                                                        >
+                                                            <FaImages className="w-4 h-4" />
+                                                            <span>See Photos ({item.photos.length})</span>
+                                                        </button>
                                                     ) : (
                                                         <span className="text-gray-500 italic">No photos</span>
                                                     )}
@@ -543,6 +528,37 @@ const EmergencyList = () => {
                     )}
                 </div>
             </div>
+
+            {/* Photos Modal */}
+            {selectedPhotos && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+                    <div className={`relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 ${darkMode ? 'dark' : ''}`}>
+                        <button
+                            onClick={() => setSelectedPhotos(null)}
+                            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        >
+                            <FaTimes className="w-6 h-6" />
+                        </button>
+                        <h3 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Emergency Photos</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                            {selectedPhotos.map((photo, index) => (
+                                <div key={index} className="relative group aspect-square">
+                                    <img
+                                        src={photo}
+                                        alt={`Emergency ${index + 1}`}
+                                        className="w-full h-full object-cover rounded-lg cursor-pointer transition-transform duration-200 hover:scale-105"
+                                        onClick={() => window.open(photo, '_blank')}
+                                        onError={(e) => {
+                                            console.error('Error loading image:', photo);
+                                            e.target.src = 'https://via.placeholder.com/300?text=Error';
+                                        }}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
