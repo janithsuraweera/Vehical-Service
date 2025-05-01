@@ -134,85 +134,138 @@ const EmergencyList = () => {
         try {
             const doc = new jsPDF();
             
-            // Add title
-            doc.setFontSize(20);
-            doc.text('Emergency Service Report', 105, 20, { align: 'center' });
+            // Add company logo and header
+            doc.setFontSize(24);
+            doc.setTextColor(0, 48, 135); // Dark blue color
+            doc.text('Vehicle Service Center', 105, 20, { align: 'center' });
             
-            // Add date
+            // Add subtitle
+            doc.setFontSize(16);
+            doc.setTextColor(231, 76, 60); // Red color
+            doc.text('Emergency Service Report', 105, 30, { align: 'center' });
+            
+            // Add report info
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Generated Date: ${new Date().toLocaleDateString()}`, 15, 40);
+            doc.text(`Generated Time: ${new Date().toLocaleTimeString()}`, 15, 45);
+            doc.text(`Total Requests: ${filteredEmergency.length}`, 15, 50);
+
+            // Add status summary
+            const pendingCount = filteredEmergency.filter(item => item.status === 'pending').length;
+            const processingCount = filteredEmergency.filter(item => item.status === 'Processing').length;
+            const completedCount = filteredEmergency.filter(item => item.status === 'completed').length;
+
             doc.setFontSize(12);
-            doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 105, 30, { align: 'center' });
-            
-            // Add company info
-            doc.setFontSize(14);
-            doc.text('Vehicle Service Center', 105, 40, { align: 'center' });
-            
+            doc.setTextColor(0, 48, 135); // Dark blue color
+            doc.text('Status Summary:', 150, 40);
+            doc.setFontSize(10);
+            doc.setTextColor(243, 156, 18); // Orange color for pending
+            doc.text(`Pending: ${pendingCount}`, 150, 45);
+            doc.setTextColor(231, 76, 60); // Red color for processing
+            doc.text(`Processing: ${processingCount}`, 150, 50);
+            doc.setTextColor(46, 204, 113); // Green color for completed
+            doc.text(`Completed: ${completedCount}`, 150, 55);
+
             // Add table
             const tableData = filteredEmergency.map(item => [
                 item.emergencyRequestNo || 'N/A',
-                item.customerName || 'N/A',
+                item.name || item.customerName || 'N/A',
                 item.contactNumber || 'N/A',
+                typeof item.location === 'object' ? item.location.address || 'N/A' : item.location || 'N/A',
                 item.vehicleNumber || 'N/A',
-                typeof item.location === 'object' 
-                    ? item.location.address || 'N/A'
-                    : item.location || 'N/A',
+                item.emergencyType || 'N/A',
+                item.vehicleType || 'N/A',
+                item.vehicleColor || 'N/A',
+                item.description || item.issueDescription || 'N/A',
                 item.status || 'N/A',
-                item.date ? new Date(item.date).toLocaleDateString() : 'N/A'
+                item.date ? new Date(item.date).toLocaleDateString() : 'N/A',
+                item.time || 'N/A'
             ]);
 
+            // Define the table headers and styles
             autoTable(doc, {
-                startY: 50,
-                head: [['Request No', 'Name', 'Contact', 'Vehicle No', 'Location', 'Status', 'Date']],
+                startY: 65,
+                head: [[
+                    'Request No',
+                    'Name',
+                    'Contact',
+                    'Location',
+                    'Vehicle No',
+                    'Emergency',
+                    'Vehicle Type',
+                    'Color',
+                    'Description',
+                    'Status',
+                    'Date',
+                    'Time'
+                ]],
                 body: tableData,
                 theme: 'grid',
                 headStyles: {
-                    fillColor: [34, 139, 34], // Green color
+                    fillColor: [0, 48, 135],
                     textColor: 255,
-                    fontSize: 10,
-                    fontStyle: 'bold'
+                    fontSize: 8,
+                    fontStyle: 'bold',
+                    halign: 'center'
                 },
-                styles: {
-                    fontSize: 9,
+                bodyStyles: {
+                    fontSize: 8,
+                    textColor: 50,
                     cellPadding: 3
                 },
                 columnStyles: {
-                    0: { cellWidth: 25 }, // Request No
-                    1: { cellWidth: 40 }, // Name
-                    2: { cellWidth: 30 }, // Contact
-                    3: { cellWidth: 30 }, // Vehicle No
-                    4: { cellWidth: 50 }, // Location
-                    5: { cellWidth: 25 }, // Status
-                    6: { cellWidth: 25 }  // Date
+                    0: { cellWidth: 20 }, // Request No
+                    1: { cellWidth: 25 }, // Name
+                    2: { cellWidth: 20 }, // Contact
+                    3: { cellWidth: 35 }, // Location
+                    4: { cellWidth: 20 }, // Vehicle No
+                    5: { cellWidth: 20 }, // Emergency
+                    6: { cellWidth: 20 }, // Vehicle Type
+                    7: { cellWidth: 15 }, // Color
+                    8: { cellWidth: 35 }, // Description
+                    9: { cellWidth: 15, 
+                         fontStyle: 'bold',
+                         customFunction: (cell, data) => {
+                             if (data.text[0] === 'pending') {
+                                 cell.styles.textColor = [243, 156, 18]; // Orange
+                             } else if (data.text[0] === 'Processing') {
+                                 cell.styles.textColor = [231, 76, 60]; // Red
+                             } else if (data.text[0] === 'completed') {
+                                 cell.styles.textColor = [46, 204, 113]; // Green
+                             }
+                         }
+                    }, // Status
+                    10: { cellWidth: 20 }, // Date
+                    11: { cellWidth: 15 }  // Time
+                },
+                alternateRowStyles: {
+                    fillColor: [245, 247, 250]
+                },
+                margin: { top: 65, right: 15, bottom: 30, left: 15 },
+                didDrawPage: (data) => {
+                    // Add footer on each page
+                    doc.setFontSize(8);
+                    doc.setTextColor(128);
+                    doc.text(
+                        'Vehicle Service Center - Emergency Service Report',
+                        data.settings.margin.left,
+                        doc.internal.pageSize.height - 10
+                    );
+                    doc.text(
+                        `Page ${doc.internal.getCurrentPageInfo().pageNumber}`,
+                        doc.internal.pageSize.width - data.settings.margin.right,
+                        doc.internal.pageSize.height - 10,
+                        { align: 'right' }
+                    );
                 }
             });
 
-            // Add summary
-            const finalY = doc.lastAutoTable.finalY || 50;
-            doc.setFontSize(12);
-            doc.text('Summary', 14, finalY + 20);
-            
-            const totalRequests = filteredEmergency.length;
-            const pendingRequests = filteredEmergency.filter(item => item.status === 'pending').length;
-            const processingRequests = filteredEmergency.filter(item => item.status === 'Processing').length;
-            const completedRequests = filteredEmergency.filter(item => item.status === 'completed').length;
-            
-            doc.setFontSize(10);
-            doc.text(`Total Requests: ${totalRequests}`, 14, finalY + 30);
-            doc.text(`Pending Requests: ${pendingRequests}`, 14, finalY + 40);
-            doc.text(`Processing Requests: ${processingRequests}`, 14, finalY + 50);
-            doc.text(`Completed Requests: ${completedRequests}`, 14, finalY + 60);
-            
-            // Add footer
-            const pageCount = doc.internal.getNumberOfPages();
-            for (let i = 1; i <= pageCount; i++) {
-                doc.setPage(i);
-                doc.setFontSize(8);
-                doc.text(`Page ${i} of ${pageCount}`, 105, 285, { align: 'center' });
-            }
-
             // Save the PDF
-            const today = new Date();
-            const formattedDate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-            doc.save(`Emergency_Report_${formattedDate}.pdf`);
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            doc.save(`Emergency_Service_Report_${timestamp}.pdf`);
+            
+            toast.success('Report generated successfully!');
         } catch (error) {
             console.error('Error generating PDF:', error);
             toast.error('Failed to generate PDF report. Please try again.');
