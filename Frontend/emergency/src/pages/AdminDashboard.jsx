@@ -126,57 +126,105 @@ const AdminDashboard = () => {
                         </p>
                     </motion.div>
 
-                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                        {statCards.map((card, index) => (
-                            <motion.div
-                                key={index}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.4, delay: index * 0.1 }}
-                                whileHover={{ scale: 1.03 }}
-                                className="h-full"
-                            >
-                                <Link to={card.link} className="h-full block">
-                                    <div className={`bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm overflow-hidden shadow-2xl rounded-3xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 h-full relative ${isRefreshing ? 'animate-pulse' : ''}`}>
-                                        {isRefreshing && (
-                                            <div className="absolute top-0 right-0 w-3 h-3 bg-blue-500 rounded-full animate-ping"></div>
-                                        )}
-                                        <div className="p-8 h-full flex flex-col">
-                                            <div className="flex items-center flex-grow">
-                                                <div className={`flex-shrink-0 ${card.color} rounded-2xl p-5 text-white shadow-xl ${isRefreshing ? 'animate-spin' : ''}`}>
-                                                    {card.icon}
+                    <div className="grid grid-cols-1 gap-8">
+                        {/* Total Users Card - Full Width */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4 }}
+                            whileHover={{ scale: 1.02 }}
+                            className="h-full"
+                        >
+                            <Link to="/admin/users" className="h-full block">
+                                <div className={`bg-gradient-to-r from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 backdrop-blur-sm overflow-hidden shadow-2xl rounded-3xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-2 border border-blue-400/20 dark:border-blue-500/20 h-full relative ${isRefreshing ? 'animate-pulse' : ''}`}>
+                                    {isRefreshing && (
+                                        <div className="absolute top-0 right-0 w-3 h-3 bg-white rounded-full animate-ping"></div>
+                                    )}
+                                    <div className="p-8 h-full flex flex-col">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center">
+                                                <div className={`flex-shrink-0 bg-white/20 rounded-2xl p-6 text-white shadow-xl ${isRefreshing ? 'animate-spin' : ''}`}>
+                                                    <FaUsers className="h-12 w-12" />
                                                 </div>
-                                                <div className="ml-6 w-0 flex-1">
-                                                    <dl>
-                                                        <dt className="text-xl font-bold text-gray-900 dark:text-white truncate">
-                                                            {card.title}
-                                                        </dt>
-                                                        <dd className="flex items-baseline mt-2">
-                                                            <motion.div 
-                                                                initial={{ scale: 0.5, opacity: 0 }}
-                                                                animate={{ scale: 1, opacity: 1 }}
-                                                                transition={{ duration: 0.5, delay: index * 0.1 }}
-                                                                className="relative"
-                                                            >
-                                                                <div className={`text-5xl font-black bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent ${isRefreshing ? 'animate-pulse' : ''}`}>
-                                                                    {loading ? '...' : card.value}
-                                                                </div>
-                                                                <div className="absolute -top-2 -right-2 w-4 h-4 bg-green-500 rounded-full animate-pulse"></div>
-                                                            </motion.div>
-                                                        </dd>
-                                                        {card.description && (
-                                                            <p className="mt-3 text-base text-gray-500 dark:text-gray-400">
-                                                                {card.description}
-                                                            </p>
-                                                        )}
-                                                    </dl>
+                                                <div className="ml-8">
+                                                    <h3 className="text-2xl font-bold text-white">
+                                                        Total Users
+                                                    </h3>
+                                                    <p className="mt-1 text-blue-100">
+                                                        View and manage all system users
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <motion.div 
+                                                initial={{ scale: 0.5, opacity: 0 }}
+                                                animate={{ scale: 1, opacity: 1 }}
+                                                transition={{ duration: 0.5 }}
+                                                className="relative"
+                                            >
+                                                <div className={`text-6xl font-black text-white ${isRefreshing ? 'animate-pulse' : ''}`}>
+                                                    {loading ? '...' : stats.totalUsers}
+                                                </div>
+                                                <div className="absolute -top-2 -right-2 w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>
+                                            </motion.div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Link>
+                        </motion.div>
+
+                        {/* Other Cards Grid */}
+                        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                            {statCards.slice(1).map((card, index) => (
+                                <motion.div
+                                    key={index}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                                    whileHover={{ scale: 1.03 }}
+                                    className="h-full"
+                                >
+                                    <Link to={card.link} className="h-full block">
+                                        <div className={`bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm overflow-hidden shadow-2xl rounded-3xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 h-full relative ${isRefreshing ? 'animate-pulse' : ''}`}>
+                                            {isRefreshing && (
+                                                <div className="absolute top-0 right-0 w-3 h-3 bg-blue-500 rounded-full animate-ping"></div>
+                                            )}
+                                            <div className="p-8 h-full flex flex-col">
+                                                <div className="flex items-center flex-grow">
+                                                    <div className={`flex-shrink-0 ${card.color} rounded-2xl p-5 text-white shadow-xl ${isRefreshing ? 'animate-spin' : ''}`}>
+                                                        {card.icon}
+                                                    </div>
+                                                    <div className="ml-6 w-0 flex-1">
+                                                        <dl>
+                                                            <dt className="text-xl font-bold text-gray-900 dark:text-white truncate">
+                                                                {card.title}
+                                                            </dt>
+                                                            <dd className="flex items-baseline mt-2">
+                                                                <motion.div 
+                                                                    initial={{ scale: 0.5, opacity: 0 }}
+                                                                    animate={{ scale: 1, opacity: 1 }}
+                                                                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                                                                    className="relative"
+                                                                >
+                                                                    <div className={`text-5xl font-black bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent ${isRefreshing ? 'animate-pulse' : ''}`}>
+                                                                        {loading ? '...' : card.value}
+                                                                    </div>
+                                                                    <div className="absolute -top-2 -right-2 w-4 h-4 bg-green-500 rounded-full animate-pulse"></div>
+                                                                </motion.div>
+                                                            </dd>
+                                                            {card.description && (
+                                                                <p className="mt-3 text-base text-gray-500 dark:text-gray-400">
+                                                                    {card.description}
+                                                                </p>
+                                                            )}
+                                                        </dl>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </Link>
-                            </motion.div>
-                        ))}
+                                    </Link>
+                                </motion.div>
+                            ))}
+                        </div>
                     </div>
 
                     <div className="mt-16 grid grid-cols-1 gap-8 lg:grid-cols-2">
