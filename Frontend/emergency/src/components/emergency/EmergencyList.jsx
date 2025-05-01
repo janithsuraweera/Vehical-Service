@@ -82,10 +82,12 @@ const EmergencyList = () => {
             let filtered = [...emergencyItems];
 
             if (searchTerm) {
+                const searchLower = searchTerm.toLowerCase();
                 filtered = filtered.filter(item =>
-                    (item.vehicleNumber?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-                    (item.customerName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-                    (item.contactNumber?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+                    (item.vehicleNumber?.toLowerCase() || '').includes(searchLower) ||
+                    (item.customerName?.toLowerCase() || '').includes(searchLower) ||
+                    (item.contactNumber?.toString() || '').includes(searchLower) ||
+                    (item.name?.toLowerCase() || '').includes(searchLower)
                 );
             }
 
