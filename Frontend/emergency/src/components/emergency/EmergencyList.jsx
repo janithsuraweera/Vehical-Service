@@ -388,6 +388,7 @@ const EmergencyList = () => {
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Vehicle Type</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Color</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-64">Description</th>
+                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Photos</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Status</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Date</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Time</th>
@@ -461,6 +462,23 @@ const EmergencyList = () => {
                                             </td>
                                             <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
                                                 {item.description || item.issueDescription || 'N/A'}
+                                            </td>
+                                            <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                                {item.photos && item.photos.length > 0 ? (
+                                                    <div className="flex items-center space-x-2">
+                                                        {item.photos.map((photo, index) => (
+                                                            <img
+                                                                key={index}
+                                                                src={`http://localhost:5000/${photo}`}
+                                                                alt={`Emergency ${index + 1}`}
+                                                                className="w-10 h-10 object-cover rounded-lg cursor-pointer hover:scale-150 transition-transform duration-200"
+                                                                onClick={() => window.open(`http://localhost:5000/${photo}`, '_blank')}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    'No photos'
+                                                )}
                                             </td>
                                             <td className="px-4 py-3 whitespace-nowrap">
                                                 <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
