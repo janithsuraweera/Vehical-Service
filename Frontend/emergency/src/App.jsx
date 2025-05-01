@@ -3,9 +3,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import { DarkModeProvider } from './context/DarkModeContext';
 import ProtectedRoute from './components/ProtectedRoute';
-
+import { ThemeProvider } from './context/ThemeContext';
 
 import SignupForm from './shared/SignupForm';
 import LoginForm from './shared/LoginForm';
@@ -39,9 +38,14 @@ import VehicleRegistrationList from './components/vehicalregistation/VehicleRegi
 import UpdateVehicleForm from './components/vehicalregistation/UpdateVehicleForm';
 import ProductDisplay from './components/inventory/ProductDisplay';
 
+// Vehicle Error Imports
+import VehicleErrorList from './components/vehicleerror/VehicleErrorList';
+import VehicleErrorForm from './components/vehicleerror/VehicleErrorForm';
+import VehicleErrorDetails from './components/vehicleerror/VehicleErrorDetails';
+
 const App = () => {
   return (
-    <DarkModeProvider>
+    <ThemeProvider>
       <AuthProvider>
         <Router>
           <ToastContainer />
@@ -82,12 +86,17 @@ const App = () => {
             <Route path="/view-registrations" element={<ProtectedRoute><VehicleRegistrationList /></ProtectedRoute>} />
             <Route path="/update-vehicle-registration/:id" element={<ProtectedRoute><UpdateVehicleForm /></ProtectedRoute>} />
 
+            {/* Vehicle Error Routes */}
+            <Route path="/vehicle-errors" element={<ProtectedRoute><VehicleErrorList /></ProtectedRoute>} />
+            <Route path="/vehicle-error-form" element={<ProtectedRoute><VehicleErrorForm /></ProtectedRoute>} />
+            <Route path="/vehicle-error/:id" element={<ProtectedRoute><VehicleErrorDetails /></ProtectedRoute>} />
+
             {/* Redirect to login if no other route matches */}
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
         </Router>
       </AuthProvider>
-    </DarkModeProvider>
+    </ThemeProvider>
   );
 };
 

@@ -85,7 +85,17 @@ router.post('/', upload.array('photos', 5), async (req, res) => {
 router.get('/', async (req, res) => {
     try {
         const emergencyRequests = await EmergencyRequest.find().sort({ createdAt: -1 });
-        res.json(emergencyRequests);
+        // Transform photo URLs to include the full server URL
+        const transformedRequests = emergencyRequests.map(request => {
+            const transformed = request.toObject();
+            if (transformed.photos && transformed.photos.length > 0) {
+                transformed.photos = transformed.photos.map(photo => 
+                    photo.startsWith('http') ? photo : `http://localhost:5000/${photo}`
+                );
+            }
+            return transformed;
+        });
+        res.json(transformedRequests);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -98,7 +108,14 @@ router.get('/:id', async (req, res) => {
         if (!emergencyRequest) {
             return res.status(404).json({ message: 'Emergency request not found' });
         }
-        res.json(emergencyRequest);
+        // Transform photo URLs to include the full server URL
+        const transformed = emergencyRequest.toObject();
+        if (transformed.photos && transformed.photos.length > 0) {
+            transformed.photos = transformed.photos.map(photo => 
+                photo.startsWith('http') ? photo : `http://localhost:5000/${photo}`
+            );
+        }
+        res.json(transformed);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
