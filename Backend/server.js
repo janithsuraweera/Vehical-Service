@@ -30,18 +30,11 @@ const inventoryDir = path.join(uploadsDir, 'inventory');
 const emergencyDir = path.join(uploadsDir, 'emergency');
 const errorPhotosDir = path.join(uploadsDir, 'error-photos');
 
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-}
-if (!fs.existsSync(inventoryDir)) {
-    fs.mkdirSync(inventoryDir, { recursive: true });
-}
-if (!fs.existsSync(emergencyDir)) {
-    fs.mkdirSync(emergencyDir, { recursive: true });
-}
-if (!fs.existsSync(errorPhotosDir)) {
-    fs.mkdirSync(errorPhotosDir, { recursive: true });
-}
+[inventoryDir, emergencyDir, errorPhotosDir].forEach(dir => {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+});
 
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
@@ -60,11 +53,11 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/vehicle-errors', vehicleErrorRoutes);
 
-app.get('/', (req, res) => {res.send('Welcome DB');
-
+app.get('/', (req, res) => {
+    res.send('Welcome to Vehicle Service API');
 });
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-//added by me
 
 

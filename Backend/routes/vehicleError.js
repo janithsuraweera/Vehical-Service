@@ -4,7 +4,7 @@ const VehicleError = require('../models/vehicleError');
 const multer = require('multer');
 const path = require('path');
 const auth = require('../middleware/auth');
-const openai = require('../config/openai');
+const fs = require('fs');
 
 // Configure multer for image uploads
 const storage = multer.diskStorage({
@@ -36,38 +36,47 @@ const upload = multer({
 // Report a new vehicle error
 router.post('/report', auth, upload.array('photos', 5), async (req, res) => {
     try {
-        if (!req.files || req.files.length === 0) {
-            return res.status(400).json({ message: 'Please upload at least one photo' });
-        }
-
         const { vehicleRegistrationNumber, errorType, description, severity, location } = req.body;
         
-        const photoUrls = req.files.map(file => `/uploads/error-photos/${file.filename}`);
+        if (!vehicleRegistrationNumber || !errorType || !description || !severity || !location) {
+            return res.status(400).json({ message: 'සියලුම ක්ෂේත්‍ර පුරවා තිබිය යුතුය' });
+        }
 
-        const error = new VehicleError({
-            userId: req.user._id,
+        const errorReport = new VehicleError({
             vehicleRegistrationNumber,
             errorType,
             description,
-            photos: photoUrls,
             severity,
-            location
+            location,
+            photos: req.files ? req.files.map(file => `/uploads/error-photos/${file.filename}`) : [],
+            status: 'pending',
+            reportedBy: req.user._id
         });
 
-        await error.save();
-        res.status(201).json(error);
+        await errorReport.save();
+
+        const cleanedResponse = {
+            _id: errorReport._id,
+            vehicleRegistrationNumber: errorReport.vehicleRegistrationNumber,
+            errorType: errorReport.errorType,
+            description: errorReport.description,
+            severity: errorReport.severity,
+            location: errorReport.location,
+            status: errorReport.status,
+            createdAt: errorReport.createdAt
+        };
+
+        res.status(201).json(cleanedResponse);
     } catch (error) {
-        if (error.code === 'LIMIT_FILE_TYPES') {
-            return res.status(400).json({ message: error.message });
-        }
-        res.status(400).json({ message: error.message });
+        console.error('Error creating error report:', error);
+        res.status(500).json({ message: 'දෝෂ වාර්තාව සෑදීමේදී දෝෂයක් ඇතිවිය' });
     }
 });
 
 // Get all errors for a user
 router.get('/my-errors', auth, async (req, res) => {
     try {
-        const errors = await VehicleError.find({ userId: req.user._id })
+        const errors = await VehicleError.find({ reportedBy: req.user._id })
             .sort({ createdAt: -1 });
         res.json(errors);
     } catch (error) {
@@ -82,7 +91,7 @@ router.get('/all', auth, async (req, res) => {
             return res.status(403).json({ message: 'Access denied' });
         }
         const errors = await VehicleError.find()
-            .populate('userId', 'username')
+            .populate('reportedBy', 'username')
             .sort({ createdAt: -1 });
         res.json(errors);
     } catch (error) {
