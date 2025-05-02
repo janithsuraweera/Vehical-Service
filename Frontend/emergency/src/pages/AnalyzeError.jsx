@@ -26,7 +26,7 @@ const AnalyzeError = () => {
 
     const analyzeImage = async () => {
         if (!selectedImage) {
-            setError('කරුණාකර ඡායාරූපයක් තෝරන්න');
+            setError('Please select an image');
             return;
         }
 
@@ -61,7 +61,7 @@ const AnalyzeError = () => {
                 timestamp: new Date()
             }]);
         } catch (err) {
-            setError(err.response?.data?.message || 'විශ්ලේෂණය කිරීමේදී දෝෂයක් ඇතිවිය');
+            setError(err.response?.data?.message || 'Error analyzing image');
         } finally {
             setLoading(false);
         }
@@ -69,7 +69,7 @@ const AnalyzeError = () => {
 
     const handleSubmit = async () => {
         if (!analysis) {
-            setError('කරුණාකර පළමුව ඡායාරූපය විශ්ලේෂණය කරන්න');
+            setError('Please analyze the image first');
             return;
         }
 
@@ -85,18 +85,18 @@ const AnalyzeError = () => {
 
             navigate('/my-errors');
         } catch (err) {
-            setError(err.response?.data?.message || 'දෝෂ වාර්තාව යැවීමේදී දෝෂයක් ඇතිවිය');
+            setError(err.response?.data?.message || 'Error sending error report');
         }
     };
 
     return (
         <div className="min-h-screen bg-gray-100 py-8">
             <div className="max-w-4xl mx-auto px-4">
-                <h2 className="text-2xl font-bold mb-6">වාහන දෝෂ විශ්ලේෂණය</h2>
+                <h2 className="text-2xl font-bold mb-6">Analyze Vehicle Error</h2>
 
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                     <div className="mb-4">
-                        <label className="block text-gray-700 mb-2">ඡායාරූපය තෝරන්න</label>
+                        <label className="block text-gray-700 mb-2">Choose an image</label>
                         <div className="flex items-center space-x-4">
                             <input
                                 type="file"
@@ -110,7 +110,7 @@ const AnalyzeError = () => {
                                 className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 flex items-center"
                             >
                                 <FaUpload className="mr-2" />
-                                ඡායාරූපය තෝරන්න
+                                Upload Image
                             </label>
                             {previewUrl && (
                                 <img
@@ -137,12 +137,12 @@ const AnalyzeError = () => {
                             {loading ? (
                                 <>
                                     <FaSpinner className="animate-spin mr-2" />
-                                    විශ්ලේෂණය කරමින්...
+                                    Analyzing...
                                 </>
                             ) : (
                                 <>
                                     <FaSearch className="mr-2" />
-                                    විශ්ලේෂණය කරන්න
+                                    Analyze
                                 </>
                             )}
                         </button>
@@ -152,7 +152,7 @@ const AnalyzeError = () => {
                                 onClick={handleSubmit}
                                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                             >
-                                දෝෂ වාර්තාව යවන්න
+                                Submit Error Report
                             </button>
                         )}
                     </div>
@@ -160,19 +160,19 @@ const AnalyzeError = () => {
 
                 {analysis && (
                     <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-                        <h3 className="text-xl font-semibold mb-4">විශ්ලේෂණ ප්‍රතිඵල</h3>
+                        <h3 className="text-xl font-semibold mb-4">Analysis Results</h3>
                         <div className="space-y-2">
-                            <p><span className="font-semibold">දෝෂ වර්ගය:</span> {analysis.errorType}</p>
-                            <p><span className="font-semibold">දෝෂයේ තත්වය:</span> {analysis.severity}</p>
-                            <p><span className="font-semibold">විස්තර:</span> {analysis.description}</p>
-                            <p><span className="font-semibold">ස්ථානය:</span> {analysis.location}</p>
+                            <p><span className="font-semibold">Error Type:</span> {analysis.errorType}</p>
+                            <p><span className="font-semibold">Severity:</span> {analysis.severity}</p>
+                            <p><span className="font-semibold">Description:</span> {analysis.description}</p>
+                            <p><span className="font-semibold">Location:</span> {analysis.location}</p>
                         </div>
                     </div>
                 )}
 
                 {searchHistory.length > 0 && (
                     <div className="bg-white rounded-lg shadow-md p-6">
-                        <h3 className="text-xl font-semibold mb-4">සෙවුම් ඉතිහාසය</h3>
+                        <h3 className="text-xl font-semibold mb-4">Search History</h3>
                         <div className="space-y-4">
                             {searchHistory.map((item, index) => (
                                 <div key={index} className="border-b pb-4">
@@ -200,4 +200,4 @@ const AnalyzeError = () => {
     );
 };
 
-export default AnalyzeError; 
+export default AnalyzeError;
