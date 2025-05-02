@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { FaHome, FaStore, FaExclamationTriangle, FaCar, FaWrench, FaInfoCircle, FaUser, FaSignOutAlt, FaMoon, FaSun, FaShoppingCart, FaListAlt, FaPlus } from 'react-icons/fa';
+import { FaHome, FaStore, FaExclamationTriangle, FaCar, FaWrench, FaInfoCircle, FaUser, FaSignOutAlt, FaMoon, FaSun, FaShoppingCart, FaListAlt, FaPlus, FaChartLine } from 'react-icons/fa';
 import logo from '/logo.png';
 import NotificationBell from './NotificationBell';
 
@@ -82,7 +82,7 @@ const Navbar = () => {
                     
                     <div className="hidden md:flex items-center space-x-2">
                         {(!user || user.role !== 'admin') && (
-                            <Link to="/" className={getTabStyle('home')}>
+                            <Link to="/home" className={getTabStyle('home')}>
                                 <span className="group-hover:opacity-0 transition-opacity duration-300">Home</span>
                                 <FaHome className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                             </Link>
@@ -191,6 +191,14 @@ const Navbar = () => {
                                                 <FaUser className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={16} />
                                             </Link>
                                         )}
+                                        <Link 
+                                            to="/dashboard"
+                                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 relative group"
+                                            onClick={() => setShowDropdown(false)}
+                                        >
+                                            <span className="group-hover:opacity-0 transition-opacity duration-300">Dashboard</span>
+                                            <FaChartLine className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={16} />
+                                        </Link>
                                         <button
                                             onClick={handleLogout}
                                             className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 relative group"
