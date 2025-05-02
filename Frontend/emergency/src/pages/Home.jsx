@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { FaCar, FaTools, FaExclamationTriangle, FaCalendarAlt, FaArrowRight, FaCheck, FaStar, FaUsers, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock, FaShieldAlt, FaCertificate, FaHandshake } from 'react-icons/fa';
+import { FaCar, FaTools, FaExclamationTriangle, FaCalendarAlt, FaArrowRight, FaCheck, FaStar, FaUsers, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock, FaShieldAlt, FaCertificate, FaHandshake, FaArrowDown } from 'react-icons/fa';
 import Footer from '../shared/Footer';
 
 function Home() {
     const navigate = useNavigate();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
+    const [scrollPosition, setScrollPosition] = useState(0);
 
     useEffect(() => {
         setIsVisible(true);
+        const handleScroll = () => {
+            setScrollPosition(window.scrollY);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     const imageData = [
@@ -88,8 +94,33 @@ function Home() {
         }
     };
 
+    const scrollToSection = (sectionId) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+            {/* Scroll Indicator */}
+            <motion.div 
+                className="fixed bottom-4 right-4 z-50 cursor-pointer"
+                animate={{ 
+                    y: [0, 10, 0],
+                    opacity: scrollPosition > 100 ? 1 : 0
+                }}
+                transition={{ 
+                    y: { duration: 1, repeat: Infinity, ease: "easeInOut" },
+                    opacity: { duration: 0.3 }
+                }}
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
+                <div className="bg-blue-500 text-white p-3 rounded-full shadow-lg">
+                    <FaArrowDown className="transform rotate-180" />
+                </div>
+            </motion.div>
+
             {/* Slideshow Section */}
             <div className="relative mt-0 overflow-hidden">
                 <AnimatePresence initial={false} mode="wait">
@@ -177,8 +208,9 @@ function Home() {
                         className="mt-6 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-4 rounded-lg shadow-lg flex items-center justify-center mx-auto group"
                         whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.4)" }}
                         whileTap={{ scale: 0.95 }}
+                        onClick={() => scrollToSection('services')}
                     >
-                        Learn More
+                        Explore Our Services
                         <FaArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
                     </motion.button>
                 </motion.div>
@@ -204,6 +236,7 @@ function Home() {
                         <motion.div
                             variants={itemVariants}
                             className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center transform hover:scale-105 transition-transform duration-300"
+                            whileHover={{ y: -10 }}
                         >
                             <div className="text-blue-500 dark:text-blue-400 mb-6">
                                 <FaShieldAlt size={48} className="mx-auto" />
@@ -219,6 +252,7 @@ function Home() {
                         <motion.div
                             variants={itemVariants}
                             className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center transform hover:scale-105 transition-transform duration-300"
+                            whileHover={{ y: -10 }}
                         >
                             <div className="text-green-500 dark:text-green-400 mb-6">
                                 <FaCertificate size={48} className="mx-auto" />
@@ -234,6 +268,7 @@ function Home() {
                         <motion.div
                             variants={itemVariants}
                             className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center transform hover:scale-105 transition-transform duration-300"
+                            whileHover={{ y: -10 }}
                         >
                             <div className="text-yellow-500 dark:text-yellow-400 mb-6">
                                 <FaClock size={48} className="mx-auto" />
@@ -249,6 +284,7 @@ function Home() {
                         <motion.div
                             variants={itemVariants}
                             className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center transform hover:scale-105 transition-transform duration-300"
+                            whileHover={{ y: -10 }}
                         >
                             <div className="text-purple-500 dark:text-purple-400 mb-6">
                                 <FaHandshake size={48} className="mx-auto" />
@@ -265,7 +301,7 @@ function Home() {
             </div>
 
             {/* Services Section */}
-            <div className="container mx-auto px-4 py-20">
+            <div id="services" className="container mx-auto px-4 py-20">
                 <motion.h2 
                     className="text-4xl font-bold text-center text-gray-800 dark:text-white mb-16"
                     initial={{ opacity: 0, y: 20 }}
@@ -283,6 +319,7 @@ function Home() {
                     <motion.div
                         variants={itemVariants}
                         className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center transform hover:scale-105 transition-transform duration-300"
+                        whileHover={{ y: -10 }}
                     >
                         <div className="text-blue-500 dark:text-blue-400 mb-6">
                             <FaTools size={56} className="mx-auto" />
@@ -313,6 +350,7 @@ function Home() {
                     <motion.div
                         variants={itemVariants}
                         className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center transform hover:scale-105 transition-transform duration-300"
+                        whileHover={{ y: -10 }}
                     >
                         <div className="text-green-500 dark:text-green-400 mb-6">
                             <FaCar size={56} className="mx-auto" />
@@ -343,6 +381,7 @@ function Home() {
                     <motion.div
                         variants={itemVariants}
                         className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center transform hover:scale-105 transition-transform duration-300"
+                        whileHover={{ y: -10 }}
                     >
                         <div className="text-red-500 dark:text-red-400 mb-6">
                             <FaExclamationTriangle size={56} className="mx-auto" />
@@ -384,6 +423,7 @@ function Home() {
                         <motion.div
                             variants={itemVariants}
                             className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center"
+                            whileHover={{ y: -10 }}
                         >
                             <div className="text-blue-500 dark:text-blue-400 mb-4">
                                 <FaMapMarkerAlt size={32} className="mx-auto" />
@@ -392,13 +432,14 @@ function Home() {
                                 Our Location
                             </h3>
                             <p className="text-gray-600 dark:text-gray-300">
-                            15 Eramudugaha Junction,Unawatuna
+                                15 Eramudugaha Junction,Unawatuna
                             </p>
                         </motion.div>
 
                         <motion.div
                             variants={itemVariants}
                             className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center"
+                            whileHover={{ y: -10 }}
                         >
                             <div className="text-green-500 dark:text-green-400 mb-4">
                                 <FaPhoneAlt size={32} className="mx-auto" />
@@ -407,13 +448,14 @@ function Home() {
                                 Contact Us
                             </h3>
                             <p className="text-gray-600 dark:text-gray-300">
-                            +94 76 206 0052
+                                +94 76 206 0052
                             </p>
                         </motion.div>
 
                         <motion.div
                             variants={itemVariants}
                             className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center"
+                            whileHover={{ y: -10 }}
                         >
                             <div className="text-yellow-500 dark:text-yellow-400 mb-4">
                                 <FaEnvelope size={32} className="mx-auto" />
@@ -422,7 +464,7 @@ function Home() {
                                 Email Us
                             </h3>
                             <p className="text-gray-600 dark:text-gray-300">
-                            info@motron.com
+                                info@motron.com
                             </p>
                         </motion.div>
                     </motion.div>
@@ -448,7 +490,7 @@ function Home() {
                     >
                         <motion.button
                             variants={itemVariants}
-                            whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(239, 68, 68, 0.4)" }}
+                            whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(239, 68, 68, 0.4)", y: -10 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleNavigation('/emergencyform')}
                             className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white p-8 rounded-xl shadow-lg flex flex-col items-center justify-center transform transition-all duration-300"
@@ -459,7 +501,7 @@ function Home() {
 
                         <motion.button
                             variants={itemVariants}
-                            whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.4)" }}
+                            whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.4)", y: -10 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleNavigation('/registrationform')}
                             className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-8 rounded-xl shadow-lg flex flex-col items-center justify-center transform transition-all duration-300"
@@ -470,7 +512,7 @@ function Home() {
 
                         <motion.button
                             variants={itemVariants}
-                            whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(34, 197, 94, 0.4)" }}
+                            whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(34, 197, 94, 0.4)", y: -10 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleNavigation('/inventory')}
                             className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white p-8 rounded-xl shadow-lg flex flex-col items-center justify-center transform transition-all duration-300"
@@ -481,7 +523,7 @@ function Home() {
 
                         <motion.button
                             variants={itemVariants}
-                            whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(168, 85, 247, 0.4)" }}
+                            whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(168, 85, 247, 0.4)", y: -10 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleNavigation('/appointments')}
                             className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white p-8 rounded-xl shadow-lg flex flex-col items-center justify-center transform transition-all duration-300"
