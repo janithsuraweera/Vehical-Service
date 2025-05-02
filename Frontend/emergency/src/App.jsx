@@ -6,6 +6,7 @@ import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ThemeProvider } from './context/ThemeContext';
+import Chatbot from '../../components/Chatbot.jsx';
 
 import SignupForm from './shared/SignupForm';
 import LoginForm from './shared/LoginForm';
@@ -52,6 +53,7 @@ const App = () => {
           <Router>
             <ToastContainer />
             <Navbar />
+            <Chatbot />
             <Routes>
               {/* Public Routes */}
               <Route path="/home" element={<Home />} />
