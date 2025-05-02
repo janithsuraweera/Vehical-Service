@@ -153,9 +153,9 @@ const LoginForm = () => {
                         </div>
                         <div className="w-full max-w-xs">
                             <img
-                                src="./login-illustration.png"
+                                src="./singing.jpg"
                                 alt="Login Illustration"
-                                className="w-full h-auto"
+                                className="w-full h-full"
                             />
                         </div>
                     </div>
