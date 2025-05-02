@@ -54,7 +54,7 @@ const VehicleRegistrationList = () => {
     };
 
     const handleBack = () => {
-        navigate('/rvhome');
+        navigate('/admin');
     };
 
     const handleDownload = () => {
