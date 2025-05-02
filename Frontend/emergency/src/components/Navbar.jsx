@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -8,6 +8,7 @@ import NotificationBell from './NotificationBell';
 
 const Navbar = () => {
     const [showDropdown, setShowDropdown] = useState(false);
+    const dropdownRef = useRef(null);
     const navigate = useNavigate();
     const location = useLocation();
     const { user, logout } = useAuth();
@@ -26,8 +27,27 @@ const Navbar = () => {
         else setActiveTab('');
     }, [location]);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowDropdown(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    const handleProfileClick = (e) => {
+        e.stopPropagation();
+        setShowDropdown(!showDropdown);
+    };
+
     const handleLogout = () => {
         logout();
+        setShowDropdown(false);
         navigate('/');
     };
 
@@ -138,9 +158,9 @@ const Navbar = () => {
                             {darkMode ? <FaSun className="w-5 h-5" /> : <FaMoon className="w-5 h-5" />}
                         </button>
                         {user ? (
-                            <div className="relative">
+                            <div className="relative" ref={dropdownRef}>
                                 <button 
-                                    onClick={() => setShowDropdown(!showDropdown)}
+                                    onClick={handleProfileClick}
                                     className="flex items-center focus:outline-none"
                                 >
                                     <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold hover:bg-blue-600 transition-colors duration-200">
@@ -149,13 +169,14 @@ const Navbar = () => {
                                 </button>
                                 
                                 {showDropdown && (
-                                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-10 border border-gray-200 dark:border-gray-700">
+                                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
                                         <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 border-b dark:border-gray-700">
                                             {user.username}
                                         </div>
                                         <Link 
                                             to="/profile" 
                                             className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 relative group"
+                                            onClick={() => setShowDropdown(false)}
                                         >
                                             <span className="group-hover:opacity-0 transition-opacity duration-300">Profile</span>
                                             <FaUser className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={16} />
@@ -164,6 +185,7 @@ const Navbar = () => {
                                             <Link 
                                                 to="/admin" 
                                                 className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 relative group"
+                                                onClick={() => setShowDropdown(false)}
                                             >
                                                 <span className="group-hover:opacity-0 transition-opacity duration-300">Admin Dashboard</span>
                                                 <FaUser className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={16} />
