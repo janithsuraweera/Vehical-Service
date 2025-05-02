@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { FaHome, FaStore, FaExclamationTriangle, FaCar, FaWrench, FaInfoCircle, FaUser, FaSignOutAlt, FaMoon, FaSun, FaShoppingCart, FaListAlt, FaPlus } from 'react-icons/fa';
+import { FaHome, FaStore, FaExclamationTriangle, FaCar, FaWrench, FaInfoCircle, FaUser, FaSignOutAlt, FaMoon, FaSun, FaShoppingCart, FaListAlt, FaPlus, FaChartLine } from 'react-icons/fa';
 import logo from '/logo.png';
+import NotificationBell from './NotificationBell';
+
 const Navbar = () => {
     const [showDropdown, setShowDropdown] = useState(false);
+    const dropdownRef = useRef(null);
     const navigate = useNavigate();
     const location = useLocation();
     const { user, logout } = useAuth();
@@ -24,8 +27,27 @@ const Navbar = () => {
         else setActiveTab('');
     }, [location]);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowDropdown(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    const handleProfileClick = (e) => {
+        e.stopPropagation();
+        setShowDropdown(!showDropdown);
+    };
+
     const handleLogout = () => {
         logout();
+        setShowDropdown(false);
         navigate('/');
     };
 
@@ -60,7 +82,7 @@ const Navbar = () => {
                     
                     <div className="hidden md:flex items-center space-x-2">
                         {(!user || user.role !== 'admin') && (
-                            <Link to="/" className={getTabStyle('home')}>
+                            <Link to="/home" className={getTabStyle('home')}>
                                 <span className="group-hover:opacity-0 transition-opacity duration-300">Home</span>
                                 <FaHome className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                             </Link>
@@ -124,6 +146,7 @@ const Navbar = () => {
                                 <FaShoppingCart size={18} />
                             </Link>
                         )}
+                        {user && <NotificationBell />}
                         <button
                             onClick={toggleDarkMode}
                             className={`p-2 rounded-lg ${
@@ -132,20 +155,12 @@ const Navbar = () => {
                                     : 'bg-gray-100 hover:bg-gray-200'
                             } transition-colors duration-200`}
                         >
-                            {darkMode ? (
-                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" />
-                                </svg>
-                            ) : (
-                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                                </svg>
-                            )}
+                            {darkMode ? <FaSun className="w-5 h-5" /> : <FaMoon className="w-5 h-5" />}
                         </button>
                         {user ? (
-                            <div className="relative">
+                            <div className="relative" ref={dropdownRef}>
                                 <button 
-                                    onClick={() => setShowDropdown(!showDropdown)}
+                                    onClick={handleProfileClick}
                                     className="flex items-center focus:outline-none"
                                 >
                                     <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold hover:bg-blue-600 transition-colors duration-200">
@@ -154,13 +169,14 @@ const Navbar = () => {
                                 </button>
                                 
                                 {showDropdown && (
-                                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-10 border border-gray-200 dark:border-gray-700">
+                                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
                                         <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 border-b dark:border-gray-700">
                                             {user.username}
                                         </div>
                                         <Link 
                                             to="/profile" 
                                             className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 relative group"
+                                            onClick={() => setShowDropdown(false)}
                                         >
                                             <span className="group-hover:opacity-0 transition-opacity duration-300">Profile</span>
                                             <FaUser className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={16} />
@@ -169,11 +185,20 @@ const Navbar = () => {
                                             <Link 
                                                 to="/admin" 
                                                 className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 relative group"
+                                                onClick={() => setShowDropdown(false)}
                                             >
                                                 <span className="group-hover:opacity-0 transition-opacity duration-300">Admin Dashboard</span>
                                                 <FaUser className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={16} />
                                             </Link>
                                         )}
+                                        <Link 
+                                            to="/dashboard"
+                                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 relative group"
+                                            onClick={() => setShowDropdown(false)}
+                                        >
+                                            <span className="group-hover:opacity-0 transition-opacity duration-300">Dashboard</span>
+                                            <FaChartLine className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={16} />
+                                        </Link>
                                         <button
                                             onClick={handleLogout}
                                             className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 relative group"
