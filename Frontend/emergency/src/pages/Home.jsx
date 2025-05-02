@@ -1,20 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { FaCar, FaTools, FaExclamationTriangle, FaCalendarAlt, FaChartLine, FaUser, FaCog, FaSignOutAlt } from 'react-icons/fa';
+import { FaCar, FaTools, FaExclamationTriangle, FaCalendarAlt } from 'react-icons/fa';
 import Footer from '../shared/Footer';
 
-const Home = () => {
-    const { user, logout } = useAuth();
+function Home() {
     const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState(true);
-    const [stats, setStats] = useState({
-        emergencyRequests: 0,
-        inventoryItems: 0,
-        registeredVehicles: 0,
-        appointments: 0
-    });
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const imageData = [
         {
@@ -39,8 +31,6 @@ const Home = () => {
         },
     ];
 
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
     useEffect(() => {
         const intervalId = setInterval(() => {
             setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageData.length);
@@ -48,42 +38,9 @@ const Home = () => {
         return () => clearInterval(intervalId);
     }, [imageData.length]);
 
-    useEffect(() => {
-        const fetchStats = async () => {
-            try {
-                // Simulate API calls
-                setStats({
-                    emergencyRequests: 12,
-                    inventoryItems: 45,
-                    registeredVehicles: 78,
-                    appointments: 23
-                });
-            } catch (error) {
-                console.error('Error fetching stats:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchStats();
-    }, []);
-
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
-    };
-
     const handleNavigation = (path) => {
         navigate(path);
     };
-
-    if (isLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -144,56 +101,77 @@ const Home = () => {
                 </motion.div>
             </main>
 
-            {/* Dashboard Content */}
-            {user && (
-                <div className="container mx-auto px-4 py-8">
-                    {/* Welcome Section */}
+            {/* Services Section */}
+            <div className="container mx-auto px-4 py-16">
+                <h2 className="text-3xl font-bold text-center text-gray-800 dark:text-white mb-12">Our Services</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="mb-8"
+                        transition={{ duration: 0.5, delay: 0.4 }}
+                        className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-center"
                     >
-                        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
-                            Welcome back, {user.name}!
-                        </h1>
-                        <p className="text-gray-600 dark:text-gray-300 mt-2">
-                            Here's what's happening with your vehicle service system.
-                        </p>
+                        <div className="text-blue-500 dark:text-blue-400 mb-4">
+                            <FaTools size={48} className="mx-auto" />
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                            General Maintenance
+                        </h3>
+                        <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+                            <li>• Regular check-ups</li>
+                            <li>• Oil changes</li>
+                            <li>• Tire rotations</li>
+                            <li>• Brake inspections</li>
+                        </ul>
                     </motion.div>
 
-                    {/* Statistics Section */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                        {Object.entries(stats).map(([key, value]) => (
-                            <motion.div
-                                key={key}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: 0.2 }}
-                                className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300"
-                            >
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-gray-500 dark:text-gray-400 text-sm">
-                                            {key.split(/(?=[A-Z])/).join(' ')}
-                                        </p>
-                                        <p className="text-2xl font-bold text-gray-800 dark:text-white mt-2">
-                                            {value}
-                                        </p>
-                                    </div>
-                                    <div className="text-blue-500 dark:text-blue-400">
-                                        {key === 'emergencyRequests' && <FaExclamationTriangle size={24} />}
-                                        {key === 'inventoryItems' && <FaTools size={24} />}
-                                        {key === 'registeredVehicles' && <FaCar size={24} />}
-                                        {key === 'appointments' && <FaCalendarAlt size={24} />}
-                                    </div>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.5 }}
+                        className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-center"
+                    >
+                        <div className="text-green-500 dark:text-green-400 mb-4">
+                            <FaCar size={48} className="mx-auto" />
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                            Repair Services
+                        </h3>
+                        <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+                            <li>• Engine repairs</li>
+                            <li>• Transmission work</li>
+                            <li>• Electrical systems</li>
+                            <li>• Suspension work</li>
+                        </ul>
+                    </motion.div>
 
-                    {/* Quick Actions Section */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.6 }}
+                        className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-center"
+                    >
+                        <div className="text-red-500 dark:text-red-400 mb-4">
+                            <FaExclamationTriangle size={48} className="mx-auto" />
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                            Emergency Services
+                        </h3>
+                        <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+                            <li>• 24/7 roadside assistance</li>
+                            <li>• Towing services</li>
+                            <li>• Emergency repairs</li>
+                            <li>• Battery jump-starts</li>
+                        </ul>
+                    </motion.div>
+                </div>
+            </div>
+
+            {/* Quick Actions Section */}
+            <div className="bg-gray-100 dark:bg-gray-800 py-16">
+                <div className="container mx-auto px-4">
+                    <h2 className="text-3xl font-bold text-center text-gray-800 dark:text-white mb-12">Quick Actions</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
@@ -234,100 +212,12 @@ const Home = () => {
                             <span>Book Service</span>
                         </motion.button>
                     </div>
-
-                    {/* Services Section */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.4 }}
-                            className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
-                        >
-                            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                                General Maintenance
-                            </h3>
-                            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
-                                <li>• Regular check-ups</li>
-                                <li>• Oil changes</li>
-                                <li>• Tire rotations</li>
-                                <li>• Brake inspections</li>
-                            </ul>
-                        </motion.div>
-
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.5 }}
-                            className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
-                        >
-                            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                                Repair Services
-                            </h3>
-                            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
-                                <li>• Engine repairs</li>
-                                <li>• Transmission work</li>
-                                <li>• Electrical systems</li>
-                                <li>• Suspension work</li>
-                            </ul>
-                        </motion.div>
-
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.6 }}
-                            className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
-                        >
-                            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                                Emergency Services
-                            </h3>
-                            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
-                                <li>• 24/7 roadside assistance</li>
-                                <li>• Towing services</li>
-                                <li>• Emergency repairs</li>
-                                <li>• Battery jump-starts</li>
-                            </ul>
-                        </motion.div>
-                    </div>
-
-                    {/* Recent Activity Section */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.7 }}
-                        className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
-                    >
-                        <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                            Recent Activity
-                        </h3>
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                <div className="flex items-center">
-                                    <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                                    <div>
-                                        <p className="text-gray-800 dark:text-white">Vehicle service completed</p>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">2 hours ago</p>
-                                    </div>
-                                </div>
-                                <button className="text-blue-500 hover:text-blue-600">View Details</button>
-                            </div>
-                            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                <div className="flex items-center">
-                                    <div className="w-2 h-2 bg-yellow-500 rounded-full mr-3"></div>
-                                    <div>
-                                        <p className="text-gray-800 dark:text-white">New appointment scheduled</p>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">5 hours ago</p>
-                                    </div>
-                                </div>
-                                <button className="text-blue-500 hover:text-blue-600">View Details</button>
-                            </div>
-                        </div>
-                    </motion.div>
                 </div>
-            )}
+            </div>
 
             <Footer />
         </div>
     );
-};
+}
 
 export default Home; 
