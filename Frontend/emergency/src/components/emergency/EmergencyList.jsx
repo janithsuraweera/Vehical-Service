@@ -322,7 +322,7 @@ const EmergencyList = () => {
                                 <select 
                                     value={statusFilter} 
                                     onChange={(e) => setStatusFilter(e.target.value)} 
-                                    className="w-48 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                                    className={`w-48 p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-colors duration-200 ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900'}`}
                                 >
                                     <option value="">All Status</option>
                                     <option value="pending">Pending</option>
@@ -336,7 +336,7 @@ const EmergencyList = () => {
                                 <select 
                                     value={vehicleTypeFilter} 
                                     onChange={(e) => setVehicleTypeFilter(e.target.value)} 
-                                    className="w-48 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                                    className={`w-48 p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-colors duration-200 ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900'}`}
                                 >
                                     <option value="">All Vehicle Types</option>
                                     <option value="car">Car</option>
@@ -354,7 +354,7 @@ const EmergencyList = () => {
                                     type="date" 
                                     value={dateFilter} 
                                     onChange={(e) => setDateFilter(e.target.value)} 
-                                    className="w-48 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                                    className={`w-48 p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-colors duration-200 ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900'}`}
                                 />
                             </div>
 
