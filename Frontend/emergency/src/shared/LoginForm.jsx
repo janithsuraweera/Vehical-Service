@@ -87,8 +87,8 @@ const LoginForm = () => {
                 )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="space-y-6">
-                        <div className="space-y-2">
+                    <div className="space-y-6 flex flex-col items-center">
+                        <div className="w-full max-w-md space-y-2">
                             <label htmlFor="emailOrUsername" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Email or Username
                             </label>
@@ -109,7 +109,7 @@ const LoginForm = () => {
                             </div>
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="w-full max-w-md space-y-2">
                             <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Password
                             </label>
@@ -144,6 +144,28 @@ const LoginForm = () => {
                                 </Link>
                             </div>
                         </div>
+
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            type="submit"
+                            onClick={handleSubmit}
+                            className="w-full max-w-md mt-8 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all"
+                        >
+                            Sign In
+                        </motion.button>
+
+                        <div className="w-full max-w-md mt-6 text-center">
+                            <p className="text-gray-600 dark:text-gray-400">
+                                Don't have an account?{' '}
+                                <Link
+                                    to="/signup"
+                                    className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+                                >
+                                    Sign Up
+                                </Link>
+                            </p>
+                        </div>
                     </div>
 
                     <div className="flex flex-col justify-center items-center space-y-6">
@@ -159,28 +181,6 @@ const LoginForm = () => {
                             />
                         </div>
                     </div>
-                </div>
-
-                <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="submit"
-                    onClick={handleSubmit}
-                    className="w-full mt-8 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all"
-                >
-                    Sign In
-                </motion.button>
-
-                <div className="mt-6 text-center">
-                    <p className="text-gray-600 dark:text-gray-400">
-                        Don't have an account?{' '}
-                        <Link
-                            to="/signup"
-                            className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
-                        >
-                            Sign Up
-                        </Link>
-                    </p>
                 </div>
             </motion.div>
         </div>
