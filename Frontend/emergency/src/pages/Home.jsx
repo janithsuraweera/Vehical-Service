@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { FaCar, FaTools, FaExclamationTriangle, FaCalendarAlt, FaArrowRight, FaCheck, FaStar, FaUsers, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock, FaShieldAlt, FaCertificate, FaHandshake, FaArrowDown } from 'react-icons/fa';
+import { FaCar, FaTools, FaExclamationTriangle, FaCalendarAlt, FaArrowRight, FaCheck, FaStar, FaUsers, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock, FaShieldAlt, FaCertificate, FaHandshake, FaArrowDown, FaAward, FaMedal, FaCogs, FaOilCan, FaCarBattery, FaTruck, FaWrench, FaSprayCan, FaCarSide } from 'react-icons/fa';
 import Footer from '../shared/Footer';
 
 function Home() {
@@ -215,6 +215,90 @@ function Home() {
                     </motion.button>
                 </motion.div>
             </main>
+
+            {/* Service Categories Section */}
+            <div className="bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 py-20">
+                <div className="container mx-auto px-4">
+                    <motion.h2 
+                        className="text-4xl font-bold text-center text-gray-800 dark:text-white mb-16"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        Our Service Categories
+                    </motion.h2>
+                    <motion.div 
+                        className="grid grid-cols-1 md:grid-cols-4 gap-8"
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                    >
+                        <motion.div
+                            variants={itemVariants}
+                            className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center transform hover:scale-105 transition-transform duration-300"
+                            whileHover={{ y: -10 }}
+                        >
+                            <div className="text-blue-500 dark:text-blue-400 mb-6">
+                                <FaCogs size={48} className="mx-auto" />
+                            </div>
+                            <h3 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
+                                Periodic Maintenance
+                            </h3>
+                            <p className="text-gray-600 dark:text-gray-300">
+                                Regular check-ups and maintenance services
+                            </p>
+                        </motion.div>
+
+                        <motion.div
+                            variants={itemVariants}
+                            className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center transform hover:scale-105 transition-transform duration-300"
+                            whileHover={{ y: -10 }}
+                        >
+                            <div className="text-green-500 dark:text-green-400 mb-6">
+                                <FaOilCan size={48} className="mx-auto" />
+                            </div>
+                            <h3 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
+                                Lube Services
+                            </h3>
+                            <p className="text-gray-600 dark:text-gray-300">
+                                Professional oil change and lubrication
+                            </p>
+                        </motion.div>
+
+                        <motion.div
+                            variants={itemVariants}
+                            className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center transform hover:scale-105 transition-transform duration-300"
+                            whileHover={{ y: -10 }}
+                        >
+                            <div className="text-yellow-500 dark:text-yellow-400 mb-6">
+                                <FaCarBattery size={48} className="mx-auto" />
+                            </div>
+                            <h3 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
+                                Battery Services
+                            </h3>
+                            <p className="text-gray-600 dark:text-gray-300">
+                                Battery testing and replacement
+                            </p>
+                        </motion.div>
+
+                        <motion.div
+                            variants={itemVariants}
+                            className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center transform hover:scale-105 transition-transform duration-300"
+                            whileHover={{ y: -10 }}
+                        >
+                            <div className="text-purple-500 dark:text-purple-400 mb-6">
+                                <FaTruck size={48} className="mx-auto" />
+                            </div>
+                            <h3 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
+                                Towing Services
+                            </h3>
+                            <p className="text-gray-600 dark:text-gray-300">
+                                24/7 emergency towing assistance
+                            </p>
+                        </motion.div>
+                    </motion.div>
+                </div>
+            </div>
 
             {/* Why Choose Us Section */}
             <div className="bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 py-20">
