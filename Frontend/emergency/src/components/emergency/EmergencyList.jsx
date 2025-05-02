@@ -3,12 +3,14 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, Link } from 'react-router-dom';
-import { FaEdit, FaTrash, FaSearch, FaFilter, FaDownload, FaEye, FaEyeSlash, FaMapMarkerAlt, FaMoon, FaSun, FaImages, FaTimes } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaSearch, FaFilter, FaDownload, FaEye, FaEyeSlash, FaMapMarkerAlt, FaImages, FaTimes } from 'react-icons/fa';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { useTheme } from '../../context/ThemeContext';
 
 const EmergencyList = () => {
     const navigate = useNavigate();
+    const { darkMode } = useTheme();
     const [emergencyItems, setEmergencyItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -18,7 +20,6 @@ const EmergencyList = () => {
     const [dateFilter, setDateFilter] = useState('');
     const [filteredEmergency, setFilteredEmergency] = useState([]);
     const [showRequestNo, setShowRequestNo] = useState(false);
-    const [darkMode, setDarkMode] = useState(false);
     const [showAddress, setShowAddress] = useState(true);
     const [selectedPhotos, setSelectedPhotos] = useState(null);
 
@@ -40,20 +41,6 @@ const EmergencyList = () => {
         { value: 'van', label: 'Van' },
         { value: 'other', label: 'Other' }
     ];
-
-    useEffect(() => {
-        // Check for saved dark mode preference
-        const savedDarkMode = localStorage.getItem('darkMode') === 'true';
-        setDarkMode(savedDarkMode);
-        document.documentElement.classList.toggle('dark', savedDarkMode);
-    }, []);
-
-    const toggleDarkMode = () => {
-        const newDarkMode = !darkMode;
-        setDarkMode(newDarkMode);
-        localStorage.setItem('darkMode', newDarkMode);
-        document.documentElement.classList.toggle('dark', newDarkMode);
-    };
 
     useEffect(() => {
         fetchData();
@@ -288,12 +275,6 @@ const EmergencyList = () => {
                             Emergency Service Management
                         </h2>
                         <div className="flex gap-4">
-                            <button
-                                onClick={toggleDarkMode}
-                                className={`p-2 rounded-lg ${darkMode ? 'bg-gray-700 text-yellow-400 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition-colors duration-300`}
-                            >
-                                {darkMode ? <FaSun className="w-5 h-5" /> : <FaMoon className="w-5 h-5" />}
-                            </button>
                             <button
                                 onClick={handleDownload}
                                 className={`bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-2 px-2 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300 group w-10 hover:w-40 overflow-hidden`}
