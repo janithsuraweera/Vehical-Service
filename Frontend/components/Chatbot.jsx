@@ -93,10 +93,6 @@ const Chatbot = () => {
             {isOpen && (
                 <div className="fixed bottom-4 left-4 w-96 bg-white rounded-lg shadow-xl transform transition-all duration-300">
                     <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-t-lg flex justify-between items-center">
-                        <div className="flex items-center">
-                            <FaRobot className="mr-2" />
-                            <h3 className="text-lg font-semibold">Vehicle Service Assistant</h3>
-                        </div>
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={handleReplay}
@@ -105,13 +101,17 @@ const Chatbot = () => {
                             >
                                 <FaRedo />
                             </button>
-                            <button
-                                onClick={() => setIsOpen(false)}
-                                className="text-white hover:text-gray-200 transition-colors duration-300"
-                            >
-                                <FaTimes />
-                            </button>
+                            <div className="flex items-center">
+                                <FaRobot className="mr-2" />
+                                <h3 className="text-lg font-semibold">Vehicle Service Assistant</h3>
+                            </div>
                         </div>
+                        <button
+                            onClick={() => setIsOpen(false)}
+                            className="text-white hover:text-gray-200 transition-colors duration-300"
+                        >
+                            <FaTimes />
+                        </button>
                     </div>
                     
                     <div className="h-96 overflow-y-auto p-4 bg-gray-50">
@@ -122,27 +122,36 @@ const Chatbot = () => {
                                 <p className="text-sm mt-2 text-gray-400">Ask me about our services, pricing, or location</p>
                             </div>
                         ) : (
-                            messages.map((message, index) => (
-                                <div
-                                    key={index}
-                                    className={`mb-4 p-3 rounded-lg transform transition-all duration-300 ${
-                                        message.sender === 'user' 
-                                            ? 'bg-blue-500 text-white ml-auto hover:scale-105' 
-                                            : 'bg-gray-200 text-gray-800 hover:scale-105'
-                                    }`}
-                                    style={{ 
-                                        width: '80%',
-                                        minHeight: '40px',
-                                        maxHeight: '200px',
-                                        overflow: 'auto'
-                                    }}
-                                >
-                                    {message.text}
-                                    {isTyping && index === messages.length - 1 && (
-                                        <span className="inline-block w-2 h-4 bg-blue-500 ml-1 animate-blink" />
-                                    )}
-                                </div>
-                            ))
+                            <div className="space-y-4">
+                                {messages.map((message, index) => (
+                                    <div
+                                        key={index}
+                                        className={`flex ${
+                                            message.sender === 'user' ? 'justify-end' : 'justify-start'
+                                        }`}
+                                    >
+                                        <div
+                                            className={`p-3 rounded-lg transform transition-all duration-300 ${
+                                                message.sender === 'user' 
+                                                    ? 'bg-blue-500 text-white hover:scale-105' 
+                                                    : 'bg-gray-200 text-gray-800 hover:scale-105'
+                                            }`}
+                                            style={{ 
+                                                maxWidth: '80%',
+                                                minWidth: '120px',
+                                                minHeight: '40px',
+                                                maxHeight: '200px',
+                                                overflow: 'auto'
+                                            }}
+                                        >
+                                            {message.text}
+                                            {isTyping && index === messages.length - 1 && (
+                                                <span className="inline-block w-2 h-4 bg-blue-500 ml-1 animate-blink" />
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         )}
                         <div ref={messagesEndRef} />
                     </div>
