@@ -433,18 +433,18 @@ const EmergencyList = () => {
                                 <tbody className={`divide-y ${darkMode ? 'divide-gray-600 bg-gray-800' : 'divide-gray-200 bg-white'}`}>
                                     {filteredEmergency.map((item) => (
                                         <tr key={item._id} className={`transition-colors duration-200 group ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
-                                            <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'}`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {showRequestNo ? (item.emergencyRequestNo || 'N/A') : ' '}
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'}`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 <Link to={`/emergency/${item._id}`} className={`${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'} hover:underline group-hover:text-blue-700 transition-colors duration-200`}>
                                                     {item.name || item.customerName || 'N/A'}
                                                 </Link>
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {item.contactNumber || 'N/A'}
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 <div className="flex items-center justify-center space-x-2">
                                                     {typeof item.location === 'object' ? (
                                                         <div className={`flex items-center ${showAddress ? 'justify-start' : 'justify-center w-full'} space-x-2`}>
@@ -477,16 +477,16 @@ const EmergencyList = () => {
                                                     )}
                                                 </div>
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {item.vehicleNumber || 'N/A'}
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {item.emergencyType || 'N/A'}
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {item.vehicleType || 'N/A'}
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 <div className="flex items-center justify-center">
                                                     <div
                                                         className={`w-6 h-6 border ${darkMode ? 'border-gray-500' : 'border-gray-300'} cursor-help`}
@@ -495,10 +495,10 @@ const EmergencyList = () => {
                                                     ></div>
                                                 </div>
                                             </td>
-                                            <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {item.description || item.issueDescription || 'N/A'}
                                             </td>
-                                            <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 <div className="flex justify-center items-center">
                                                     {item.photos && item.photos.length > 0 ? (
                                                         <button
@@ -526,10 +526,10 @@ const EmergencyList = () => {
                                                     {item.status || 'Unknown'}
                                                 </span>
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {item.date ? new Date(item.date).toLocaleDateString() : 'N/A'}
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {item.time || 'N/A'}
                                             </td>
                                             <td className="px-4 py-3 whitespace-nowrap">
