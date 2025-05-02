@@ -8,13 +8,14 @@ import autoTable from 'jspdf-autotable';
 import { FaArrowLeft, FaSave, FaDownload } from 'react-icons/fa';
 import backgroundImage from '../../assets/background.png';
 import logoImage from '/logo.png';
-
+import { useNotifications } from '../../context/NotificationContext';
 
 const EmergencyDetails = () => {
     const { id } = useParams();
     const [emergency, setEmergency] = useState(null);
     const [status, setStatus] = useState('Pending');
     const navigate = useNavigate();
+    const { addNotification } = useNotifications();
 
     useEffect(() => {
         const fetchEmergency = async () => {
@@ -38,6 +39,16 @@ const EmergencyDetails = () => {
     const handleOk = async () => {
         try {
             await axios.put(`http://localhost:5000/api/emergency/${id}`, { status: status });
+            
+            // Add notification for status change
+            addNotification({
+                id: Date.now(),
+                title: 'Emergency Status Updated',
+                message: `Emergency request for ${emergency.vehicleNumber} has been updated to ${status}`,
+                timestamp: new Date(),
+                read: false
+            });
+
             navigate('/emergencylist');
         } catch (error) {
             console.error("Error updating status:", error);

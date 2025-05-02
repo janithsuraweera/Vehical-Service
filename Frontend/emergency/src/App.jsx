@@ -3,6 +3,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { NotificationProvider } from './context/NotificationContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ThemeProvider } from './context/ThemeContext';
 
@@ -47,54 +48,56 @@ const App = () => {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <Router>
-          <ToastContainer />
-          <Navbar />
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/login" element={<LoginForm />} />
-            <Route path="/signup" element={<SignupForm />} />
-            <Route path="/forgot-password" element={<ForgotPasswordForm />} />
-            <Route path="/reset-password" element={<ResetPasswordForm />} />
-            <Route path="/aboutus" element={<About />} />
-            <Route path="/" element={<Dashboard />} />
+        <NotificationProvider>
+          <Router>
+            <ToastContainer />
+            <Navbar />
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/login" element={<LoginForm />} />
+              <Route path="/signup" element={<SignupForm />} />
+              <Route path="/forgot-password" element={<ForgotPasswordForm />} />
+              <Route path="/reset-password" element={<ResetPasswordForm />} />
+              <Route path="/aboutus" element={<About />} />
+              <Route path="/" element={<Dashboard />} />
 
-            {/* Protected Routes */}
-            <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-            <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+              {/* Protected Routes */}
+              <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
 
-            {/* Emergency Routes */}
-            <Route path="/emergency" element={<ProtectedRoute><EmergencyHomePage /></ProtectedRoute>} />
-            <Route path="/emergencyform" element={<ProtectedRoute><EmergencyForm /></ProtectedRoute>} />
-            <Route path="/emergencylist" element={<ProtectedRoute><EmergencyList /></ProtectedRoute>} />
-            <Route path="/update-emergency/:id" element={<ProtectedRoute><UpdateEmergencyForm /></ProtectedRoute>} />
-            <Route path="/emergency/:id" element={<ProtectedRoute><EmergencyDetails /></ProtectedRoute>} />
+              {/* Emergency Routes */}
+              <Route path="/emergency" element={<ProtectedRoute><EmergencyHomePage /></ProtectedRoute>} />
+              <Route path="/emergencyform" element={<ProtectedRoute><EmergencyForm /></ProtectedRoute>} />
+              <Route path="/emergencylist" element={<ProtectedRoute><EmergencyList /></ProtectedRoute>} />
+              <Route path="/update-emergency/:id" element={<ProtectedRoute><UpdateEmergencyForm /></ProtectedRoute>} />
+              <Route path="/emergency/:id" element={<ProtectedRoute><EmergencyDetails /></ProtectedRoute>} />
 
-            {/* Inventory Routes */}
-            <Route path="/inventory" element={<ProtectedRoute><ProductDisplay /></ProtectedRoute>} />
-            <Route path="/inventory-form" element={<ProtectedRoute><InventoryForm /></ProtectedRoute>} />
-            <Route path="/inventory-list" element={<ProtectedRoute><InventoryList /></ProtectedRoute>} />
-            <Route path="/update-inventory/:id" element={<ProtectedRoute><UpdateInventoryForm /></ProtectedRoute>} />
-            <Route path="/inventory/:id" element={<ProtectedRoute><InventoryDetails /></ProtectedRoute>} />
-            <Route path="/cart" element={<ProtectedRoute><ProductDisplay /></ProtectedRoute>} />
+              {/* Inventory Routes */}
+              <Route path="/inventory" element={<ProtectedRoute><ProductDisplay /></ProtectedRoute>} />
+              <Route path="/inventory-form" element={<ProtectedRoute><InventoryForm /></ProtectedRoute>} />
+              <Route path="/inventory-list" element={<ProtectedRoute><InventoryList /></ProtectedRoute>} />
+              <Route path="/update-inventory/:id" element={<ProtectedRoute><UpdateInventoryForm /></ProtectedRoute>} />
+              <Route path="/inventory/:id" element={<ProtectedRoute><InventoryDetails /></ProtectedRoute>} />
+              <Route path="/cart" element={<ProtectedRoute><ProductDisplay /></ProtectedRoute>} />
 
-            {/* Vehicle Registration Routes */}
-            <Route path="/rvhome" element={<ProtectedRoute><RegistrationHomePage /></ProtectedRoute>} />
-            <Route path="/registrationform" element={<ProtectedRoute><VehicleRegistrationForm /></ProtectedRoute>} />
-            <Route path="/view-registrations" element={<ProtectedRoute><VehicleRegistrationList /></ProtectedRoute>} />
-            <Route path="/update-vehicle-registration/:id" element={<ProtectedRoute><UpdateVehicleForm /></ProtectedRoute>} />
+              {/* Vehicle Registration Routes */}
+              <Route path="/rvhome" element={<ProtectedRoute><RegistrationHomePage /></ProtectedRoute>} />
+              <Route path="/registrationform" element={<ProtectedRoute><VehicleRegistrationForm /></ProtectedRoute>} />
+              <Route path="/view-registrations" element={<ProtectedRoute><VehicleRegistrationList /></ProtectedRoute>} />
+              <Route path="/update-vehicle-registration/:id" element={<ProtectedRoute><UpdateVehicleForm /></ProtectedRoute>} />
 
-            {/* Vehicle Error Routes */}
-            <Route path="/vehicle-errors" element={<ProtectedRoute><VehicleErrorList /></ProtectedRoute>} />
-            <Route path="/vehicle-error-form" element={<ProtectedRoute><VehicleErrorForm /></ProtectedRoute>} />
-            <Route path="/vehicle-error/:id" element={<ProtectedRoute><VehicleErrorDetails /></ProtectedRoute>} />
+              {/* Vehicle Error Routes */}
+              <Route path="/vehicle-errors" element={<ProtectedRoute><VehicleErrorList /></ProtectedRoute>} />
+              <Route path="/vehicle-error-form" element={<ProtectedRoute><VehicleErrorForm /></ProtectedRoute>} />
+              <Route path="/vehicle-error/:id" element={<ProtectedRoute><VehicleErrorDetails /></ProtectedRoute>} />
 
-            {/* Redirect to login if no other route matches */}
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </Routes>
-        </Router>
+              {/* Redirect to login if no other route matches */}
+              <Route path="*" element={<Navigate to="/login" replace />} />
+            </Routes>
+          </Router>
+        </NotificationProvider>
       </AuthProvider>
     </ThemeProvider>
   );
