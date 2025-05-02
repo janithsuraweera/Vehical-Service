@@ -4,6 +4,7 @@ const VehicleError = require('../models/vehicleError');
 const multer = require('multer');
 const path = require('path');
 const auth = require('../middleware/auth');
+const openai = require('../config/openai');
 
 // Configure multer for image uploads
 const storage = multer.diskStorage({
@@ -164,16 +165,33 @@ router.post('/analyze', auth, async (req, res) => {
             return res.status(400).json({ message: 'ඡායාරූප URL එකක් අවශ්‍යයි' });
         }
 
-        // Here you would typically call the ChatGPT API to analyze the image
-        // For now, we'll return a mock response
-        const mockAnalysis = {
-            errorType: 'එන්ජින් දෝෂය',
-            severity: 'උසස්',
-            description: 'එන්ජින් තෙල් පීඩනය අඩු වී ඇත. වහාම පරීක්ෂා කිරීම අවශ්‍යයි.',
-            location: 'එන්ජින් කොටස'
-        };
+        // Call ChatGPT API to analyze the image
+        const response = await openai.chat.completions.create({
+            model: "gpt-4-vision-preview",
+            messages: [
+                {
+                    role: "user",
+                    content: [
+                        {
+                            type: "text",
+                            text: "මෙම වාහන ඡායාරූපය විශ්ලේෂණය කර පහත තොරතුරු සපයන්න: 1. දෝෂ වර්ගය (එන්ජින්, ටයර්, බ්‍රේක්, ආදිය) 2. දෝෂයේ තත්වය (අඩු, මධ්‍යම, උසස්) 3. විස්තර 4. ස්ථානය. පිළිතුර JSON format එකක් වශයෙන් සපයන්න."
+                        },
+                        {
+                            type: "image_url",
+                            image_url: {
+                                url: `http://localhost:5000${imageUrl}`
+                            }
+                        }
+                    ]
+                }
+            ],
+            max_tokens: 300
+        });
 
-        res.status(200).json(mockAnalysis);
+        // Parse the response
+        const analysis = JSON.parse(response.choices[0].message.content);
+
+        res.status(200).json(analysis);
     } catch (error) {
         console.error('Error analyzing image:', error);
         res.status(500).json({ message: 'ඡායාරූපය විශ්ලේෂණය කිරීමේදී දෝෂයක් ඇතිවිය' });
