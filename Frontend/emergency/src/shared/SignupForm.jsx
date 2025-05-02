@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -18,7 +18,51 @@ const SignupForm = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [emailSuggestions, setEmailSuggestions] = useState([]);
+    const [showEmailSuggestions, setShowEmailSuggestions] = useState(false);
     const navigate = useNavigate();
+
+    const commonEmailDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com'];
+
+    const handleEmailChange = (e) => {
+        const value = e.target.value;
+        setFormData(prev => ({ ...prev, email: value }));
+        
+        if (value.includes('@')) {
+            const [localPart, domain] = value.split('@');
+            if (domain) {
+                const suggestions = commonEmailDomains
+                    .filter(d => d.startsWith(domain))
+                    .map(d => `${localPart}@${d}`);
+                setEmailSuggestions(suggestions);
+                setShowEmailSuggestions(true);
+            } else {
+                const suggestions = commonEmailDomains.map(d => `${value}@${d}`);
+                setEmailSuggestions(suggestions);
+                setShowEmailSuggestions(true);
+            }
+        } else {
+            setShowEmailSuggestions(false);
+        }
+    };
+
+    const handlePhoneChange = (e) => {
+        const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+        setFormData(prev => ({ ...prev, phone: value }));
+        
+        if (errors.phone) {
+            setErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors.phone;
+                return newErrors;
+            });
+        }
+    };
+
+    const handleEmailSuggestionClick = (suggestion) => {
+        setFormData(prev => ({ ...prev, email: suggestion }));
+        setShowEmailSuggestions(false);
+    };
 
     const validateForm = () => {
         const newErrors = {};
@@ -216,13 +260,26 @@ const SignupForm = () => {
                                         id="email"
                                         name="email"
                                         value={formData.email}
-                                        onChange={handleChange}
+                                        onChange={handleEmailChange}
                                         className={`block w-full pl-10 pr-3 py-3 border ${
                                             errors.email ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
                                         } rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                                         placeholder="Enter your email"
                                     />
                                 </div>
+                                {showEmailSuggestions && emailSuggestions.length > 0 && (
+                                    <div className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 rounded-lg shadow-lg border border-gray-200 dark:border-gray-600">
+                                        {emailSuggestions.map((suggestion, index) => (
+                                            <div
+                                                key={index}
+                                                onClick={() => handleEmailSuggestionClick(suggestion)}
+                                                className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer text-sm text-gray-700 dark:text-gray-300"
+                                            >
+                                                {suggestion}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                                 {errors.email && (
                                     <p className="text-sm text-red-500 dark:text-red-400">{errors.email}</p>
                                 )}
@@ -241,7 +298,8 @@ const SignupForm = () => {
                                         id="phone"
                                         name="phone"
                                         value={formData.phone}
-                                        onChange={handleChange}
+                                        onChange={handlePhoneChange}
+                                        maxLength="10"
                                         className={`block w-full pl-10 pr-3 py-3 border ${
                                             errors.phone ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
                                         } rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
