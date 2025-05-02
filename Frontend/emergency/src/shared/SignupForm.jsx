@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { FaEye, FaEyeSlash, FaUser, FaLock, FaEnvelope, FaPhone, FaArrowLeft } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaUser, FaLock, FaEnvelope, FaPhone, FaArrowLeft, FaCopy } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
 const SignupForm = () => {
@@ -35,6 +35,11 @@ const SignupForm = () => {
             return newData;
         });
         setError('');
+    };
+
+    const handleCopyUsername = () => {
+        navigator.clipboard.writeText(formData.username);
+        toast.success('Username copied to clipboard!');
     };
 
     const handleSubmit = async (e) => {
@@ -197,13 +202,31 @@ const SignupForm = () => {
                                     id="username"
                                     name="username"
                                     value={formData.username}
-                                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                     readOnly
                                 />
+                                <button
+                                    type="button"
+                                    onClick={handleCopyUsername}
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                                    title="Copy username"
+                                >
+                                    <FaCopy size={20} />
+                                </button>
                             </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                Username is automatically generated from your full name
-                            </p>
+                            <div className="flex items-center justify-between">
+                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                    Username is automatically generated from your full name
+                                </p>
+                                <button
+                                    type="button"
+                                    onClick={handleCopyUsername}
+                                    className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors flex items-center space-x-1"
+                                >
+                                    <FaCopy size={12} />
+                                    <span>Copy</span>
+                                </button>
+                            </div>
                         </div>
 
                         <div className="space-y-2">
