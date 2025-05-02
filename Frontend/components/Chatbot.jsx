@@ -91,15 +91,15 @@ const Chatbot = () => {
             )}
 
             {isOpen && (
-                <div className="fixed bottom-4 left-4 w-96 bg-white rounded-lg shadow-xl transform transition-all duration-300">
+                <div className="fixed bottom-4 left-4 w-[350px] bg-white rounded-lg shadow-xl transform transition-all duration-300" style={{ height: '450px' }}>
                     <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-t-lg flex justify-between items-center">
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={handleReplay}
-                                className="text-white hover:text-gray-200 transition-colors duration-300"
+                                className="text-blue-100 bg-white border border-blue-400 shadow hover:bg-blue-100 hover:text-blue-700 font-bold rounded-full p-2 mr-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                 title="Start new conversation"
                             >
-                                <FaRedo />
+                                <FaRedo size={20} />
                             </button>
                             <div className="flex items-center">
                                 <FaRobot className="mr-2" />
@@ -114,11 +114,11 @@ const Chatbot = () => {
                         </button>
                     </div>
                     
-                    <div className="h-96 overflow-y-auto p-4 bg-gray-50">
+                    <div className="h-[calc(450px-120px)] overflow-y-auto p-4 bg-gray-50 flex flex-col">
                         {messages.length === 0 ? (
-                            <div className="text-center text-gray-500 mt-32 animate-fade-in">
-                                <FaComment size={48} className="mx-auto mb-4 text-blue-200" />
-                                <p className="text-lg">How can I help you today?</p>
+                            <div className="flex flex-col flex-1 justify-center items-center h-full animate-fade-in">
+                                <FaComment size={48} className="mb-4 text-blue-200" />
+                                <p className="text-lg text-gray-500">How can I help you today?</p>
                                 <p className="text-sm mt-2 text-gray-400">Ask me about our services, pricing, or location</p>
                             </div>
                         ) : (
@@ -140,8 +140,8 @@ const Chatbot = () => {
                                                 maxWidth: '80%',
                                                 minWidth: '120px',
                                                 minHeight: '40px',
-                                                maxHeight: '200px',
-                                                overflow: 'auto'
+                                                maxHeight: '100px',
+                                                overflowY: 'auto'
                                             }}
                                         >
                                             {message.text}
