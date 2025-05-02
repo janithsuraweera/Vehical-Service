@@ -24,6 +24,8 @@ const Navbar = () => {
         else if (path === '/rvhome') setActiveTab('register');
         else if (path === '/vehicle-errors') setActiveTab('vehicle-errors');
         else if (path === '/aboutus') setActiveTab('about');
+        // else if (path === '/vehicle-error-form') setActiveTab('errors');
+        
         else setActiveTab('');
     }, [location]);
 
@@ -105,6 +107,7 @@ const Navbar = () => {
                                             <span className="group-hover:opacity-0 transition-opacity duration-300">Vehicle Errors</span>
                                             <FaWrench className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                         </Link>
+
                                     </>
                                 )}
                                 {user.role === 'admin' ? (
@@ -156,8 +159,13 @@ const Navbar = () => {
                                 <FaInfoCircle className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                             </Link>
                         )}
+       
                     </div>
                     
+
+
+
+
                     <div className="flex items-center space-x-4">
                         {user && user.role !== 'admin' && (
                             <Link to="/cart" className="p-2 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline-none hover:bg-gray-100 dark:hover:bg-gray-700">
