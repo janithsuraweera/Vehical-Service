@@ -1,238 +1,329 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaCar, FaWrench, FaExclamationTriangle, FaShoppingCart, FaChartLine, FaCalendarAlt, FaUserFriends, FaTools } from 'react-icons/fa';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { FaCar, FaTools, FaExclamationTriangle, FaCalendarAlt, FaChartLine, FaUser, FaCog, FaSignOutAlt } from 'react-icons/fa';
 import Footer from '../shared/Footer';
 
 const Home = () => {
+    const { user, logout } = useAuth();
     const navigate = useNavigate();
-    const user = JSON.parse(localStorage.getItem('user'));
+    const [isLoading, setIsLoading] = useState(true);
     const [stats, setStats] = useState({
-        emergencyCount: 0,
-        inventoryCount: 0,
-        vehicleCount: 0,
-        appointmentsCount: 0
+        emergencyRequests: 0,
+        inventoryItems: 0,
+        registeredVehicles: 0,
+        appointments: 0
     });
 
-    const services = [
+    const imageData = [
         {
-            icon: <FaWrench className="w-8 h-8" />,
-            title: "General Maintenance",
-            description: "Regular check-ups and maintenance services"
+            image: './background.png',
+            title: 'Expert Vehicle Maintenance',         
+            description: 'Guaranteed 100% Satisfaction',
         },
         {
-            icon: <FaTools className="w-8 h-8" />,
-            title: "Repair Services",
-            description: "Expert repair for all vehicle issues"
+            image: './test2.png',
+            title: 'Trusted Service Center',
+            description: 'Trust 100% for Your Vehicle',
         },
         {
-            icon: <FaCar className="w-8 h-8" />,
-            title: "Emergency Services",
-            description: "24/7 roadside assistance"
-        }
+            image: './test3.png',
+            title: 'Quality Auto Repairs',
+            description: 'Reliable and Professional',
+        },
+        {
+            image: './test4.png',
+            title: 'Premium Car Care',
+            description: 'Your Vehicle Deserves the Best',
+        },
     ];
 
-    const quickActions = [
-        {
-            icon: <FaExclamationTriangle className="w-6 h-6" />,
-            title: "Emergency Service",
-            link: "/emergencyform",
-            color: "bg-red-500 hover:bg-red-600"
-        },
-        {
-            icon: <FaCar className="w-6 h-6" />,
-            title: "Register Vehicle",
-            link: "/registrationform",
-            color: "bg-blue-500 hover:bg-blue-600"
-        },
-        {
-            icon: <FaShoppingCart className="w-6 h-6" />,
-            title: "View Inventory",
-            link: "/inventory",
-            color: "bg-green-500 hover:bg-green-600"
-        },
-        {
-            icon: <FaCalendarAlt className="w-6 h-6" />,
-            title: "Book Service",
-            link: "/appointments",
-            color: "bg-purple-500 hover:bg-purple-600"
-        }
-    ];
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     useEffect(() => {
-        // Fetch statistics from your API
+        const intervalId = setInterval(() => {
+            setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageData.length);
+        }, 10000); 
+        return () => clearInterval(intervalId);
+    }, [imageData.length]);
+
+    useEffect(() => {
         const fetchStats = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const headers = {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                };
-
-                // Add your API calls here
-                // Example:
-                // const response = await axios.get('your-api-endpoint', { headers });
-                // setStats(response.data);
+                // Simulate API calls
+                setStats({
+                    emergencyRequests: 12,
+                    inventoryItems: 45,
+                    registeredVehicles: 78,
+                    appointments: 23
+                });
             } catch (error) {
                 console.error('Error fetching stats:', error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
         fetchStats();
     }, []);
 
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
+
+    const handleNavigation = (path) => {
+        navigate(path);
+    };
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+        );
+    }
+
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Welcome Section */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-8">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col md:flex-row justify-between items-center">
-                        <div>
-                            <h1 className="text-3xl font-bold">Welcome back, {user?.username}!</h1>
-                            <p className="text-blue-100 mt-2">Here's your dashboard overview</p>
-                        </div>
-                        <div className="mt-4 md:mt-0">
-                            <button
-                                onClick={() => navigate('/profile')}
-                                className="bg-white text-blue-600 px-4 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+            {/* Slideshow Section */}
+            <div className="relative mt-0">
+                <AnimatePresence initial={false} mode="wait">
+                    <motion.div
+                        key={currentImageIndex}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 1, ease: 'easeInOut' }}
+                        className="relative"
+                    >
+                        <img
+                            src={imageData[currentImageIndex].image}
+                            alt="Slideshow Image"
+                            className="mx-auto w-full h-[250px] md:h-[600px] object-cover shadow-lg"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, y: 200 }}
+                            animate={{ opacity: 1, y: 5 }}
+                            exit={{ opacity: 0, y: -50 }}
+                            transition={{ duration: 0.5, ease: 'easeInOut' }}
+                            className="absolute top-10 left-10 text-left text-white p-3 bg-black bg-opacity-50 rounded-lg"
+                        >
+                            <h2 className="text-2xl md:text-4xl font-bold mb-2">
+                                {imageData[currentImageIndex].title}
+                            </h2>
+                            <p className="text-lg md:text-xl">
+                                {imageData[currentImageIndex].description}
+                            </p>
+                        </motion.div>
+                    </motion.div>
+                </AnimatePresence>
+            </div>
+
+            {/* Hero Section */}
+            <main className="main-content text-center py-16 px-6 bg-gray-100 dark:bg-gray-800">
+                <motion.div
+                    className="hero-section max-w-4xl mx-auto"
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, ease: 'easeInOut' }}
+                >
+                    <h1 className="text-4xl md:text-6xl font-bold text-gray-800 dark:text-white">28 Years of Excellence</h1>
+                    <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mt-4">Since 1994</p>
+                    <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300">Guaranteed 100% Satisfaction</p>
+                    <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300">Leads with 40 Centres in Sri Lanka</p>
+                    
+                    <motion.button
+                        className="mt-6 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded shadow-md"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        Learn More
+                    </motion.button>
+                </motion.div>
+            </main>
+
+            {/* Dashboard Content */}
+            {user && (
+                <div className="container mx-auto px-4 py-8">
+                    {/* Welcome Section */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="mb-8"
+                    >
+                        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
+                            Welcome back, {user.name}!
+                        </h1>
+                        <p className="text-gray-600 dark:text-gray-300 mt-2">
+                            Here's what's happening with your vehicle service system.
+                        </p>
+                    </motion.div>
+
+                    {/* Statistics Section */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        {Object.entries(stats).map(([key, value]) => (
+                            <motion.div
+                                key={key}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: 0.2 }}
+                                className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300"
                             >
-                                View Profile
-                            </button>
-                        </div>
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-gray-500 dark:text-gray-400 text-sm">
+                                            {key.split(/(?=[A-Z])/).join(' ')}
+                                        </p>
+                                        <p className="text-2xl font-bold text-gray-800 dark:text-white mt-2">
+                                            {value}
+                                        </p>
+                                    </div>
+                                    <div className="text-blue-500 dark:text-blue-400">
+                                        {key === 'emergencyRequests' && <FaExclamationTriangle size={24} />}
+                                        {key === 'inventoryItems' && <FaTools size={24} />}
+                                        {key === 'registeredVehicles' && <FaCar size={24} />}
+                                        {key === 'appointments' && <FaCalendarAlt size={24} />}
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
                     </div>
-                </div>
-            </div>
 
-            {/* Statistics Section */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        className="bg-white rounded-lg shadow-lg p-6"
-                    >
-                        <div className="flex items-center">
-                            <div className="p-3 bg-blue-100 rounded-lg">
-                                <FaExclamationTriangle className="w-6 h-6 text-blue-600" />
-                            </div>
-                            <div className="ml-4">
-                                <p className="text-gray-500">Emergency Requests</p>
-                                <h3 className="text-2xl font-bold">{stats.emergencyCount}</h3>
-                            </div>
-                        </div>
-                    </motion.div>
-
-                    <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        className="bg-white rounded-lg shadow-lg p-6"
-                    >
-                        <div className="flex items-center">
-                            <div className="p-3 bg-green-100 rounded-lg">
-                                <FaTools className="w-6 h-6 text-green-600" />
-                            </div>
-                            <div className="ml-4">
-                                <p className="text-gray-500">Inventory Items</p>
-                                <h3 className="text-2xl font-bold">{stats.inventoryCount}</h3>
-                            </div>
-                        </div>
-                    </motion.div>
-
-                    <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        className="bg-white rounded-lg shadow-lg p-6"
-                    >
-                        <div className="flex items-center">
-                            <div className="p-3 bg-purple-100 rounded-lg">
-                                <FaCar className="w-6 h-6 text-purple-600" />
-                            </div>
-                            <div className="ml-4">
-                                <p className="text-gray-500">Registered Vehicles</p>
-                                <h3 className="text-2xl font-bold">{stats.vehicleCount}</h3>
-                            </div>
-                        </div>
-                    </motion.div>
-
-                    <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        className="bg-white rounded-lg shadow-lg p-6"
-                    >
-                        <div className="flex items-center">
-                            <div className="p-3 bg-yellow-100 rounded-lg">
-                                <FaCalendarAlt className="w-6 h-6 text-yellow-600" />
-                            </div>
-                            <div className="ml-4">
-                                <p className="text-gray-500">Appointments</p>
-                                <h3 className="text-2xl font-bold">{stats.appointmentsCount}</h3>
-                            </div>
-                        </div>
-                    </motion.div>
-                </div>
-            </div>
-
-            {/* Quick Actions Section */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <h2 className="text-2xl font-bold mb-6">Quick Actions</h2>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    {quickActions.map((action, index) => (
+                    {/* Quick Actions Section */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                         <motion.button
-                            key={index}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            onClick={() => navigate(action.link)}
-                            className={`${action.color} text-white p-6 rounded-lg shadow-lg flex flex-col items-center justify-center`}
+                            onClick={() => handleNavigation('/emergency')}
+                            className="bg-red-500 hover:bg-red-600 text-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center"
                         >
-                            {action.icon}
-                            <span className="mt-2 font-semibold">{action.title}</span>
+                            <FaExclamationTriangle size={32} className="mb-2" />
+                            <span>Emergency Services</span>
                         </motion.button>
-                    ))}
-                </div>
-            </div>
 
-            {/* Services Section */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <h2 className="text-2xl font-bold mb-6">Our Services</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {services.map((service, index) => (
-                        <motion.div
-                            key={index}
+                        <motion.button
                             whileHover={{ scale: 1.05 }}
-                            className="bg-white rounded-lg shadow-lg p-6"
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => handleNavigation('/rvhome')}
+                            className="bg-blue-500 hover:bg-blue-600 text-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center"
                         >
-                            <div className="text-blue-600 mb-4">{service.icon}</div>
-                            <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
-                            <p className="text-gray-600">{service.description}</p>
-                        </motion.div>
-                    ))}
-                </div>
-            </div>
+                            <FaCar size={32} className="mb-2" />
+                            <span>Vehicle Registration</span>
+                        </motion.button>
 
-            {/* Recent Activity Section */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <h2 className="text-2xl font-bold mb-6">Recent Activity</h2>
-                <div className="bg-white rounded-lg shadow-lg p-6">
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <div className="flex items-center">
-                                <FaCar className="w-6 h-6 text-blue-600 mr-4" />
-                                <div>
-                                    <p className="font-semibold">Vehicle Registration</p>
-                                    <p className="text-sm text-gray-500">2 hours ago</p>
-                                </div>
-                            </div>
-                            <span className="text-green-600 font-semibold">Completed</span>
-                        </div>
-                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <div className="flex items-center">
-                                <FaWrench className="w-6 h-6 text-yellow-600 mr-4" />
-                                <div>
-                                    <p className="font-semibold">Maintenance Service</p>
-                                    <p className="text-sm text-gray-500">1 day ago</p>
-                                </div>
-                            </div>
-                            <span className="text-blue-600 font-semibold">In Progress</span>
-                        </div>
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => handleNavigation('/inventory')}
+                            className="bg-green-500 hover:bg-green-600 text-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center"
+                        >
+                            <FaTools size={32} className="mb-2" />
+                            <span>View Inventory</span>
+                        </motion.button>
+
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => handleNavigation('/appointments')}
+                            className="bg-purple-500 hover:bg-purple-600 text-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center"
+                        >
+                            <FaCalendarAlt size={32} className="mb-2" />
+                            <span>Book Service</span>
+                        </motion.button>
                     </div>
+
+                    {/* Services Section */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.4 }}
+                            className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
+                        >
+                            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                                General Maintenance
+                            </h3>
+                            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+                                <li>• Regular check-ups</li>
+                                <li>• Oil changes</li>
+                                <li>• Tire rotations</li>
+                                <li>• Brake inspections</li>
+                            </ul>
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.5 }}
+                            className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
+                        >
+                            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                                Repair Services
+                            </h3>
+                            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+                                <li>• Engine repairs</li>
+                                <li>• Transmission work</li>
+                                <li>• Electrical systems</li>
+                                <li>• Suspension work</li>
+                            </ul>
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.6 }}
+                            className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
+                        >
+                            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                                Emergency Services
+                            </h3>
+                            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+                                <li>• 24/7 roadside assistance</li>
+                                <li>• Towing services</li>
+                                <li>• Emergency repairs</li>
+                                <li>• Battery jump-starts</li>
+                            </ul>
+                        </motion.div>
+                    </div>
+
+                    {/* Recent Activity Section */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.7 }}
+                        className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
+                    >
+                        <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                            Recent Activity
+                        </h3>
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <div className="flex items-center">
+                                    <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
+                                    <div>
+                                        <p className="text-gray-800 dark:text-white">Vehicle service completed</p>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">2 hours ago</p>
+                                    </div>
+                                </div>
+                                <button className="text-blue-500 hover:text-blue-600">View Details</button>
+                            </div>
+                            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <div className="flex items-center">
+                                    <div className="w-2 h-2 bg-yellow-500 rounded-full mr-3"></div>
+                                    <div>
+                                        <p className="text-gray-800 dark:text-white">New appointment scheduled</p>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">5 hours ago</p>
+                                    </div>
+                                </div>
+                                <button className="text-blue-500 hover:text-blue-600">View Details</button>
+                            </div>
+                        </div>
+                    </motion.div>
                 </div>
-            </div>
+            )}
 
             <Footer />
         </div>

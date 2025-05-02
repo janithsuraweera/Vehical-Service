@@ -15,7 +15,7 @@ import Navbar from './components/Navbar';
 import ForgotPasswordForm from './shared/ForgotPasswordForm';
 import ResetPasswordForm from './shared/ResetPasswordForm';
 import AdminDashboard from './pages/AdminDashboard';
-// import Home from './pages/Home';
+import Home from './pages/Home';
 
 // Emergency Imports
 import EmergencyForm from './components/emergency/EmergencyForm';
@@ -29,7 +29,7 @@ import InventoryForm from './components/inventory/InventoryForm';
 import InventoryList from './components/inventory/InventoryList';
 import UpdateInventoryForm from './components/inventory/UpdateInventoryForm';
 import InventoryDetails from './components/inventory/InventoryDetails';
-import InventoryHomePage from './components/inventory/InventoryHomePage';
+
 
 // Vehicle Registration Imports
 import About from './otherfolders/About';
@@ -54,6 +54,7 @@ const App = () => {
             <Navbar />
             <Routes>
               {/* Public Routes */}
+              <Route path="/home" element={<Home />} />
               <Route path="/login" element={<LoginForm />} />
               <Route path="/signup" element={<SignupForm />} />
               <Route path="/forgot-password" element={<ForgotPasswordForm />} />
