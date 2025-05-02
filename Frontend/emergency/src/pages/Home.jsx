@@ -175,7 +175,7 @@ function Home() {
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            onClick={() => handleNavigation('/emergency')}
+                            onClick={() => handleNavigation('/emergencyform')}
                             className="bg-red-500 hover:bg-red-600 text-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center"
                         >
                             <FaExclamationTriangle size={32} className="mb-2" />
@@ -185,7 +185,7 @@ function Home() {
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            onClick={() => handleNavigation('/rvhome')}
+                            onClick={() => handleNavigation('/registrationform')}
                             className="bg-blue-500 hover:bg-blue-600 text-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center"
                         >
                             <FaCar size={32} className="mb-2" />
