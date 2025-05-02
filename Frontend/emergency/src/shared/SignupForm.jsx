@@ -322,14 +322,21 @@ const SignupForm = () => {
                                     <p className="text-sm text-red-500 dark:text-red-400">{errors.password}</p>
                                 )}
                                 <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    Password must contain:
-                                    <ul className="list-disc list-inside mt-1">
-                                        <li className={/(?=.*[a-z])/.test(formData.password) ? 'text-green-500' : ''}>One lowercase letter</li>
-                                        <li className={/(?=.*[A-Z])/.test(formData.password) ? 'text-green-500' : ''}>One uppercase letter</li>
-                                        <li className={/(?=.*\d)/.test(formData.password) ? 'text-green-500' : ''}>One number</li>
-                                        <li className={/(?=.*[@$!%*?&])/.test(formData.password) ? 'text-green-500' : ''}>One special character</li>
-                                        <li className={formData.password.length >= 8 ? 'text-green-500' : ''}>At least 8 characters</li>
-                                    </ul>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <ul className="list-disc list-inside">
+                                                <li className={/(?=.*[a-z])/.test(formData.password) ? 'text-green-500' : ''}>One lowercase letter</li>
+                                                <li className={/(?=.*[A-Z])/.test(formData.password) ? 'text-green-500' : ''}>One uppercase letter</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <ul className="list-disc list-inside">
+                                                <li className={/(?=.*\d)/.test(formData.password) ? 'text-green-500' : ''}>One number</li>
+                                                <li className={/(?=.*[@$!%*?&])/.test(formData.password) ? 'text-green-500' : ''}>One special character</li>
+                                                <li className={formData.password.length >= 8 ? 'text-green-500' : ''}>At least 8 characters</li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
