@@ -24,6 +24,8 @@ const Navbar = () => {
         else if (path === '/rvhome') setActiveTab('register');
         else if (path === '/vehicle-errors') setActiveTab('vehicle-errors');
         else if (path === '/aboutus') setActiveTab('about');
+        else if (path === '/vehicle-error-form') setActiveTab('errors');
+        
         else setActiveTab('');
     }, [location]);
 
@@ -136,6 +138,12 @@ const Navbar = () => {
                             <Link to="/aboutus" className={getTabStyle('about')}>
                                 <span className="group-hover:opacity-0 transition-opacity duration-300">About Us</span>
                                 <FaInfoCircle className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
+                            </Link>
+                        )}
+                        {(!user || user.role !== 'admin') && (
+                            <Link to="/vehicle-error-form" className={getTabStyle('error')}>
+                                <span className="group-hover:opacity-0 transition-opacity duration-300">Errors</span>
+                                <FaExclamationTriangle className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                             </Link>
                         )}
                     </div>
