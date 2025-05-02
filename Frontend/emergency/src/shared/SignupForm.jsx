@@ -141,27 +141,8 @@ const SignupForm = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Username (Auto-generated)
-                            </label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <FaUser className="h-5 w-5 text-gray-400" />
-                                </div>
-                                <input
-                                    type="text"
-                                    id="username"
-                                    name="username"
-                                    value={formData.username}
-                                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                    readOnly
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Email
+                                Email Address
                             </label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -179,9 +160,7 @@ const SignupForm = () => {
                                 />
                             </div>
                         </div>
-                    </div>
 
-                    <div className="space-y-6">
                         <div className="space-y-2">
                             <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Phone Number
@@ -201,6 +180,30 @@ const SignupForm = () => {
                                     required
                                 />
                             </div>
+                        </div>
+                    </div>
+
+                    <div className="space-y-6">
+                        <div className="space-y-2">
+                            <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Username (Auto-generated)
+                            </label>
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <FaUser className="h-5 w-5 text-gray-400" />
+                                </div>
+                                <input
+                                    type="text"
+                                    id="username"
+                                    name="username"
+                                    value={formData.username}
+                                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    readOnly
+                                />
+                            </div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                Username is automatically generated from your full name
+                            </p>
                         </div>
 
                         <div className="space-y-2">
@@ -230,6 +233,9 @@ const SignupForm = () => {
                                     {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
                                 </button>
                             </div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                Password must be at least 6 characters long
+                            </p>
                         </div>
 
                         <div className="space-y-2">
