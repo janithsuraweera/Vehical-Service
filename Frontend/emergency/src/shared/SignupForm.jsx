@@ -30,14 +30,16 @@ const SignupForm = () => {
         
         if (value.includes('@')) {
             const [localPart, domain] = value.split('@');
-            if (domain) {
-                const suggestions = commonEmailDomains
-                    .filter(d => d.startsWith(domain))
-                    .map(d => `${localPart}@${d}`);
+            if (domain !== undefined) {
+                const filteredDomains = commonEmailDomains.filter(d => d.startsWith(domain) && d !== domain);
+                const suggestions = filteredDomains.length > 0
+                    ? filteredDomains.map(d => `${localPart}@${d}`)
+                    : commonEmailDomains.map(d => `${localPart}@${d}`);
                 setEmailSuggestions(suggestions);
-                setShowEmailSuggestions(true);
+                setShowEmailSuggestions(suggestions.length > 0);
             } else {
-                const suggestions = commonEmailDomains.map(d => `${value}@${d}`);
+                // If user just typed @, show all domains
+                const suggestions = commonEmailDomains.map(d => `${localPart}@${d}`);
                 setEmailSuggestions(suggestions);
                 setShowEmailSuggestions(true);
             }
@@ -62,6 +64,7 @@ const SignupForm = () => {
     const handleEmailSuggestionClick = (suggestion) => {
         setFormData(prev => ({ ...prev, email: suggestion }));
         setShowEmailSuggestions(false);
+        setEmailSuggestions([]);
     };
 
     const validateForm = () => {
@@ -268,7 +271,7 @@ const SignupForm = () => {
                                     />
                                 </div>
                                 {showEmailSuggestions && emailSuggestions.length > 0 && (
-                                    <div className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 rounded-lg shadow-lg border border-gray-200 dark:border-gray-600">
+                                    <div className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 rounded-lg shadow-lg border border-gray-200 dark:border-gray-600 max-h-48 overflow-y-auto">
                                         {emailSuggestions.map((suggestion, index) => (
                                             <div
                                                 key={index}
