@@ -3,12 +3,14 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, Link } from 'react-router-dom';
-import { FaEdit, FaTrash, FaSearch, FaFilter, FaDownload, FaEye, FaEyeSlash, FaMapMarkerAlt, FaMoon, FaSun, FaImages, FaTimes } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaSearch, FaFilter, FaDownload, FaEye, FaEyeSlash, FaMapMarkerAlt, FaImages, FaTimes } from 'react-icons/fa';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { useTheme } from '../../context/ThemeContext';
 
 const EmergencyList = () => {
     const navigate = useNavigate();
+    const { darkMode } = useTheme();
     const [emergencyItems, setEmergencyItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -18,7 +20,6 @@ const EmergencyList = () => {
     const [dateFilter, setDateFilter] = useState('');
     const [filteredEmergency, setFilteredEmergency] = useState([]);
     const [showRequestNo, setShowRequestNo] = useState(false);
-    const [darkMode, setDarkMode] = useState(false);
     const [showAddress, setShowAddress] = useState(true);
     const [selectedPhotos, setSelectedPhotos] = useState(null);
 
@@ -40,20 +41,6 @@ const EmergencyList = () => {
         { value: 'van', label: 'Van' },
         { value: 'other', label: 'Other' }
     ];
-
-    useEffect(() => {
-        // Check for saved dark mode preference
-        const savedDarkMode = localStorage.getItem('darkMode') === 'true';
-        setDarkMode(savedDarkMode);
-        document.documentElement.classList.toggle('dark', savedDarkMode);
-    }, []);
-
-    const toggleDarkMode = () => {
-        const newDarkMode = !darkMode;
-        setDarkMode(newDarkMode);
-        localStorage.setItem('darkMode', newDarkMode);
-        document.documentElement.classList.toggle('dark', newDarkMode);
-    };
 
     useEffect(() => {
         fetchData();
@@ -289,12 +276,6 @@ const EmergencyList = () => {
                         </h2>
                         <div className="flex gap-4">
                             <button
-                                onClick={toggleDarkMode}
-                                className={`p-2 rounded-lg ${darkMode ? 'bg-gray-700 text-yellow-400 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition-colors duration-300`}
-                            >
-                                {darkMode ? <FaSun className="w-5 h-5" /> : <FaMoon className="w-5 h-5" />}
-                            </button>
-                            <button
                                 onClick={handleDownload}
                                 className={`bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-2 px-2 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300 group w-10 hover:w-40 overflow-hidden`}
                             >
@@ -341,7 +322,7 @@ const EmergencyList = () => {
                                 <select 
                                     value={statusFilter} 
                                     onChange={(e) => setStatusFilter(e.target.value)} 
-                                    className="w-48 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                                    className={`w-48 p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-colors duration-200 ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900'}`}
                                 >
                                     <option value="">All Status</option>
                                     <option value="pending">Pending</option>
@@ -355,7 +336,7 @@ const EmergencyList = () => {
                                 <select 
                                     value={vehicleTypeFilter} 
                                     onChange={(e) => setVehicleTypeFilter(e.target.value)} 
-                                    className="w-48 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                                    className={`w-48 p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-colors duration-200 ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900'}`}
                                 >
                                     <option value="">All Vehicle Types</option>
                                     <option value="car">Car</option>
@@ -373,7 +354,7 @@ const EmergencyList = () => {
                                     type="date" 
                                     value={dateFilter} 
                                     onChange={(e) => setDateFilter(e.target.value)} 
-                                    className="w-48 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                                    className={`w-48 p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-colors duration-200 ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900'}`}
                                 />
                             </div>
 
@@ -452,18 +433,18 @@ const EmergencyList = () => {
                                 <tbody className={`divide-y ${darkMode ? 'divide-gray-600 bg-gray-800' : 'divide-gray-200 bg-white'}`}>
                                     {filteredEmergency.map((item) => (
                                         <tr key={item._id} className={`transition-colors duration-200 group ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
-                                            <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'}`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {showRequestNo ? (item.emergencyRequestNo || 'N/A') : ' '}
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'}`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 <Link to={`/emergency/${item._id}`} className={`${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'} hover:underline group-hover:text-blue-700 transition-colors duration-200`}>
                                                     {item.name || item.customerName || 'N/A'}
                                                 </Link>
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {item.contactNumber || 'N/A'}
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 <div className="flex items-center justify-center space-x-2">
                                                     {typeof item.location === 'object' ? (
                                                         <div className={`flex items-center ${showAddress ? 'justify-start' : 'justify-center w-full'} space-x-2`}>
@@ -496,16 +477,16 @@ const EmergencyList = () => {
                                                     )}
                                                 </div>
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {item.vehicleNumber || 'N/A'}
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {item.emergencyType || 'N/A'}
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {item.vehicleType || 'N/A'}
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 <div className="flex items-center justify-center">
                                                     <div
                                                         className={`w-6 h-6 border ${darkMode ? 'border-gray-500' : 'border-gray-300'} cursor-help`}
@@ -514,10 +495,10 @@ const EmergencyList = () => {
                                                     ></div>
                                                 </div>
                                             </td>
-                                            <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {item.description || item.issueDescription || 'N/A'}
                                             </td>
-                                            <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 <div className="flex justify-center items-center">
                                                     {item.photos && item.photos.length > 0 ? (
                                                         <button
@@ -545,10 +526,10 @@ const EmergencyList = () => {
                                                     {item.status || 'Unknown'}
                                                 </span>
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {item.date ? new Date(item.date).toLocaleDateString() : 'N/A'}
                                             </td>
-                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'} group-hover:text-gray-700 transition-colors duration-200`}>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {item.time || 'N/A'}
                                             </td>
                                             <td className="px-4 py-3 whitespace-nowrap">
