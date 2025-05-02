@@ -10,7 +10,7 @@ const Navbar = () => {
         <img src="./logo.png" alt="Motron Logo" className="h-14" />
       </div>
       <div className="nav-items hidden md:flex space-x-6">
-        <a href="/" className="hover:text-gray-400">Home</a>
+        <a href="/home" className="hover:text-gray-400">Home</a>
         <a href="/inventory" className="hover:text-gray-400">Store</a>
         <a href="/emergency" className="hover:text-gray-400">Emergency</a>
         <a href="/rvhome" className="hover:text-gray-400">Register</a>
