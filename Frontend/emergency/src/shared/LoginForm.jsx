@@ -64,12 +64,12 @@ const LoginForm = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-4xl relative z-10"
+                className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-3xl relative z-10"
             >
-                <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-4xl font-bold text-blue-600 dark:text-blue-400">Welcome Back</h2>
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-3xl font-bold text-blue-600 dark:text-blue-400">Welcome Back</h2>
                     <button
-                        onClick={handleBack}
+                        onClick={() => navigate('/')}
                         className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                     >
                         <FaArrowLeft size={24} />
@@ -86,102 +86,104 @@ const LoginForm = () => {
                     </motion.div>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="space-y-6 flex flex-col items-center">
-                        <div className="w-full max-w-md space-y-2">
-                            <label htmlFor="emailOrUsername" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Email or Username
-                            </label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <FaUser className="h-5 w-5 text-gray-400" />
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-6 flex flex-col items-center">
+                            <div className="w-full max-w-md space-y-2">
+                                <label htmlFor="emailOrUsername" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Email or Username
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <FaUser className="h-5 w-5 text-gray-400" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        id="emailOrUsername"
+                                        name="emailOrUsername"
+                                        value={formData.emailOrUsername}
+                                        onChange={handleChange}
+                                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        placeholder="Enter your email or username"
+                                        required
+                                    />
                                 </div>
-                                <input
-                                    type="text"
-                                    id="emailOrUsername"
-                                    name="emailOrUsername"
-                                    value={formData.emailOrUsername}
-                                    onChange={handleChange}
-                                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                    placeholder="Enter your email or username"
-                                    required
+                            </div>
+
+                            <div className="w-full max-w-md space-y-2">
+                                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Password
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <FaLock className="h-5 w-5 text-gray-400" />
+                                    </div>
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        id="password"
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        className="block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        placeholder="Enter your password"
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                    >
+                                        {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                                    </button>
+                                </div>
+                                <div className="text-right">
+                                    <Link
+                                        to="/forgot-password"
+                                        className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+                                    >
+                                        Forgot Password?
+                                    </Link>
+                                </div>
+                            </div>
+
+                            <motion.button
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                type="submit"
+                                onClick={handleSubmit}
+                                className="w-full max-w-md mt-8 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all"
+                            >
+                                Sign In
+                            </motion.button>
+
+                            <div className="w-full max-w-md mt-6 text-center">
+                                <p className="text-gray-600 dark:text-gray-400">
+                                    Don't have an account?{' '}
+                                    <Link
+                                        to="/signup"
+                                        className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+                                    >
+                                        Sign Up
+                                    </Link>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col justify-center items-center space-y-6">
+                            <div className="text-center">
+                                <h3 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Quick Access</h3>
+                                <p className="text-gray-600 dark:text-gray-400">Sign in to access your account and manage your services</p>
+                            </div>
+                            <div className="w-full max-w-xs">
+                                <img
+                                    src="./singing.jpg"
+                                    alt="Login Illustration"
+                                    className="w-full h-full"
                                 />
                             </div>
                         </div>
-
-                        <div className="w-full max-w-md space-y-2">
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Password
-                            </label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <FaLock className="h-5 w-5 text-gray-400" />
-                                </div>
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    id="password"
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                    placeholder="Enter your password"
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                                >
-                                    {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
-                                </button>
-                            </div>
-                            <div className="text-right">
-                                <Link
-                                    to="/forgot-password"
-                                    className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
-                                >
-                                    Forgot Password?
-                                </Link>
-                            </div>
-                        </div>
-
-                        <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            type="submit"
-                            onClick={handleSubmit}
-                            className="w-full max-w-md mt-8 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all"
-                        >
-                            Sign In
-                        </motion.button>
-
-                        <div className="w-full max-w-md mt-6 text-center">
-                            <p className="text-gray-600 dark:text-gray-400">
-                                Don't have an account?{' '}
-                                <Link
-                                    to="/signup"
-                                    className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
-                                >
-                                    Sign Up
-                                </Link>
-                            </p>
-                        </div>
                     </div>
-
-                    <div className="flex flex-col justify-center items-center space-y-6">
-                        <div className="text-center">
-                            <h3 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Quick Access</h3>
-                            <p className="text-gray-600 dark:text-gray-400">Sign in to access your account and manage your services</p>
-                        </div>
-                        <div className="w-full max-w-xs">
-                            <img
-                                src="./singing.jpg"
-                                alt="Login Illustration"
-                                className="w-full h-full"
-                            />
-                        </div>
-                    </div>
-                </div>
+                </form>
             </motion.div>
         </div>
     );
