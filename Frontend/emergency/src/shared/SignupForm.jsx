@@ -17,6 +17,7 @@ const SignupForm = () => {
     const [errors, setErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const validateForm = () => {
@@ -111,6 +112,7 @@ const SignupForm = () => {
             return;
         }
 
+        setIsLoading(true);
         try {
             const response = await axios.post('http://localhost:5000/api/auth/signup', {
                 email: formData.email,
@@ -131,6 +133,8 @@ const SignupForm = () => {
             }));
             toast.error(errorMessage);
             console.error('Registration error:', error.response?.data);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -378,9 +382,19 @@ const SignupForm = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         type="submit"
-                        className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all"
+                        disabled={isLoading}
+                        className={`w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all relative ${
+                            isLoading ? 'opacity-75 cursor-not-allowed' : ''
+                        }`}
                     >
-                        Create Account
+                        {isLoading ? (
+                            <div className="flex items-center justify-center">
+                                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                                Creating Account...
+                            </div>
+                        ) : (
+                            'Create Account'
+                        )}
                     </motion.button>
                 </form>
 
