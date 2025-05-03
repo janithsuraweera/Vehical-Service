@@ -14,6 +14,7 @@ const vehicleRegistrationRequestSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    
   },
   vehicleType: {
     type: String,
