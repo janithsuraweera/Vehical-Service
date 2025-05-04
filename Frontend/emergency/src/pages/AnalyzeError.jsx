@@ -54,22 +54,22 @@
 //                 }
 //             });
 
-//             setAnalysis(analysisResponse.data);
-//             setSearchHistory(prev => [...prev, {
-//                 imageUrl: uploadResponse.data.imageUrl,
-//                 analysis: analysisResponse.data,
-//                 timestamp: new Date()
-//             }]);
-//         } catch (err) {
-// <<<<<<< emergency
-//             setError(err.response?.data?.message || 'Error while analyzing image');
-// =======
-//             setError(err.response?.data?.message || 'Error analyzing image');
-// >>>>>>> main
-//         } finally {
-//             setLoading(false);
-//         }
-//     };
+            setAnalysis(analysisResponse.data);
+            setSearchHistory(prev => [...prev, {
+                imageUrl: uploadResponse.data.imageUrl,
+                analysis: analysisResponse.data,
+                timestamp: new Date()
+            }]);
+        } catch (err) {
+<<<<<<<<< Temporary merge branch 1
+            setError(err.response?.data?.message || 'Error while analyzing image');
+=========
+            setError(err.response?.data?.message || 'Error analyzing image');
+>>>>>>>>> Temporary merge branch 2
+        } finally {
+            setLoading(false);
+        }
+    };
 
 //     const handleSubmit = async () => {
 //         if (!analysis) {
@@ -87,60 +87,60 @@
 //                 }
 //             });
 
-//             navigate('/my-errors');
-//         } catch (err) {
-// <<<<<<< emergency
-//             setError(err.response?.data?.message || 'Sending error report failed');
-// =======
-//             setError(err.response?.data?.message || 'Error sending error report');
-// >>>>>>> main
-//         }
-//     };
+            navigate('/my-errors');
+        } catch (err) {
+<<<<<<<<< Temporary merge branch 1
+            setError(err.response?.data?.message || 'Sending error report failed');
+=========
+            setError(err.response?.data?.message || 'Error sending error report');
+>>>>>>>>> Temporary merge branch 2
+        }
+    };
 
-//     return (
-//         <div className="min-h-screen bg-gray-100 py-8">
-//             <div className="max-w-4xl mx-auto px-4">
-// <<<<<<< emergency
-//                 <h2 className="text-2xl font-bold mb-6">Vehicle Error Analysis</h2>
+    return (
+        <div className="min-h-screen bg-gray-100 py-8">
+            <div className="max-w-4xl mx-auto px-4">
+<<<<<<<<< Temporary merge branch 1
+                <h2 className="text-2xl font-bold mb-6">Vehicle Error Analysis</h2>
 
-//                 <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-//                     <div className="mb-4">
-//                         <label className="block text-gray-700 mb-2">Select Image</label>
-// =======
-//                 <h2 className="text-2xl font-bold mb-6">Analyze Vehicle Error</h2>
+                <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <div className="mb-4">
+                        <label className="block text-gray-700 mb-2">Select Image</label>
+=========
+                <h2 className="text-2xl font-bold mb-6">Analyze Vehicle Error</h2>
 
-//                 <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-//                     <div className="mb-4">
-//                         <label className="block text-gray-700 mb-2">Choose an image</label>
-// >>>>>>> main
-//                         <div className="flex items-center space-x-4">
-//                             <input
-//                                 type="file"
-//                                 accept="image/*"
-//                                 onChange={handleImageUpload}
-//                                 className="hidden"
-//                                 id="image-upload"
-//                             />
-//                             <label
-//                                 htmlFor="image-upload"
-//                                 className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 flex items-center"
-//                             >
-//                                 <FaUpload className="mr-2" />
-// <<<<<<< emergency
-//                                 Select Image
-// =======
-//                                 Upload Image
-// >>>>>>> main
-//                             </label>
-//                             {previewUrl && (
-//                                 <img
-//                                     src={previewUrl}
-//                                     alt="Preview"
-//                                     className="h-20 w-20 object-cover rounded"
-//                                 />
-//                             )}
-//                         </div>
-//                     </div>
+                <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <div className="mb-4">
+                        <label className="block text-gray-700 mb-2">Choose an image</label>
+>>>>>>>>> Temporary merge branch 2
+                        <div className="flex items-center space-x-4">
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                                className="hidden"
+                                id="image-upload"
+                            />
+                            <label
+                                htmlFor="image-upload"
+                                className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 flex items-center"
+                            >
+                                <FaUpload className="mr-2" />
+<<<<<<<<< Temporary merge branch 1
+                                Select Image
+=========
+                                Upload Image
+>>>>>>>>> Temporary merge branch 2
+                            </label>
+                            {previewUrl && (
+                                <img
+                                    src={previewUrl}
+                                    alt="Preview"
+                                    className="h-20 w-20 object-cover rounded"
+                                />
+                            )}
+                        </div>
+                    </div>
 
 //                     {error && (
 //                         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -167,36 +167,36 @@
 //                             )}
 //                         </button>
 
-//                         {analysis && (
-//                             <button
-//                                 onClick={handleSubmit}
-//                                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-//                             >
-// <<<<<<< emergency
-//                                 Send Error Report
-// =======
-//                                 Submit Error Report
-// >>>>>>> main
-//                             </button>
-//                         )}
-//                     </div>
-//                 </div>
+                        {analysis && (
+                            <button
+                                onClick={handleSubmit}
+                                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                            >
+<<<<<<<<< Temporary merge branch 1
+                                Send Error Report
+=========
+                                Submit Error Report
+>>>>>>>>> Temporary merge branch 2
+                            </button>
+                        )}
+                    </div>
+                </div>
 
-//                 {analysis && (
-//                     <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-//                         <h3 className="text-xl font-semibold mb-4">Analysis Results</h3>
-//                         <div className="space-y-2">
-//                             <p><span className="font-semibold">Error Type:</span> {analysis.errorType}</p>
-// <<<<<<< emergency
-//                             <p><span className="font-semibold">Error Severity:</span> {analysis.severity}</p>
-// =======
-//                             <p><span className="font-semibold">Severity:</span> {analysis.severity}</p>
-// >>>>>>> main
-//                             <p><span className="font-semibold">Description:</span> {analysis.description}</p>
-//                             <p><span className="font-semibold">Location:</span> {analysis.location}</p>
-//                         </div>
-//                     </div>
-//                 )}
+                {analysis && (
+                    <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <h3 className="text-xl font-semibold mb-4">Analysis Results</h3>
+                        <div className="space-y-2">
+                            <p><span className="font-semibold">Error Type:</span> {analysis.errorType}</p>
+<<<<<<<<< Temporary merge branch 1
+                            <p><span className="font-semibold">Error Severity:</span> {analysis.severity}</p>
+=========
+                            <p><span className="font-semibold">Severity:</span> {analysis.severity}</p>
+>>>>>>>>> Temporary merge branch 2
+                            <p><span className="font-semibold">Description:</span> {analysis.description}</p>
+                            <p><span className="font-semibold">Location:</span> {analysis.location}</p>
+                        </div>
+                    </div>
+                )}
 
 //                 {searchHistory.length > 0 && (
 //                     <div className="bg-white rounded-lg shadow-md p-6">
@@ -228,4 +228,4 @@
 //     );
 // };
 
-// export default AnalyzeError;
+export default AnalyzeError;

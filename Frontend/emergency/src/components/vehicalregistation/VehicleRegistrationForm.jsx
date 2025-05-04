@@ -19,6 +19,42 @@ const VehicleRegistrationForm = () => {
   });
   const [errors, setErrors] = useState({});
 
+  const handleNICChange = (e) => {
+    let value = e.target.value.replace(/[^0-9]/g, ''); // Remove all non-numeric characters
+    
+    // Limit to 12 digits
+    if (value.length > 12) {
+      value = value.slice(0, 12);
+    }
+    
+    // Add 'V' if 9 or 12 digits are entered
+    if (value.length === 9 || value.length === 12) {
+      value = value + 'V';
+    }
+    
+    setFormData({ ...formData, customerNIC: value });
+    setErrors({ ...errors, customerNIC: '' });
+  };
+
+  const validateNIC = (nic) => {
+    // Validate old NIC format (9 digits + V) or new NIC format (12 digits + V)
+    const oldNicPattern = /^[0-9]{9}[Vv]$/;
+    const newNicPattern = /^[0-9]{12}[Vv]$/;
+    return oldNicPattern.test(nic) || newNicPattern.test(nic);
+  };
+
+  const validateVehicleNumber = (number) => {
+    // Sri Lankan vehicle number format validation
+    const pattern = /^[A-Z]{2,3}-[0-9]{4}$/;
+    return pattern.test(number);
+  };
+
+  const validateName = (name) => {
+    // Name should contain only letters and spaces, at least 2 characters
+    const pattern = /^[A-Za-z\s]{2,}$/;
+    return pattern.test(name);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -30,31 +66,46 @@ const VehicleRegistrationForm = () => {
     let formErrors = {};
     let isValid = true;
 
+    // Name validation
     if (!formData.name.trim()) {
       formErrors.name = 'Name is required.';
       isValid = false;
+    } else if (!validateName(formData.name)) {
+      formErrors.name = 'Name should contain only letters and spaces.';
+      isValid = false;
     }
 
+    // NIC validation
     if (!formData.customerNIC.trim()) {
       formErrors.customerNIC = 'Customer NIC is required.';
       isValid = false;
-    }
-
-    if (!formData.vehicleNumber.trim()) {
-      formErrors.vehicleNumber = 'Vehicle number is required.';
+    } else if (!validateNIC(formData.customerNIC)) {
+      formErrors.customerNIC = 'Please enter a valid NIC number (e.g., 123456789V or 123456789012V).';
       isValid = false;
     }
 
+    // Vehicle number validation
+    if (!formData.vehicleNumber.trim()) {
+      formErrors.vehicleNumber = 'Vehicle number is required.';
+      isValid = false;
+    } else if (!validateVehicleNumber(formData.vehicleNumber)) {
+      formErrors.vehicleNumber = 'Please enter a valid vehicle number (e.g., AB-1234 or ABC-1234).';
+      isValid = false;
+    }
+
+    // Vehicle type validation
     if (!formData.vehicleType) {
       formErrors.vehicleType = 'Vehicle type is required.';
       isValid = false;
     }
 
+    // Vehicle model validation
     if (!formData.vehicleModel) {
       formErrors.vehicleModel = 'Vehicle model is required.';
       isValid = false;
     }
 
+    // Vehicle color validation
     if (!formData.vehicleColor.trim()) {
       formErrors.vehicleColor = 'Vehicle color is required.';
       isValid = false;
@@ -66,6 +117,7 @@ const VehicleRegistrationForm = () => {
     setErrors(formErrors);
 
     if (!isValid) {
+      toast.error('Please correct the errors in the form.');
       return;
     }
 
@@ -113,7 +165,9 @@ const VehicleRegistrationForm = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+              className={`border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 ${
+                errors.name ? 'border-red-500' : 'border-gray-300'
+              }`}
               placeholder="Enter your name"
             />
             {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
@@ -125,9 +179,12 @@ const VehicleRegistrationForm = () => {
               id="customerNIC"
               name="customerNIC"
               value={formData.customerNIC}
-              onChange={handleChange}
-              className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-              placeholder="Enter customer NIC"
+              onChange={handleNICChange}
+              maxLength={13}
+              className={`border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 ${
+                errors.customerNIC ? 'border-red-500' : 'border-gray-300'
+              }`}
+              placeholder="Enter 9 or 12 digit NIC number"
             />
             {errors.customerNIC && <p className="text-red-500 text-sm mt-1">{errors.customerNIC}</p>}
           </div>
@@ -139,8 +196,10 @@ const VehicleRegistrationForm = () => {
               name="vehicleNumber"
               value={formData.vehicleNumber}
               onChange={handleChange}
-              className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
-              placeholder="Enter vehicle number"
+              className={`border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 ${
+                errors.vehicleNumber ? 'border-red-500' : 'border-gray-300'
+              }`}
+              placeholder="Enter vehicle number (e.g., AB-1234 or ABC-1234)"
             />
             {errors.vehicleNumber && <p className="text-red-500 text-sm mt-1">{errors.vehicleNumber}</p>}
           </div>
@@ -151,7 +210,9 @@ const VehicleRegistrationForm = () => {
               name="vehicleType"
               value={formData.vehicleType}
               onChange={handleChange}
-              className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+              className={`border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 ${
+                errors.vehicleType ? 'border-red-500' : 'border-gray-300'
+              }`}
             > 
               <option value="">Select Vehicle Type</option>
               <option value="car">Car</option>
@@ -170,7 +231,9 @@ const VehicleRegistrationForm = () => {
               name="vehicleModel"
               value={formData.vehicleModel}
               onChange={handleChange}
-              className="border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
+              className={`border p-3 w-full rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 ${
+                errors.vehicleModel ? 'border-red-500' : 'border-gray-300'
+              }`}
             >
               <option value="">Select Vehicle Model</option>
               <option value="Toyota">Toyota</option>
@@ -192,25 +255,29 @@ const VehicleRegistrationForm = () => {
                 name="vehicleColor"
                 value={formData.vehicleColor}
                 onChange={handleChange}
-                className="border w-16 h-12 rounded-lg shadow-sm cursor-pointer"
+                className={`border w-16 h-12 rounded-lg shadow-sm cursor-pointer ${
+                  errors.vehicleColor ? 'border-red-500' : 'border-gray-300'
+                }`}
               />
               <span className="text-gray-700">{formData.vehicleColor || '#000000'}</span>
             </div>
             {errors.vehicleColor && <p className="text-red-500 text-sm mt-1">{errors.vehicleColor}</p>}
           </div>
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg w-full transition-colors duration-300"
-          >
-            Submit
-          </button>
-          <button
-            type="button"
-            onClick={handleBack}
-            className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-lg w-full mt-4 transition-colors duration-300 flex items-center justify-center"
-          >
-            <FaArrowLeft className="mr-2" /> Back
-          </button>
+          <div className="flex space-x-4">
+            <button
+              type="submit"
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg transition-colors duration-300"
+            >
+              Submit
+            </button>
+            <button
+              type="button"
+              onClick={handleBack}
+              className="flex-1 bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-lg transition-colors duration-300 flex items-center justify-center"
+            >
+              <FaArrowLeft className="mr-2" /> Back
+            </button>
+          </div>
         </form>
       </motion.div>
     </div>
