@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaCar, FaUpload, FaInfoCircle, FaTimes } from 'react-icons/fa';
+import { FaCar, FaUpload, FaInfoCircle, FaTimes, FaTrash, FaRedo } from 'react-icons/fa';
 
 // Error database with exact filenames
 const errorDatabase = [
@@ -80,6 +80,7 @@ function VehicleDashboard() {
   const [detectedError, setDetectedError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [recentUploads, setRecentUploads] = useState([]);
 
   const handleUpload = async (e) => {
     const file = e.target.files[0];
@@ -96,6 +97,12 @@ function VehicleDashboard() {
 
         if (matchedError) {
           setDetectedError(matchedError);
+          // Add to recent uploads
+          setRecentUploads(prev => [{
+            image: URL.createObjectURL(file),
+            error: matchedError,
+            timestamp: new Date()
+          }, ...prev]);
         } else {
           setDetectedError({
             name: "Unknown Warning",
@@ -116,6 +123,15 @@ function VehicleDashboard() {
         setLoading(false);
       }
     }
+  };
+
+  const resetCurrentUpload = () => {
+    setUploadedImg(null);
+    setDetectedError(null);
+  };
+
+  const clearRecentUploads = () => {
+    setRecentUploads([]);
   };
 
   const getSeverityColor = (severity) => {
@@ -171,7 +187,16 @@ function VehicleDashboard() {
 
             {uploadedImg && !loading && (
               <div className="w-full max-w-md mb-6">
-                <h3 className="text-xl font-semibold mb-3 text-indigo-800">Uploaded Image</h3>
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="text-xl font-semibold text-indigo-800">Uploaded Image</h3>
+                  <button
+                    onClick={resetCurrentUpload}
+                    className="text-red-500 hover:text-red-700 flex items-center space-x-2"
+                  >
+                    <FaRedo className="h-5 w-5" />
+                    <span>Reset</span>
+                  </button>
+                </div>
                 <img
                   src={uploadedImg}
                   alt="Uploaded"
@@ -208,6 +233,44 @@ function VehicleDashboard() {
             )}
           </div>
         </div>
+
+        {recentUploads.length > 0 && (
+          <div className="bg-white rounded-xl shadow-xl p-8 mb-8">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-indigo-800">Recent Uploads</h2>
+              <button
+                onClick={clearRecentUploads}
+                className="text-red-500 hover:text-red-700 flex items-center space-x-2"
+              >
+                <FaTrash className="h-5 w-5" />
+                <span>Clear All</span>
+              </button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {recentUploads.map((upload, index) => (
+                <div key={index} className="border border-indigo-100 rounded-xl p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-xl font-semibold text-indigo-800">{upload.error.name}</h3>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getSeverityColor(upload.error.severity)}`}>
+                      {upload.error.severity}
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-4 mb-4">
+                    <img
+                      src={upload.image}
+                      alt={upload.error.name}
+                      className="w-20 h-20 object-contain"
+                    />
+                    <p className="text-gray-700">{upload.error.solution}</p>
+                  </div>
+                  <p className="text-sm text-gray-500">
+                    Uploaded: {new Date(upload.timestamp).toLocaleString()}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="text-center">
           <button
