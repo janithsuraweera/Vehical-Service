@@ -449,7 +449,7 @@ const EmergencyList = () => {
                                 </thead>
                                 <tbody className={`divide-y ${darkMode ? 'divide-gray-600 bg-gray-800' : 'divide-gray-200 bg-white'}`}>
                                     {filteredEmergency.map((item) => (
-                                        <tr key={item._id} className={`transition-colors duration-200 group ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
+                                        <tr key={item._id} className={`group hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200`}>
                                             <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {showRequestNo ? (item.emergencyRequestNo || 'N/A') : ' '}
                                             </td>
@@ -549,29 +549,29 @@ const EmergencyList = () => {
                                             <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {item.time || 'N/A'}
                                             </td>
-                                            <td className="px-4 py-3 whitespace-nowrap">
-                                                <div className="flex space-x-2">
+                                            <td className="px-4 py-3 whitespace-nowrap text-sm">
+                                                <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                                     <button
                                                         onClick={() => navigate(`/emergency/${item._id}`)}
-                                                        className="p-2 text-blue-500 hover:text-blue-700 dark:hover:text-blue-400"
+                                                        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm"
                                                         title="View Details"
                                                     >
-                                                        <FaEye />
+                                                        <FaEye className="mr-1" /> View
                                                     </button>
                                                     <button
                                                         onClick={() => navigate(`/update-emergency/${item._id}`)}
-                                                        className="p-2 text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400"
+                                                        className="bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-700 hover:to-amber-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm"
                                                         title="Edit"
                                                     >
-                                                        <FaEdit />
+                                                        <FaEdit className="mr-1" /> Edit
                                                     </button>
                                                     {user && user.role === 'admin' && (
                                                         <button
                                                             onClick={() => handleDelete(item._id)}
-                                                            className="p-2 text-red-500 hover:text-red-700 dark:hover:text-red-400"
+                                                            className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm"
                                                             title="Delete"
                                                         >
-                                                            <FaTrash />
+                                                            <FaTrash className="mr-1" /> Delete
                                                         </button>
                                                     )}
                                                 </div>
