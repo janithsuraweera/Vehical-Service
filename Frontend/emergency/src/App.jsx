@@ -46,6 +46,7 @@ import ReportError from './pages/ReportError';
 import MyErrors from './pages/MyErrors';
 import AdminVehicleErrors from './pages/AdminVehicleErrors';
 import AnalyzeError from './pages/AnalyzeError';
+import VehicleDashboard from './pages/VehicleDashboard';
 
 const App = () => {
   return (
@@ -98,6 +99,8 @@ const App = () => {
               <Route path="/analyze-error" element={<ProtectedRoute><AnalyzeError /></ProtectedRoute>} />
               <Route path="/report-error" element={<ProtectedRoute><ReportError /></ProtectedRoute>} />
               <Route path="/my-errors" element={<ProtectedRoute><MyErrors /></ProtectedRoute>} />
+              <Route path="/admin-vehicle-errors" element={<ProtectedRoute><AdminVehicleErrors /></ProtectedRoute>} />
+              <Route path="/vehicle-dashboard" element={<ProtectedRoute><VehicleDashboard /></ProtectedRoute>} />
 
               {/* Redirect to login if no other route matches */}
               <Route path="*" element={<Navigate to="/login" replace />} />
