@@ -259,7 +259,7 @@ const InventoryUpdateForm = () => {
                     <div className="flex justify-between">
                         <button
                             type="button"
-                            onClick={() => navigate('/inventory')}
+                            onClick={() => navigate('/inventory-list')}
                             className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline flex items-center"
                         >
                             <FaArrowLeft className="mr-2" /> Back
@@ -270,7 +270,7 @@ const InventoryUpdateForm = () => {
                             className={`bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
                             {isSubmitting ? 'Updating...' : 'Update Item'}
-                        </button>
+                        </button>...prev
                     </div>
                 </form>
             </div>
