@@ -140,12 +140,12 @@ const Navbar = () => {
                                         <FaListAlt className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                     </Link>
                                 )}
-                                {user && user.role !== 'admin' && (
+                                {/* {user && user.role !== 'admin' && (
                                     <Link to="/analyze-error" className={getTabStyle('analyze-error')}>
                                         <span className="group-hover:opacity-0 transition-opacity duration-300">Analyze Error</span>
                                         <FaSearch className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                     </Link>
-                                )}
+                                )} */}
                                 {user && user.role !== 'admin' && (
                                     <Link to="/vehicle-dashboard" className={getTabStyle('vehicle-dashboard')}>
                                         <span className="group-hover:opacity-0 transition-opacity duration-300">Vehicle Dashboard</span>
