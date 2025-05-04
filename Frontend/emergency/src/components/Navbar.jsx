@@ -84,7 +84,7 @@ const Navbar = () => {
                     
                     <div className="hidden md:flex items-center space-x-2">
                         {(!user || user.role !== 'admin') && (
-                            <Link to="/admin" className={getTabStyle('home')}>
+                            <Link to="/" className={getTabStyle('home')}>
                                 <span className="group-hover:opacity-0 transition-opacity duration-300">Home</span>
                                 <FaHome className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                             </Link>
@@ -148,7 +148,7 @@ const Navbar = () => {
                                 )} */}
                                 {user && user.role !== 'admin' && (
                                     <Link to="/vehicle-dashboard" className={getTabStyle('vehicle-dashboard')}>
-                                        <span className="group-hover:opacity-0 transition-opacity duration-300">Vehicle Dashboard</span>
+                                        <span className="group-hover:opacity-0 transition-opacity duration-300">Vehicle Errors</span>
                                         <FaCar className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                     </Link>
                                 )}
