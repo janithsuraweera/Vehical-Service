@@ -315,6 +315,7 @@ const UpdateEmergencyForm = () => {
             await axios.put(`http://localhost:5000/api/emergency/${id}`, formDataToSend, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
             });
             toast.success('Emergency request updated successfully!');
