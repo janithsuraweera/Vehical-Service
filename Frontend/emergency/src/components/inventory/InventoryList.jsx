@@ -3,7 +3,6 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { FaEdit, FaTrash, FaSearch, FaFilter, FaPlus, FaDownload } from 'react-icons/fa';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -91,20 +90,12 @@ const InventoryList = () => {
     const handleDownload = () => {
         try {
             const doc = new jsPDF();
-            
-            // Add title
             doc.setFontSize(20);
             doc.text('Inventory Report', 105, 20, { align: 'center' });
-            
-            // Add date
             doc.setFontSize(12);
             doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 105, 30, { align: 'center' });
-            
-            // Add company info
             doc.setFontSize(14);
             doc.text('Vehicle Service Center', 105, 40, { align: 'center' });
-            
-            // Prepare table data
             const tableData = filteredInventory.map(item => [
                 item.productId || 'N/A',
                 item.productName || 'N/A',
@@ -113,15 +104,13 @@ const InventoryList = () => {
                 item.productQuantity || '0',
                 item.productDescription || 'N/A'
             ]);
-
-            // Add table using autoTable
             autoTable(doc, {
                 startY: 50,
                 head: [['Product ID', 'Name', 'Category', 'Price (Rs.)', 'Quantity', 'Description']],
                 body: tableData,
                 theme: 'grid',
                 headStyles: {
-                    fillColor: [34, 139, 34], // Green color
+                    fillColor: [34, 139, 34],
                     textColor: 255,
                     fontSize: 10,
                     fontStyle: 'bold'
@@ -131,40 +120,32 @@ const InventoryList = () => {
                     cellPadding: 3
                 },
                 columnStyles: {
-                    0: { cellWidth: 25 }, // Product ID
-                    1: { cellWidth: 40 }, // Name
-                    2: { cellWidth: 30 }, // Category
-                    3: { cellWidth: 25 }, // Price
-                    4: { cellWidth: 25 }, // Quantity
-                    5: { cellWidth: 45 }  // Description
+                    0: { cellWidth: 25 },
+                    1: { cellWidth: 40 },
+                    2: { cellWidth: 30 },
+                    3: { cellWidth: 25 },
+                    4: { cellWidth: 25 },
+                    5: { cellWidth: 45 }
                 }
             });
-
-            // Add summary
             const finalY = doc.lastAutoTable.finalY || 50;
             doc.setFontSize(12);
             doc.text('Summary', 14, finalY + 20);
-            
             const totalItems = filteredInventory.length;
             const totalValue = filteredInventory.reduce((sum, item) => 
                 sum + ((item.productPrice || 0) * (item.productQuantity || 0)), 0);
             const lowStockItems = filteredInventory.filter(item => 
                 (item.productQuantity || 0) < 10).length;
-            
             doc.setFontSize(10);
             doc.text(`Total Items: ${totalItems}`, 14, finalY + 30);
             doc.text(`Total Inventory Value: Rs. ${totalValue.toFixed(2)}`, 14, finalY + 40);
             doc.text(`Low Stock Items (less than 10): ${lowStockItems}`, 14, finalY + 50);
-            
-            // Add footer
             const pageCount = doc.internal.getNumberOfPages();
             for (let i = 1; i <= pageCount; i++) {
                 doc.setPage(i);
                 doc.setFontSize(8);
                 doc.text(`Page ${i} of ${pageCount}`, 105, 285, { align: 'center' });
             }
-
-            // Save the PDF
             doc.save('inventory_report.pdf');
             toast.success('Report downloaded successfully!');
         } catch (error) {
@@ -180,153 +161,159 @@ const InventoryList = () => {
     };
 
     return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="container mx-auto px-4 py-8"
-        >
-            <div className="bg-white rounded-lg shadow-lg p-6">
-                <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-3xl font-bold text-green-700">Inventory Management</h2>
-                    <div className="flex gap-4">
-                        <Link to="/inventory-form" className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center">
-                            <FaPlus className="mr-2" /> Add New Item
-                        </Link>
-                        <button
-                            onClick={handleDownload}
-                            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center"
-                        >
-                            <FaDownload className="mr-2" /> Download Report
-                        </button>
-                    </div>
-                </div>
-
-                {/* Filters Section */}
-                <div className="mb-6 bg-gray-50 p-4 rounded-lg">
-                    <div className="flex flex-wrap gap-4 items-center">
-                        <div className="flex-1 min-w-[200px]">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    placeholder="Search by name or ID..."
-                                    className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                                />
-                                <FaSearch className="absolute left-3 top-3 text-gray-400" />
-                            </div>
-                        </div>
-
-                        <div className="flex-1 min-w-[200px]">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                            <select
-                                value={categoryFilter}
-                                onChange={(e) => setCategoryFilter(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                            >
-                                {categories.map((category) => (
-                                    <option key={category.value} value={category.value}>
-                                        {category.label}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="flex-1 min-w-[200px]">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Max Price (Rs.)</label>
-                            <input
-                                type="number"
-                                value={priceFilter}
-                                onChange={(e) => setPriceFilter(e.target.value)}
-                                placeholder="Enter maximum price..."
-                                min="0"
-                                step="0.01"
-                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                            />
-                        </div>
-
-                        <div className="flex items-end">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4">
+            <div className="w-full h-full">
+                <div className="rounded-2xl shadow-xl p-6 backdrop-blur-sm bg-white bg-opacity-90">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
+                            Inventory Management
+                        </h2>
+                        <div className="flex gap-4">
+                            <Link to="/inventory-form" className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-2 px-4 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300">
+                                <FaPlus className="mr-2" /> Add New Item
+                            </Link>
                             <button
-                                onClick={resetFilters}
-                                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center"
+                                onClick={handleDownload}
+                                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2 px-2 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300 group w-10 hover:w-40 overflow-hidden"
                             >
-                                <FaFilter className="mr-2" /> Reset Filters
+                                <FaDownload className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
+                                <span className="absolute opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-5 whitespace-nowrap">
+                                    Download Report
+                                </span>
                             </button>
                         </div>
                     </div>
-                </div>
 
-                {/* Inventory Table */}
-                {loading ? (
-                    <div className="text-center py-8">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto"></div>
-                        <p className="mt-2 text-gray-600">Loading inventory...</p>
+                    {/* Filters Section */}
+                    <div className="mb-6 p-4 rounded-xl shadow-lg border bg-white border-gray-100">
+                        <div className="flex flex-wrap gap-4 items-center">
+                            <div className="flex-1 min-w-[200px]">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        placeholder="Search by name or ID..."
+                                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    />
+                                    <FaSearch className="absolute left-3 top-3 text-gray-400" />
+                                </div>
+                            </div>
+
+                            <div className="flex-1 min-w-[200px]">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                <select
+                                    value={categoryFilter}
+                                    onChange={(e) => setCategoryFilter(e.target.value)}
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                >
+                                    {categories.map((category) => (
+                                        <option key={category.value} value={category.value}>
+                                            {category.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="flex-1 min-w-[200px]">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Max Price (Rs.)</label>
+                                <input
+                                    type="number"
+                                    value={priceFilter}
+                                    onChange={(e) => setPriceFilter(e.target.value)}
+                                    placeholder="Enter maximum price..."
+                                    min="0"
+                                    step="0.01"
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                />
+                            </div>
+
+                            <div className="flex items-end">
+                                <button
+                                    onClick={resetFilters}
+                                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2 rounded-lg flex items-center"
+                                >
+                                    <FaFilter className="mr-2" /> Reset Filters
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                ) : filteredInventory.length === 0 ? (
-                    <div className="text-center py-8">
-                        <p className="text-gray-600">No inventory items found</p>
-                    </div>
-                ) : (
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
-                                <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product ID</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price (Rs.)</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                                {filteredInventory.map((item) => (
-                                    <tr key={item._id} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            {item.productImage ? (
-                                                <img
-                                                    src={item.productImage}
-                                                    alt={item.productName}
-                                                    className="h-12 w-12 object-cover rounded"
-                                                />
-                                            ) : (
-                                                <div className="h-12 w-12 bg-gray-200 rounded flex items-center justify-center">
-                                                    <span className="text-gray-400">No Image</span>
-                                                </div>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{item.productId}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{item.productName}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap capitalize">{item.category}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{item.productPrice.toFixed(2)}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{item.productQuantity}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex space-x-2">
-                                                <button
-                                                    onClick={() => handleEdit(item._id)}
-                                                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded flex items-center"
-                                                >
-                                                    <FaEdit className="mr-1" /> Edit
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(item._id)}
-                                                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded flex items-center"
-                                                >
-                                                    <FaTrash className="mr-1" /> Delete
-                                                </button>
-                                            </div>
-                                        </td>
+
+                    {/* Inventory Table */}
+                    {loading ? (
+                        <div className="text-center py-8">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto"></div>
+                            <p className="mt-2 text-gray-600">Loading inventory...</p>
+                        </div>
+                    ) : filteredInventory.length === 0 ? (
+                        <div className="text-center py-8 rounded-xl shadow-lg bg-white">
+                            <p className="text-gray-600 text-lg">No inventory items found</p>
+                        </div>
+                    ) : (
+                        <div className="overflow-x-auto rounded-xl shadow-lg">
+                            <table className="w-full divide-y divide-gray-200">
+                                <thead className="bg-gradient-to-r from-blue-600 to-indigo-600">
+                                    <tr>
+                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-24">Image</th>
+                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Product ID</th>
+                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-40">Name</th>
+                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Category</th>
+                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Price (Rs.)</th>
+                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Quantity</th>
+                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-64">Description</th>
+                                        <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-40">Actions</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                                </thead>
+                                <tbody className="divide-y divide-gray-200 bg-white">
+                                    {filteredInventory.map((item) => (
+                                        <tr key={item._id} className="group hover:bg-gray-50 transition-colors duration-200">
+                                            <td className="px-4 py-3 whitespace-nowrap">
+                                                {item.productImage ? (
+                                                    <img
+                                                        src={item.productImage}
+                                                        alt={item.productName}
+                                                        className="h-12 w-12 object-cover rounded"
+                                                    />
+                                                ) : (
+                                                    <div className="h-12 w-12 bg-gray-200 rounded flex items-center justify-center">
+                                                        <span className="text-gray-400">No Image</span>
+                                                    </div>
+                                                )}
+                                            </td>
+                                            <td className="px-4 py-3 whitespace-nowrap font-medium text-sm text-gray-900 group-hover:text-gray-700">{item.productId}</td>
+                                            <td className="px-4 py-3 whitespace-nowrap font-medium text-sm text-gray-900 group-hover:text-gray-700">{item.productName}</td>
+                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 group-hover:text-gray-700 capitalize">{item.category}</td>
+                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 group-hover:text-gray-700">{item.productPrice.toFixed(2)}</td>
+                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 group-hover:text-gray-700">{item.productQuantity}</td>
+                                            <td className="px-4 py-3 text-sm text-gray-900 group-hover:text-gray-700">{item.productDescription}</td>
+                                            <td className="px-4 py-3 whitespace-nowrap text-sm">
+                                                <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                                    <button
+                                                        onClick={() => handleEdit(item._id)}
+                                                        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm"
+                                                        title="Edit"
+                                                    >
+                                                        <FaEdit className="mr-1" /> Edit
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(item._id)}
+                                                        className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm"
+                                                        title="Delete"
+                                                    >
+                                                        <FaTrash className="mr-1" /> Delete
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
             </div>
-        </motion.div>
+        </div>
     );
 };
 
