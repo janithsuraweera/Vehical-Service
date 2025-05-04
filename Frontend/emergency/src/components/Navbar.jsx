@@ -133,7 +133,7 @@ const Navbar = () => {
                                         <FaListAlt className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                     </Link>
                                 )}
-                                {user && user.role !== 'admin' && (
+                                {/* {user && user.role !== 'admin' && (
                                     <Link to="/report-error" className={getTabStyle('report-error')}>
                                         <span className="group-hover:opacity-0 transition-opacity duration-300">Report Error</span>
                                         <FaExclamationTriangle className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
@@ -144,10 +144,10 @@ const Navbar = () => {
                                         <span className="group-hover:opacity-0 transition-opacity duration-300">My Errors</span>
                                         <FaListAlt className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                     </Link>
-                                )}
+                                )} */}
                                 {user && user.role !== 'admin' && (
                                     <Link to="/analyze-error" className={getTabStyle('analyze-error')}>
-                                        <span className="group-hover:opacity-0 transition-opacity duration-300">දෝෂ විශ්ලේෂණය</span>
+                                        <span className="group-hover:opacity-0 transition-opacity duration-300">Analyze</span>
                                         <FaSearch className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                     </Link>
                                 )}
