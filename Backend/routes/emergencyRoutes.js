@@ -139,13 +139,21 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// Get an emergency request by ID (only if owned by the user)
+// Get an emergency request by ID (admin can view any, users can only view their own)
 router.get('/:id', auth, async (req, res) => {
   try {
-    const emergencyRequest = await EmergencyRequest.findOne({
-      _id: req.params.id,
-      userId: req.user._id
-    });
+    let emergencyRequest;
+    
+    // Admin can view any emergency request
+    if (req.user.role === 'admin') {
+      emergencyRequest = await EmergencyRequest.findById(req.params.id);
+    } else {
+      // Regular users can only view their own requests
+      emergencyRequest = await EmergencyRequest.findOne({
+        _id: req.params.id,
+        userId: req.user._id
+      });
+    }
     
     if (!emergencyRequest) {
       return res.status(404).json({ message: 'Emergency request not found or access denied' });
@@ -162,7 +170,7 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
-// Update an emergency request (only if owned by the user)
+// Update an emergency request (admin can update any, users can only update their own)
 router.put('/:id', auth, upload.array('photos', 5), [
   body('name').optional().notEmpty().withMessage('Name must not be empty'),
   body('contactNumber').optional().notEmpty().withMessage('Contact number must not be empty'),
@@ -181,13 +189,21 @@ router.put('/:id', auth, upload.array('photos', 5), [
   body('vehicleColor').optional().notEmpty().withMessage('Vehicle color must not be empty'),
   body('emergencyType').optional().isIn(['breakdown', 'accident', 'flat_tire', 'other']).withMessage('Invalid emergency type'),
   body('description').optional().notEmpty().withMessage('Description must not be empty'),
-  body('status').optional().isIn(['pending', 'confirmed', 'completed']).withMessage('Invalid status')
+  body('status').optional().isIn(['pending', 'Processing', 'Completed']).withMessage('Invalid status')
 ], async (req, res) => {
   try {
-    const emergencyRequest = await EmergencyRequest.findOne({
-      _id: req.params.id,
-      userId: req.user._id
-    });
+    let emergencyRequest;
+    
+    // Admin can update any emergency request
+    if (req.user.role === 'admin') {
+      emergencyRequest = await EmergencyRequest.findById(req.params.id);
+    } else {
+      // Regular users can only update their own requests
+      emergencyRequest = await EmergencyRequest.findOne({
+        _id: req.params.id,
+        userId: req.user._id
+      });
+    }
     
     if (!emergencyRequest) {
       return res.status(404).json({ message: 'Emergency request not found or access denied' });
