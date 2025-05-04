@@ -109,38 +109,32 @@ router.post('/', auth, upload.array('photos', 5), [
   }
 });
 
-// Get all emergency requests for the current user
+// Get all emergency requests for the current user or all if admin
 router.get('/', auth, async (req, res) => {
   try {
-    const emergencyRequests = await EmergencyRequest.find({ userId: req.user._id });
-    console.log('Found emergency requests:', emergencyRequests.map(req => ({
-      id: req._id,
-      photos: req.photos
-    })));
-
+    let emergencyRequests;
+    if (req.user.role === 'admin') {
+      // Admin: get all requests
+      emergencyRequests = await EmergencyRequest.find({});
+    } else {
+      // Normal user: only their own
+      emergencyRequests = await EmergencyRequest.find({ userId: req.user._id });
+    }
     // Transform photo URLs to include the full server URL
     const transformedRequests = emergencyRequests.map(request => {
       const transformed = {
         ...request.toObject(),
         photos: request.photos ? request.photos.map(photo => {
-          // If the photo URL already includes http, return it as is
           if (photo.startsWith('http')) {
             return photo;
           }
-          // Otherwise, prepend the server URL
           return `http://localhost:5000${photo}`;
         }) : []
       };
-      console.log('Transformed request photos:', {
-        id: transformed._id,
-        photos: transformed.photos
-      });
       return transformed;
     });
-
     res.json(transformedRequests);
   } catch (error) {
-    console.error('Error fetching emergency requests:', error);
     res.status(500).json({ message: error.message });
   }
 });
