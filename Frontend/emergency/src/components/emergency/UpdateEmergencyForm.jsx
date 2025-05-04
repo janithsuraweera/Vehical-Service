@@ -76,7 +76,18 @@ const UpdateEmergencyForm = () => {
     useEffect(() => {
         const fetchEmergency = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/emergency/${id}`);
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    toast.error('Please log in to view emergency details');
+                    navigate('/login');
+                    return;
+                }
+
+                const response = await axios.get(`http://localhost:5000/api/emergency/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
                 const data = response.data;
                 setFormData({
                     ...data,
@@ -94,10 +105,13 @@ const UpdateEmergencyForm = () => {
             } catch (error) {
                 console.error('Error fetching emergency data:', error);
                 toast.error('Failed to load emergency data.');
+                if (error.response?.status === 401) {
+                    navigate('/login');
+                }
             }
         };
         fetchEmergency();
-    }, [id]);
+    }, [id, navigate]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
