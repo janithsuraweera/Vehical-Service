@@ -34,7 +34,7 @@ const ProductDisplay = () => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-210 via-purple-300 to-pink-200">
             <div className="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-7xl">
-                <h2 className="text-4xl font-bold mb-10 text-center text-purple-700">Products</h2>
+                <h2 className="text-4xl font-bold mb-10 text-center text-red-600">Our Products</h2>
 
                 
 
