@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaCar, FaUpload, FaSearch, FaInfoCircle } from 'react-icons/fa';
+import { FaCar, FaUpload, FaInfoCircle, FaTimes } from 'react-icons/fa';
 
 // Error database with exact filenames
 const errorDatabase = [
@@ -79,6 +79,7 @@ function VehicleDashboard() {
   const [uploadedImg, setUploadedImg] = useState(null);
   const [detectedError, setDetectedError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
   const handleUpload = async (e) => {
     const file = e.target.files[0];
@@ -133,24 +134,24 @@ function VehicleDashboard() {
   };
 
   return (
-    <div className="min-h-screen p-6 bg-gradient-to-b from-gray-100 to-gray-200">
+    <div className="min-h-screen p-6 bg-gradient-to-br from-blue-50 to-indigo-50">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2 flex items-center justify-center">
-            <FaCar className="mr-2" />
+          <h1 className="text-4xl font-bold mb-4 flex items-center justify-center text-indigo-800">
+            <FaCar className="mr-3" />
             Vehicle Error Detection
           </h1>
-          <p className="text-gray-600">Upload a photo of your vehicle's warning light to identify the issue</p>
+          <p className="text-gray-600 text-lg">Upload a photo of your vehicle's warning light to identify the issue</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div className="bg-white rounded-xl shadow-xl p-8 mb-8 transform hover:scale-[1.01] transition-transform duration-300">
           <div className="flex flex-col items-center">
-            <label className="w-full max-w-md mb-4">
-              <div className="flex items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+            <label className="w-full max-w-md mb-6">
+              <div className="flex items-center justify-center w-full h-40 border-2 border-dashed border-indigo-300 rounded-xl cursor-pointer hover:border-indigo-500 transition-colors bg-indigo-50">
                 <div className="text-center">
-                  <FaUpload className="mx-auto h-8 w-8 text-gray-400" />
-                  <p className="mt-2 text-sm text-gray-600">Click to upload or drag and drop</p>
-                  <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                  <FaUpload className="mx-auto h-12 w-12 text-indigo-400" />
+                  <p className="mt-4 text-lg text-gray-600">Click to upload or drag and drop</p>
+                  <p className="text-sm text-gray-500">PNG, JPG, GIF up to 10MB</p>
                 </div>
                 <input
                   type="file"
@@ -162,44 +163,44 @@ function VehicleDashboard() {
             </label>
 
             {loading && (
-              <div className="flex items-center justify-center space-x-2">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
-                <span className="text-gray-600">Processing image...</span>
+              <div className="flex items-center justify-center space-x-3">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+                <span className="text-gray-600 text-lg">Processing image...</span>
               </div>
             )}
 
             {uploadedImg && !loading && (
-              <div className="w-full max-w-md mb-4">
-                <h3 className="text-lg font-semibold mb-2">Uploaded Image</h3>
+              <div className="w-full max-w-md mb-6">
+                <h3 className="text-xl font-semibold mb-3 text-indigo-800">Uploaded Image</h3>
                 <img
                   src={uploadedImg}
                   alt="Uploaded"
-                  className="w-full h-48 object-contain border rounded shadow"
+                  className="w-full h-64 object-contain border-2 border-indigo-200 rounded-xl shadow-lg"
                 />
               </div>
             )}
 
             {detectedError && !loading && (
               <div className="w-full max-w-md">
-                <div className="bg-white rounded-lg shadow-md p-6">
+                <div className="bg-white rounded-xl shadow-lg p-6 border border-indigo-100">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold">{detectedError.name}</h2>
-                    <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getSeverityColor(detectedError.severity)}`}>
+                    <h2 className="text-2xl font-semibold text-indigo-800">{detectedError.name}</h2>
+                    <span className={`px-4 py-2 rounded-full text-sm font-semibold ${getSeverityColor(detectedError.severity)}`}>
                       {detectedError.severity}
                     </span>
                   </div>
-                  <div className="flex items-center space-x-4 mb-4">
+                  <div className="flex items-center space-x-6 mb-4">
                     <img
                       src={detectedError.image}
                       alt={detectedError.name}
-                      className="w-16 h-16 object-contain"
+                      className="w-20 h-20 object-contain"
                     />
                     <div className="flex-1">
-                      <p className="text-gray-700">{detectedError.solution}</p>
+                      <p className="text-gray-700 text-lg">{detectedError.solution}</p>
                     </div>
                   </div>
-                  <div className="flex items-center text-sm text-gray-500">
-                    <FaInfoCircle className="mr-2" />
+                  <div className="flex items-center text-sm text-gray-500 bg-indigo-50 p-3 rounded-lg">
+                    <FaInfoCircle className="mr-2 text-indigo-500" />
                     <span>This is a simulated detection. For accurate results, consult a professional mechanic.</span>
                   </div>
                 </div>
@@ -208,29 +209,50 @@ function VehicleDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">Common Vehicle Warning Lights</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {errorDatabase.map((error, index) => (
-              <div key={index} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-medium">{error.name}</h3>
-                  <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getSeverityColor(error.severity)}`}>
-                    {error.severity}
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2 mb-2">
-                  <img
-                    src={error.image}
-                    alt={error.name}
-                    className="w-12 h-12 object-contain"
-                  />
-                </div>
-                <p className="text-sm text-gray-600">{error.solution}</p>
-              </div>
-            ))}
-          </div>
+        <div className="text-center">
+          <button
+            onClick={() => setShowPopup(true)}
+            className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors duration-300 shadow-lg hover:shadow-xl"
+          >
+            View Common Warning Lights
+          </button>
         </div>
+
+        {showPopup && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl shadow-2xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-indigo-800">Common Vehicle Warning Lights</h2>
+                <button
+                  onClick={() => setShowPopup(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <FaTimes className="h-6 w-6" />
+                </button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {errorDatabase.map((error, index) => (
+                  <div key={index} className="border border-indigo-100 rounded-xl p-6 hover:shadow-lg transition-shadow duration-300">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-xl font-semibold text-indigo-800">{error.name}</h3>
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getSeverityColor(error.severity)}`}>
+                        {error.severity}
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-4 mb-4">
+                      <img
+                        src={error.image}
+                        alt={error.name}
+                        className="w-16 h-16 object-contain"
+                      />
+                      <p className="text-gray-700">{error.solution}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
