@@ -204,6 +204,12 @@ const MyEmergencies = () => {
                         </h2>
                         <div className="flex gap-4">
                             <button
+                                onClick={() => navigate('/emergencyform')}
+                                className={`bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2 px-4 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300`}
+                            >
+                                <span className="mr-2">New Request</span>
+                            </button>
+                            <button
                                 onClick={handleDownload}
                                 className={`bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-2 px-2 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300 group w-10 hover:w-40 overflow-hidden`}
                             >

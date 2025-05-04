@@ -287,13 +287,21 @@ router.put('/:id', auth, upload.array('photos', 5), [
   }
 });
 
-// Delete an emergency request (only if owned by the user)
+// Delete an emergency request (admin can delete any, users can only delete their own)
 router.delete('/:id', auth, async (req, res) => {
   try {
-    const emergencyRequest = await EmergencyRequest.findOne({
-      _id: req.params.id,
-      userId: req.user._id
-    });
+    let emergencyRequest;
+    
+    // Admin can delete any emergency request
+    if (req.user.role === 'admin') {
+      emergencyRequest = await EmergencyRequest.findById(req.params.id);
+    } else {
+      // Regular users can only delete their own requests
+      emergencyRequest = await EmergencyRequest.findOne({
+        _id: req.params.id,
+        userId: req.user._id
+      });
+    }
     
     if (!emergencyRequest) {
       return res.status(404).json({ message: 'Emergency request not found or access denied' });
@@ -310,7 +318,7 @@ router.delete('/:id', auth, async (req, res) => {
     }
 
     await EmergencyRequest.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Emergency request deleted' });
+    res.json({ message: 'Emergency request deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

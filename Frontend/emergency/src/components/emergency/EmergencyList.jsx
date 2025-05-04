@@ -116,25 +116,16 @@ const EmergencyList = () => {
         if (window.confirm('Are you sure you want to delete this emergency request?')) {
             try {
                 const token = localStorage.getItem('token');
-                if (!token) {
-                    toast.error('Please log in to delete emergency requests');
-                    return;
-                }
-
                 await axios.delete(`http://localhost:5000/api/emergency/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
+                setEmergencyItems(emergencyItems.filter(item => item._id !== id));
                 toast.success('Emergency request deleted successfully');
-                await fetchData();
             } catch (error) {
                 console.error('Error deleting emergency request:', error);
-                if (error.response?.status === 401) {
-                    toast.error('Please log in to delete emergency requests');
-                } else {
-                    toast.error('Failed to delete emergency request');
-                }
+                toast.error('Failed to delete emergency request');
             }
         }
     };
@@ -559,25 +550,30 @@ const EmergencyList = () => {
                                                 {item.time || 'N/A'}
                                             </td>
                                             <td className="px-4 py-3 whitespace-nowrap">
-                                                <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                                    <button
-                                                        onClick={() => handleEdit(item._id)}
-                                                        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm group/btn"
-                                                    >
-                                                        <FaEdit className="mr-1 group-hover/btn:rotate-12 transition-transform duration-300" /> Edit
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDelete(item._id)}
-                                                        className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm group/btn"
-                                                    >
-                                                        <FaTrash className="mr-1 group-hover/btn:rotate-12 transition-transform duration-300" /> Delete
-                                                    </button>
+                                                <div className="flex space-x-2">
                                                     <button
                                                         onClick={() => navigate(`/emergency/${item._id}`)}
-                                                        className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm group/btn"
+                                                        className="p-2 text-blue-500 hover:text-blue-700 dark:hover:text-blue-400"
+                                                        title="View Details"
                                                     >
-                                                        <FaEye className="mr-1 group-hover/btn:rotate-12 transition-transform duration-300" /> View
+                                                        <FaEye />
                                                     </button>
+                                                    <button
+                                                        onClick={() => navigate(`/update-emergency/${item._id}`)}
+                                                        className="p-2 text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400"
+                                                        title="Edit"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
+                                                    {user && user.role === 'admin' && (
+                                                        <button
+                                                            onClick={() => handleDelete(item._id)}
+                                                            className="p-2 text-red-500 hover:text-red-700 dark:hover:text-red-400"
+                                                            title="Delete"
+                                                        >
+                                                            <FaTrash />
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>
