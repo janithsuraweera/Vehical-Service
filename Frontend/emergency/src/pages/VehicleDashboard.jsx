@@ -1,65 +1,75 @@
 import React, { useState } from 'react';
 import { FaCar, FaUpload, FaSearch, FaInfoCircle } from 'react-icons/fa';
 
-// 10 common dashboard warning signs
+// Error database with exact filenames
 const errorDatabase = [
   {
+    filename: "001.png",
     name: "Check Engine Light",
-    image: "/errors/check_engine.png",
+    image: "http://localhost:5000/uploads/error-photos/001.png",
     solution: "Engine or emission issue. Get diagnostic scan done immediately.",
     severity: "High"
   },
   {
+    filename: "002.png",
     name: "Oil Pressure Warning",
-    image: "/errors/oil_pressure.png",
+    image: "http://localhost:5000/uploads/error-photos/002.png",
     solution: "Low oil pressure. Stop the engine and check oil level.",
     severity: "Critical"
   },
   {
+    filename: "003.png",
     name: "Battery Alert",
-    image: "/errors/battery.png",
+    image: "http://localhost:5000/uploads/error-photos/003.png",
     solution: "Battery not charging. Check alternator and battery terminals.",
     severity: "Medium"
   },
   {
+    filename: "004.png",
     name: "Brake System Warning",
-    image: "/errors/brake.png",
+    image: "http://localhost:5000/uploads/error-photos/004.png",
     solution: "Brake system issue. Check brake fluid and pads.",
     severity: "Critical"
   },
   {
+    filename: "005.png",
     name: "ABS Warning Light",
-    image: "/errors/abs.png",
+    image: "http://localhost:5000/uploads/error-photos/005.png",
     solution: "Anti-lock Braking System issue. ABS may be disabled.",
     severity: "High"
   },
   {
+    filename: "006.png",
     name: "Coolant Temperature Warning",
-    image: "/errors/coolant.png",
+    image: "http://localhost:5000/uploads/error-photos/006.png",
     solution: "Engine overheating. Check coolant level and radiator.",
     severity: "Critical"
   },
   {
+    filename: "007.png",
     name: "Tire Pressure Warning",
-    image: "/errors/tire_pressure.png",
+    image: "http://localhost:5000/uploads/error-photos/007.png",
     solution: "Low tire pressure detected. Inflate to recommended PSI.",
     severity: "Medium"
   },
   {
+    filename: "008.png",
     name: "Airbag Warning Light",
-    image: "/errors/airbag.png",
+    image: "http://localhost:5000/uploads/error-photos/008.png",
     solution: "Airbag system issue. May not deploy in crash.",
     severity: "High"
   },
   {
+    filename: "009.png",
     name: "Traction Control Light",
-    image: "/errors/traction.png",
+    image: "http://localhost:5000/uploads/error-photos/009.png",
     solution: "Traction control disabled. Drive carefully on slippery roads.",
     severity: "Medium"
   },
   {
+    filename: "0010.jpg",
     name: "Fuel Warning Light",
-    image: "/errors/fuel.png",
+    image: "http://localhost:5000/uploads/error-photos/0010.jpg",
     solution: "Fuel level low. Refill as soon as possible.",
     severity: "Low"
   }
@@ -70,17 +80,40 @@ function VehicleDashboard() {
   const [detectedError, setDetectedError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleUpload = (e) => {
+  const handleUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
       setLoading(true);
       setUploadedImg(URL.createObjectURL(file));
-      // Simulate detection by random selection
-      setTimeout(() => {
-        const randomError = errorDatabase[Math.floor(Math.random() * errorDatabase.length)];
-        setDetectedError(randomError);
+      
+      try {
+        // Get the filename from the uploaded file
+        const uploadedFilename = file.name;
+        
+        // Find matching error in database based on the exact filename
+        const matchedError = errorDatabase.find(error => error.filename === uploadedFilename);
+
+        if (matchedError) {
+          setDetectedError(matchedError);
+        } else {
+          setDetectedError({
+            name: "Unknown Warning",
+            image: "/test1.png",
+            solution: "This warning light is not recognized. Please consult a professional mechanic.",
+            severity: "Unknown"
+          });
+        }
+      } catch (error) {
+        console.error('Error processing image:', error);
+        setDetectedError({
+          name: "Processing Error",
+          image: "/test1.png",
+          solution: "Failed to process the image. Please try again or consult a professional mechanic.",
+          severity: "Unknown"
+        });
+      } finally {
         setLoading(false);
-      }, 1500);
+      }
     }
   };
 
@@ -131,12 +164,13 @@ function VehicleDashboard() {
             {loading && (
               <div className="flex items-center justify-center space-x-2">
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
-                <span className="text-gray-600">Analyzing image...</span>
+                <span className="text-gray-600">Processing image...</span>
               </div>
             )}
 
             {uploadedImg && !loading && (
               <div className="w-full max-w-md mb-4">
+                <h3 className="text-lg font-semibold mb-2">Uploaded Image</h3>
                 <img
                   src={uploadedImg}
                   alt="Uploaded"
@@ -184,6 +218,13 @@ function VehicleDashboard() {
                   <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getSeverityColor(error.severity)}`}>
                     {error.severity}
                   </span>
+                </div>
+                <div className="flex items-center space-x-2 mb-2">
+                  <img
+                    src={error.image}
+                    alt={error.name}
+                    className="w-12 h-12 object-contain"
+                  />
                 </div>
                 <p className="text-sm text-gray-600">{error.solution}</p>
               </div>
