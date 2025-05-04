@@ -60,7 +60,7 @@ const Dashboard = () => {
         {
             icon: <FaExclamationTriangle className="w-6 h-6" />,
             title: "My Emergencies",
-            link: "/my-emergencies",
+            link: "/emergencylist",
             color: "bg-orange-500 hover:bg-orange-600"
         }
     ];
