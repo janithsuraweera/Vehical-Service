@@ -235,19 +235,27 @@ router.put('/:id', auth, upload.array('photos', 5), [
       req.body.photos = photoUrls;
     }
 
+    // Create update object with only the fields that are being updated
+    const updateFields = {};
+    Object.keys(req.body).forEach(key => {
+      if (key !== 'userId' && req.body[key] !== undefined) {
+        updateFields[key] = req.body[key];
+      }
+    });
+
     // Update the request
     const updatedRequest = await EmergencyRequest.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateFields,
       { new: true }
     );
 
     // Track changes for each field
-    Object.keys(req.body).forEach(key => {
-      if (JSON.stringify(oldValues[key]) !== JSON.stringify(req.body[key])) {
+    Object.keys(updateFields).forEach(key => {
+      if (JSON.stringify(oldValues[key]) !== JSON.stringify(updateFields[key])) {
         changes.set(key, {
           oldValue: oldValues[key],
-          newValue: req.body[key]
+          newValue: updateFields[key]
         });
       }
     });

@@ -53,7 +53,7 @@ const emergencyRequestSchema = new mongoose.Schema({
     description: String,
     status: {
         type: String,
-        enum: ['pending', 'confirmed', 'completed'],
+        enum: ['pending', 'Processing', 'Completed'],
         default: 'pending',
     },
     photos: [{

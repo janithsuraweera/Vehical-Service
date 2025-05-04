@@ -73,6 +73,7 @@ const EmergencyDetails = () => {
             if (!token) {
                 throw new Error('Please log in to update emergency status');
             }
+
             await axios.put(
                 `http://localhost:5000/api/emergency/${id}`, 
                 { status: status },
