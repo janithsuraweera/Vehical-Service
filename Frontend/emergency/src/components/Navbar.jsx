@@ -84,7 +84,7 @@ const Navbar = () => {
                     
                     <div className="hidden md:flex items-center space-x-2">
                         {(!user || user.role !== 'admin') && (
-                            <Link to="/home" className={getTabStyle('home')}>
+                            <Link to="/admin" className={getTabStyle('home')}>
                                 <span className="group-hover:opacity-0 transition-opacity duration-300">Home</span>
                                 <FaHome className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                             </Link>
@@ -99,14 +99,15 @@ const Navbar = () => {
                                 )}
                                 {user.role === 'admin' && (
                                     <>
+                                        <Link to="/admin" className={getTabStyle('vehicle-errors')}>
+                                            <span className="group-hover:opacity-0 transition-opacity duration-300">Dashboard</span>
+                                            <FaWrench className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
+                                        </Link>
                                         <Link to="/inventory-list" className={getTabStyle('inventory-list')}>
                                             <span className="group-hover:opacity-0 transition-opacity duration-300">Inventory List</span>
                                             <FaListAlt className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                         </Link>
-                                        <Link to="/admin/vehicle-errors" className={getTabStyle('vehicle-errors')}>
-                                            <span className="group-hover:opacity-0 transition-opacity duration-300">Vehicle Errors</span>
-                                            <FaWrench className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
-                                        </Link>
+
 
                                     </>
                                 )}
@@ -139,6 +140,11 @@ const Navbar = () => {
                                         <FaListAlt className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                     </Link>
                                 )}
+{/* 
+<Link to="/admin/vehicle-errors" className={getTabStyle('vehicle-errors')}>
+                                            <span className="group-hover:opacity-0 transition-opacity duration-300">Vehicle Errors</span>
+                                            <FaWrench className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
+                                        </Link> */}
                                 {/* {user && user.role !== 'admin' && (
                                     <Link to="/report-error" className={getTabStyle('report-error')}>
                                         <span className="group-hover:opacity-0 transition-opacity duration-300">Report Error</span>
@@ -153,7 +159,7 @@ const Navbar = () => {
                                 )} */}
                                 {user && user.role !== 'admin' && (
                                     <Link to="/analyze-error" className={getTabStyle('analyze-error')}>
-                                        <span className="group-hover:opacity-0 transition-opacity duration-300">Analyze</span>
+                                        <span className="group-hover:opacity-0 transition-opacity duration-300">Analyze Error</span>
                                         <FaSearch className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                     </Link>
                                 )}
