@@ -24,6 +24,7 @@ import EmergencyHomePage from './components/emergency/EmergencyHomePage';
 import EmergencyList from './components/emergency/EmergencyList';
 import UpdateEmergencyForm from './components/emergency/UpdateEmergencyForm';
 import EmergencyDetails from './components/emergency/EmergencyDetails';
+import MyEmergencies from './components/emergency/MyEmergencies';
 
 //Inventory Imports 
 import InventoryForm from './components/inventory/InventoryForm';
@@ -77,6 +78,7 @@ const App = () => {
               <Route path="/emergencylist" element={<ProtectedRoute><EmergencyList /></ProtectedRoute>} />
               <Route path="/update-emergency/:id" element={<ProtectedRoute><UpdateEmergencyForm /></ProtectedRoute>} />
               <Route path="/emergency/:id" element={<ProtectedRoute><EmergencyDetails /></ProtectedRoute>} />
+              <Route path="/my-emergencies" element={<ProtectedRoute><MyEmergencies /></ProtectedRoute>} />
 
               {/* Inventory Routes */}
               <Route path="/inventory" element={<ProtectedRoute><ProductDisplay /></ProtectedRoute>} />

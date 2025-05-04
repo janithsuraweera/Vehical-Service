@@ -7,10 +7,12 @@ import { FaEdit, FaTrash, FaSearch, FaFilter, FaDownload, FaEye, FaEyeSlash, FaM
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { useTheme } from '../../context/ThemeContext';
+import { useAuth } from '../../context/AuthContext';
 
 const EmergencyList = () => {
     const navigate = useNavigate();
     const { darkMode } = useTheme();
+    const { user } = useAuth();
     const [emergencyItems, setEmergencyItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -47,20 +49,30 @@ const EmergencyList = () => {
     }, []);
 
     const fetchData = async () => {
+        setLoading(true);
+        setError(null);
         try {
-            setLoading(true);
-            setError(null);
-            const response = await axios.get('http://localhost:5000/api/emergency');
-            if (response.data && Array.isArray(response.data)) {
-                setEmergencyItems(response.data);
-                setFilteredEmergency(response.data);
-            } else {
-                throw new Error('Invalid data format received from server');
+            const token = localStorage.getItem('token');
+            if (!token) {
+                setError('Please log in to view emergency requests');
+                setLoading(false);
+                return;
             }
+
+            const response = await axios.get('http://localhost:5000/api/emergency', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            setEmergencyItems(response.data);
+            setFilteredEmergency(response.data);
         } catch (error) {
-            console.error("Error fetching emergency items:", error);
-            setError(error.message || "Failed to load emergency list");
-            toast.error("Failed to load emergency list. Please try again later.");
+            console.error('Error fetching emergency requests:', error);
+            if (error.response?.status === 401) {
+                setError('Please log in to view emergency requests');
+            } else {
+                setError('Failed to load emergency requests. Please try again later.');
+            }
         } finally {
             setLoading(false);
         }
@@ -103,12 +115,26 @@ const EmergencyList = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this emergency request?')) {
             try {
-                await axios.delete(`http://localhost:5000/api/emergency/${id}`);
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    toast.error('Please log in to delete emergency requests');
+                    return;
+                }
+
+                await axios.delete(`http://localhost:5000/api/emergency/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
                 toast.success('Emergency request deleted successfully');
                 await fetchData();
             } catch (error) {
                 console.error('Error deleting emergency request:', error);
-                toast.error('Failed to delete emergency request');
+                if (error.response?.status === 401) {
+                    toast.error('Please log in to delete emergency requests');
+                } else {
+                    toast.error('Failed to delete emergency request');
+                }
             }
         }
     };

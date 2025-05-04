@@ -5,6 +5,7 @@ const {body, validationResult} = require('express-validator');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const auth = require('../middleware/auth');
 
 // Configure multer for file upload
 const storage = multer.diskStorage({
@@ -38,7 +39,7 @@ const upload = multer({
 // router.get("/test", (req, res) => res.send("router testing!"));
 
 // Create a new emergency request
-router.post('/', upload.array('photos', 5), [
+router.post('/', auth, upload.array('photos', 5), [
   body('name').notEmpty().withMessage('Name is required'),
   body('contactNumber').notEmpty().withMessage('Contact number is required'),
   body('location').custom((value) => {
@@ -80,6 +81,7 @@ router.post('/', upload.array('photos', 5), [
 
     const emergencyRequest = new EmergencyRequest({
       ...req.body,
+      userId: req.user._id, // Add the user ID
       location,
       photos: photoUrls
     });
@@ -107,10 +109,10 @@ router.post('/', upload.array('photos', 5), [
   }
 });
 
-//  Get all emergency requests
-router.get('/', async (req, res) => {
+// Get all emergency requests for the current user
+router.get('/', auth, async (req, res) => {
   try {
-    const emergencyRequests = await EmergencyRequest.find();
+    const emergencyRequests = await EmergencyRequest.find({ userId: req.user._id });
     console.log('Found emergency requests:', emergencyRequests.map(req => ({
       id: req._id,
       photos: req.photos
@@ -143,13 +145,18 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get an emergency request by ID
-router.get('/:id', async (req, res) => {
+// Get an emergency request by ID (only if owned by the user)
+router.get('/:id', auth, async (req, res) => {
   try {
-    const emergencyRequest = await EmergencyRequest.findById(req.params.id);
+    const emergencyRequest = await EmergencyRequest.findOne({
+      _id: req.params.id,
+      userId: req.user._id
+    });
+    
     if (!emergencyRequest) {
-      return res.status(404).json({ message: 'Emergency request not found' });
+      return res.status(404).json({ message: 'Emergency request not found or access denied' });
     }
+    
     // Transform photo URLs to include the full server URL
     const transformedRequest = {
       ...emergencyRequest.toObject(),
@@ -161,8 +168,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Update an emergency request
-router.put('/:id', upload.array('photos', 5), [
+// Update an emergency request (only if owned by the user)
+router.put('/:id', auth, upload.array('photos', 5), [
   body('name').optional().notEmpty().withMessage('Name must not be empty'),
   body('contactNumber').optional().notEmpty().withMessage('Contact number must not be empty'),
   body('location').optional().custom((value) => {
@@ -183,10 +190,18 @@ router.put('/:id', upload.array('photos', 5), [
   body('status').optional().isIn(['pending', 'confirmed', 'completed']).withMessage('Invalid status')
 ], async (req, res) => {
   try {
-    const emergencyRequest = await EmergencyRequest.findById(req.params.id);
+    const emergencyRequest = await EmergencyRequest.findOne({
+      _id: req.params.id,
+      userId: req.user._id
+    });
+    
     if (!emergencyRequest) {
-      return res.status(404).json({ message: 'Emergency request not found' });
+      return res.status(404).json({ message: 'Emergency request not found or access denied' });
     }
+
+    // Track changes
+    const changes = new Map();
+    const oldValues = emergencyRequest.toObject();
 
     // Handle location update
     if (req.body.location) {
@@ -210,11 +225,31 @@ router.put('/:id', upload.array('photos', 5), [
       req.body.photos = photoUrls;
     }
 
+    // Update the request
     const updatedRequest = await EmergencyRequest.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true }
     );
+
+    // Track changes for each field
+    Object.keys(req.body).forEach(key => {
+      if (JSON.stringify(oldValues[key]) !== JSON.stringify(req.body[key])) {
+        changes.set(key, {
+          oldValue: oldValues[key],
+          newValue: req.body[key]
+        });
+      }
+    });
+
+    // Add update history
+    if (changes.size > 0) {
+      updatedRequest.updateHistory.push({
+        updatedBy: req.user._id,
+        changes: changes
+      });
+      await updatedRequest.save();
+    }
 
     // Transform photo URLs to include the full server URL
     const transformedRequest = {
@@ -234,12 +269,16 @@ router.put('/:id', upload.array('photos', 5), [
   }
 });
 
-// Delete an emergency request
-router.delete('/:id', async (req, res) => {
+// Delete an emergency request (only if owned by the user)
+router.delete('/:id', auth, async (req, res) => {
   try {
-    const emergencyRequest = await EmergencyRequest.findById(req.params.id);
+    const emergencyRequest = await EmergencyRequest.findOne({
+      _id: req.params.id,
+      userId: req.user._id
+    });
+    
     if (!emergencyRequest) {
-      return res.status(404).json({ message: 'Emergency request not found' });
+      return res.status(404).json({ message: 'Emergency request not found or access denied' });
     }
 
     // Delete associated photos
@@ -257,6 +296,18 @@ router.delete('/:id', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+});
+
+// Add this new route after the existing routes
+router.get('/user', auth, async (req, res) => {
+    try {
+        const emergencies = await EmergencyRequest.find({ userId: req.user._id })
+            .sort({ createdAt: -1 });
+        res.json(emergencies);
+    } catch (error) {
+        console.error('Error fetching user emergencies:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
 });
 
 module.exports = router;

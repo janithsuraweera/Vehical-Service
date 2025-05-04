@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaMapMarkerAlt, FaArrowLeft, FaCamera, FaTrash, FaMap, FaUser, FaPhone, FaCar, FaInfoCircle } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaArrowLeft, FaCamera, FaTrash, FaMap, FaUser, FaPhone, FaCar, FaInfoCircle, FaHistory } from 'react-icons/fa';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -70,6 +70,8 @@ const UpdateEmergencyForm = () => {
     const [previewPhotos, setPreviewPhotos] = useState([]);
     const [showMap, setShowMap] = useState(false);
     const [mapPosition, setMapPosition] = useState([6.9271, 79.8612]); // Default to Colombo
+    const [updateHistory, setUpdateHistory] = useState([]);
+    const [showHistory, setShowHistory] = useState(false);
 
     useEffect(() => {
         const fetchEmergency = async () => {
@@ -85,6 +87,9 @@ const UpdateEmergencyForm = () => {
                 }
                 if (data.photos) {
                     setPreviewPhotos(data.photos.map(photo => `http://localhost:5000/${photo}`));
+                }
+                if (data.updateHistory) {
+                    setUpdateHistory(data.updateHistory);
                 }
             } catch (error) {
                 console.error('Error fetching emergency data:', error);
@@ -599,6 +604,56 @@ const UpdateEmergencyForm = () => {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        {/* Update History Section */}
+                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center">
+                                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                        <FaHistory className="text-blue-600 text-base" />
+                                    </div>
+                                    <h3 className="text-xl font-semibold text-gray-800">Update History</h3>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowHistory(!showHistory)}
+                                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200"
+                                >
+                                    {showHistory ? 'Hide History' : 'Show History'}
+                                </button>
+                            </div>
+                            {showHistory && (
+                                <div className="space-y-4">
+                                    {updateHistory.length > 0 ? (
+                                        updateHistory.map((update, index) => (
+                                            <div key={index} className="border-l-4 border-blue-500 pl-4 py-2">
+                                                <p className="text-sm text-gray-600">
+                                                    Updated on {new Date(update.updatedAt).toLocaleString()}
+                                                </p>
+                                                <div className="mt-2 space-y-2">
+                                                    {Array.from(update.changes.entries()).map(([field, change], i) => (
+                                                        <div key={i} className="text-sm">
+                                                            <span className="font-medium">{field}:</span>
+                                                            <div className="ml-2">
+                                                                <span className="text-red-500 line-through">
+                                                                    {JSON.stringify(change.oldValue)}
+                                                                </span>
+                                                                <span className="mx-2">→</span>
+                                                                <span className="text-green-500">
+                                                                    {JSON.stringify(change.newValue)}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="text-gray-500 text-center">No update history available</p>
+                                    )}
+                                </div>
+                            )}
                         </div>
 
                         {/* Action Buttons */}
