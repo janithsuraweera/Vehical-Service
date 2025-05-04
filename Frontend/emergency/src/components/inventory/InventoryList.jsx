@@ -6,9 +6,11 @@ import { useNavigate, Link } from 'react-router-dom';
 import { FaEdit, FaTrash, FaSearch, FaFilter, FaPlus, FaDownload } from 'react-icons/fa';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { useTheme } from '../../context/ThemeContext';
 
 const InventoryList = () => {
     const navigate = useNavigate();
+    const { darkMode } = useTheme();
     const [inventoryItems, setInventoryItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -161,20 +163,20 @@ const InventoryList = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4">
+        <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-blue-50 to-indigo-50'} p-4`}>
             <div className="w-full h-full">
-                <div className="rounded-2xl shadow-xl p-6 backdrop-blur-sm bg-white bg-opacity-90">
+                <div className={`rounded-2xl shadow-xl p-6 backdrop-blur-sm ${darkMode ? 'bg-gray-800' : 'bg-white bg-opacity-90'}`}>
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
+                        <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text'}`}>
                             Inventory Management
                         </h2>
                         <div className="flex gap-4">
-                            <Link to="/inventory-form" className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-2 px-4 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300">
+                            <Link to="/inventory-form" className={`bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-2 px-4 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300`}>
                                 <FaPlus className="mr-2" /> Add New Item
                             </Link>
                             <button
                                 onClick={handleDownload}
-                                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2 px-2 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300 group w-10 hover:w-40 overflow-hidden"
+                                className={`bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2 px-2 rounded-xl flex items-center shadow-lg hover:shadow-xl transition-all duration-300 group w-10 hover:w-40 overflow-hidden`}
                             >
                                 <FaDownload className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
                                 <span className="absolute opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-5 whitespace-nowrap">
@@ -185,28 +187,28 @@ const InventoryList = () => {
                     </div>
 
                     {/* Filters Section */}
-                    <div className="mb-6 p-4 rounded-xl shadow-lg border bg-white border-gray-100">
+                    <div className={`mb-6 p-4 rounded-xl shadow-lg border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-100'}`}>
                         <div className="flex flex-wrap gap-4 items-center">
                             <div className="flex-1 min-w-[200px]">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                                <label className={`block text-sm font-medium mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Search</label>
                                 <div className="relative">
                                     <input
                                         type="text"
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                         placeholder="Search by name or ID..."
-                                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${darkMode ? 'bg-gray-600 border-gray-500 text-white placeholder-gray-400' : 'border-gray-200'}`}
                                     />
-                                    <FaSearch className="absolute left-3 top-3 text-gray-400" />
+                                    <FaSearch className={`absolute left-3 top-3 ${darkMode ? 'text-gray-400' : 'text-gray-400'}`} />
                                 </div>
                             </div>
 
                             <div className="flex-1 min-w-[200px]">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                <label className={`block text-sm font-medium mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Category</label>
                                 <select
                                     value={categoryFilter}
                                     onChange={(e) => setCategoryFilter(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${darkMode ? 'bg-gray-600 border-gray-500 text-white placeholder-gray-400' : 'border-gray-200'}`}
                                 >
                                     {categories.map((category) => (
                                         <option key={category.value} value={category.value}>
@@ -217,7 +219,7 @@ const InventoryList = () => {
                             </div>
 
                             <div className="flex-1 min-w-[200px]">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Max Price (Rs.)</label>
+                                <label className={`block text-sm font-medium mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Max Price (Rs.)</label>
                                 <input
                                     type="number"
                                     value={priceFilter}
@@ -225,14 +227,14 @@ const InventoryList = () => {
                                     placeholder="Enter maximum price..."
                                     min="0"
                                     step="0.01"
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${darkMode ? 'bg-gray-600 border-gray-500 text-white placeholder-gray-400' : 'border-gray-200'}`}
                                 />
                             </div>
 
                             <div className="flex items-end">
                                 <button
                                     onClick={resetFilters}
-                                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2 rounded-lg flex items-center"
+                                    className={`bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2 rounded-lg flex items-center ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-100'}`}
                                 >
                                     <FaFilter className="mr-2" /> Reset Filters
                                 </button>
@@ -243,17 +245,17 @@ const InventoryList = () => {
                     {/* Inventory Table */}
                     {loading ? (
                         <div className="text-center py-8">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto"></div>
-                            <p className="mt-2 text-gray-600">Loading inventory...</p>
+                            <div className={`animate-spin rounded-full h-12 w-12 border-b-2 ${darkMode ? 'border-blue-400' : 'border-green-500'} mx-auto`}></div>
+                            <p className={`mt-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Loading inventory...</p>
                         </div>
                     ) : filteredInventory.length === 0 ? (
-                        <div className="text-center py-8 rounded-xl shadow-lg bg-white">
-                            <p className="text-gray-600 text-lg">No inventory items found</p>
+                        <div className={`text-center py-8 rounded-xl shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-white'}`}>
+                            <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} text-lg`}>No inventory items found</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto rounded-xl shadow-lg">
                             <table className="w-full divide-y divide-gray-200">
-                                <thead className="bg-gradient-to-r from-blue-600 to-indigo-600">
+                                <thead className={`${darkMode ? 'bg-gray-700' : 'bg-gradient-to-r from-blue-600 to-indigo-600'}`}>
                                     <tr>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-24">Image</th>
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-32">Product ID</th>
@@ -265,9 +267,9 @@ const InventoryList = () => {
                                         <th className="px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wider w-40">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-200 bg-white">
+                                <tbody className={`divide-y ${darkMode ? 'divide-gray-600 bg-gray-800' : 'divide-gray-200 bg-white'}`}>
                                     {filteredInventory.map((item) => (
-                                        <tr key={item._id} className="group hover:bg-gray-50 transition-colors duration-200">
+                                        <tr key={item._id} className={`group hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200`}>
                                             <td className="px-4 py-3 whitespace-nowrap">
                                                 {item.productImage ? (
                                                     <img
@@ -276,29 +278,29 @@ const InventoryList = () => {
                                                         className="h-12 w-12 object-cover rounded"
                                                     />
                                                 ) : (
-                                                    <div className="h-12 w-12 bg-gray-200 rounded flex items-center justify-center">
-                                                        <span className="text-gray-400">No Image</span>
+                                                    <div className={`h-12 w-12 ${darkMode ? 'bg-gray-600' : 'bg-gray-200'} rounded flex items-center justify-center`}>
+                                                        <span className={`${darkMode ? 'text-gray-400' : 'text-gray-400'}`}>No Image</span>
                                                     </div>
                                                 )}
                                             </td>
-                                            <td className="px-4 py-3 whitespace-nowrap font-medium text-sm text-gray-900 group-hover:text-gray-700">{item.productId}</td>
-                                            <td className="px-4 py-3 whitespace-nowrap font-medium text-sm text-gray-900 group-hover:text-gray-700">{item.productName}</td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 group-hover:text-gray-700 capitalize">{item.category}</td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 group-hover:text-gray-700">{item.productPrice.toFixed(2)}</td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 group-hover:text-gray-700">{item.productQuantity}</td>
-                                            <td className="px-4 py-3 text-sm text-gray-900 group-hover:text-gray-700">{item.productDescription}</td>
+                                            <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>{item.productId}</td>
+                                            <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>{item.productName}</td>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'} capitalize`}>{item.category}</td>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>{item.productPrice.toFixed(2)}</td>
+                                            <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>{item.productQuantity}</td>
+                                            <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>{item.productDescription}</td>
                                             <td className="px-4 py-3 whitespace-nowrap text-sm">
                                                 <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                                     <button
                                                         onClick={() => handleEdit(item._id)}
-                                                        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm"
+                                                        className={`bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm`}
                                                         title="Edit"
                                                     >
                                                         <FaEdit className="mr-1" /> Edit
                                                     </button>
                                                     <button
                                                         onClick={() => handleDelete(item._id)}
-                                                        className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm"
+                                                        className={`bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm`}
                                                         title="Delete"
                                                     >
                                                         <FaTrash className="mr-1" /> Delete
