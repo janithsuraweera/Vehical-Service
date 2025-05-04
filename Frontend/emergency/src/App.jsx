@@ -24,6 +24,7 @@ import EmergencyHomePage from './components/emergency/EmergencyHomePage';
 import EmergencyList from './components/emergency/EmergencyList';
 import UpdateEmergencyForm from './components/emergency/UpdateEmergencyForm';
 import EmergencyDetails from './components/emergency/EmergencyDetails';
+import MyEmergencies from './components/emergency/MyEmergencies';
 
 //Inventory Imports 
 import InventoryForm from './components/inventory/InventoryForm';
@@ -45,6 +46,7 @@ import ReportError from './pages/ReportError';
 import MyErrors from './pages/MyErrors';
 import AdminVehicleErrors from './pages/AdminVehicleErrors';
 import AnalyzeError from './pages/AnalyzeError';
+import VehicleDashboard from './pages/VehicleDashboard';
 
 const App = () => {
   return (
@@ -77,6 +79,7 @@ const App = () => {
               <Route path="/emergencylist" element={<ProtectedRoute><EmergencyList /></ProtectedRoute>} />
               <Route path="/update-emergency/:id" element={<ProtectedRoute><UpdateEmergencyForm /></ProtectedRoute>} />
               <Route path="/emergency/:id" element={<ProtectedRoute><EmergencyDetails /></ProtectedRoute>} />
+              <Route path="/my-emergencies" element={<ProtectedRoute><MyEmergencies /></ProtectedRoute>} />
 
               {/* Inventory Routes */}
               <Route path="/inventory" element={<ProtectedRoute><ProductDisplay /></ProtectedRoute>} />
@@ -96,6 +99,8 @@ const App = () => {
               <Route path="/analyze-error" element={<ProtectedRoute><AnalyzeError /></ProtectedRoute>} />
               <Route path="/report-error" element={<ProtectedRoute><ReportError /></ProtectedRoute>} />
               <Route path="/my-errors" element={<ProtectedRoute><MyErrors /></ProtectedRoute>} />
+              <Route path="/admin-vehicle-errors" element={<ProtectedRoute><AdminVehicleErrors /></ProtectedRoute>} />
+              <Route path="/vehicle-dashboard" element={<ProtectedRoute><VehicleDashboard /></ProtectedRoute>} />
 
               {/* Redirect to login if no other route matches */}
               <Route path="*" element={<Navigate to="/login" replace />} />

@@ -8,6 +8,11 @@ const emergencyRequestSchema = new mongoose.Schema({
         default: uuidv4,
         immutable: false,
     },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     name: {
         type: String,
         required: true,
@@ -48,7 +53,7 @@ const emergencyRequestSchema = new mongoose.Schema({
     description: String,
     status: {
         type: String,
-        enum: ['pending', 'confirmed', 'completed'],
+        enum: ['pending', 'Processing', 'Completed'],
         default: 'pending',
     },
     photos: [{
@@ -74,6 +79,24 @@ const emergencyRequestSchema = new mongoose.Schema({
             return now.toLocaleTimeString(); 
         },
     },
+    updateHistory: [{
+        updatedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        updatedAt: {
+            type: Date,
+            default: Date.now
+        },
+        changes: {
+            type: Map,
+            of: {
+                oldValue: mongoose.Schema.Types.Mixed,
+                newValue: mongoose.Schema.Types.Mixed
+            }
+        }
+    }]
 }, { timestamps: false }); // timestamps option is set to false to disable createdAt and updatedAt fields
 
 module.exports = mongoose.model('EmergencyRequest', emergencyRequestSchema);

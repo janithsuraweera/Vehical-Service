@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { FaHome, FaStore, FaExclamationTriangle, FaCar, FaWrench, FaInfoCircle, FaUser, FaSignOutAlt, FaMoon, FaSun, FaShoppingCart, FaListAlt, FaPlus, FaChartLine, FaSearch } from 'react-icons/fa';
+import { FaHome, FaStore, FaExclamationTriangle, FaCar, FaWrench, FaInfoCircle, FaUser, FaSignOutAlt, FaMoon, FaSun, FaShoppingCart, FaListAlt, FaPlus, FaChartLine, FaSearch, FaCog } from 'react-icons/fa';
 import logo from '/logo.png';
 import NotificationBell from './NotificationBell';
 
@@ -20,7 +20,7 @@ const Navbar = () => {
         const path = location.pathname;
         if (path === '/') setActiveTab('home');
         else if (path === '/inventory') setActiveTab('store');
-        else if (path === '/emergencyform' || path === '/emergencylist') setActiveTab('emergency');
+        else if (path === '/emergencyform' || path === '/emergencylist' || path === '/my-emergencies') setActiveTab('emergency');
         else if (path === '/rvhome') setActiveTab('register');
         else if (path === '/vehicle-errors') setActiveTab('vehicle-errors');
         else if (path === '/aboutus') setActiveTab('about');
@@ -84,7 +84,7 @@ const Navbar = () => {
                     
                     <div className="hidden md:flex items-center space-x-2">
                         {(!user || user.role !== 'admin') && (
-                            <Link to="/home" className={getTabStyle('home')}>
+                            <Link to="/admin" className={getTabStyle('home')}>
                                 <span className="group-hover:opacity-0 transition-opacity duration-300">Home</span>
                                 <FaHome className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                             </Link>
@@ -99,14 +99,15 @@ const Navbar = () => {
                                 )}
                                 {user.role === 'admin' && (
                                     <>
+                                        <Link to="/admin" className={getTabStyle('vehicle-errors')}>
+                                            <span className="group-hover:opacity-0 transition-opacity duration-300">Dashboard</span>
+                                            <FaWrench className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
+                                        </Link>
                                         <Link to="/inventory-list" className={getTabStyle('inventory-list')}>
                                             <span className="group-hover:opacity-0 transition-opacity duration-300">Inventory List</span>
                                             <FaListAlt className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                         </Link>
-                                        <Link to="/admin/vehicle-errors" className={getTabStyle('vehicle-errors')}>
-                                            <span className="group-hover:opacity-0 transition-opacity duration-300">Vehicle Errors</span>
-                                            <FaWrench className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
-                                        </Link>
+
 
                                     </>
                                 )}
@@ -116,10 +117,16 @@ const Navbar = () => {
                                         <FaExclamationTriangle className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                     </Link>
                                 ) : (
-                                    <Link to="/emergencyform" className={getTabStyle('emergency')}>
-                                        <span className="group-hover:opacity-0 transition-opacity duration-300">Emergency Form</span>
-                                        <FaExclamationTriangle className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
-                                    </Link>
+                                    <>
+                                        <Link to="/emergencyform" className={getTabStyle('emergency')}>
+                                            <span className="group-hover:opacity-0 transition-opacity duration-300">Emergency Form</span>
+                                            <FaExclamationTriangle className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
+                                        </Link>
+                                        {/* <Link to="/my-emergencies" className={getTabStyle('my-emergencies')}>
+                                            <span className="group-hover:opacity-0 transition-opacity duration-300">My Emergencies</span>
+                                            <FaListAlt className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
+                                        </Link> */}
+                                    </>
                                 )}
                                 {user && user.role !== 'admin' && (
                                     <Link to="/registrationform" className={getTabStyle('register')}>
@@ -134,21 +141,15 @@ const Navbar = () => {
                                     </Link>
                                 )}
                                 {/* {user && user.role !== 'admin' && (
-                                    <Link to="/report-error" className={getTabStyle('report-error')}>
-                                        <span className="group-hover:opacity-0 transition-opacity duration-300">Report Error</span>
-                                        <FaExclamationTriangle className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
-                                    </Link>
-                                )}
-                                {user && user.role !== 'admin' && (
-                                    <Link to="/my-errors" className={getTabStyle('my-errors')}>
-                                        <span className="group-hover:opacity-0 transition-opacity duration-300">My Errors</span>
-                                        <FaListAlt className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
+                                    <Link to="/analyze-error" className={getTabStyle('analyze-error')}>
+                                        <span className="group-hover:opacity-0 transition-opacity duration-300">Analyze Error</span>
+                                        <FaSearch className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                     </Link>
                                 )} */}
                                 {user && user.role !== 'admin' && (
-                                    <Link to="/analyze-error" className={getTabStyle('analyze-error')}>
-                                        <span className="group-hover:opacity-0 transition-opacity duration-300">Analyze</span>
-                                        <FaSearch className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
+                                    <Link to="/vehicle-dashboard" className={getTabStyle('vehicle-dashboard')}>
+                                        <span className="group-hover:opacity-0 transition-opacity duration-300">Vehicle Dashboard</span>
+                                        <FaCar className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                     </Link>
                                 )}
                             </>
@@ -159,7 +160,12 @@ const Navbar = () => {
                                 <FaInfoCircle className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                             </Link>
                         )}
-       
+                        {user && user.role === 'admin' && (
+                            <Link to="/vehicle-dashboard" className={getTabStyle('vehicle-dashboard')}>
+                                <span className="group-hover:opacity-0 transition-opacity duration-300">Vehicle Dashboard</span>
+                                <FaCar className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
+                            </Link>
+                        )}
                     </div>
                     
 

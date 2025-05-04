@@ -5,6 +5,7 @@ const {body, validationResult} = require('express-validator');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const auth = require('../middleware/auth');
 
 // Configure multer for file upload
 const storage = multer.diskStorage({
@@ -38,7 +39,7 @@ const upload = multer({
 // router.get("/test", (req, res) => res.send("router testing!"));
 
 // Create a new emergency request
-router.post('/', upload.array('photos', 5), [
+router.post('/', auth, upload.array('photos', 5), [
   body('name').notEmpty().withMessage('Name is required'),
   body('contactNumber').notEmpty().withMessage('Contact number is required'),
   body('location').custom((value) => {
@@ -80,6 +81,7 @@ router.post('/', upload.array('photos', 5), [
 
     const emergencyRequest = new EmergencyRequest({
       ...req.body,
+      userId: req.user._id, // Add the user ID
       location,
       photos: photoUrls
     });
@@ -107,49 +109,56 @@ router.post('/', upload.array('photos', 5), [
   }
 });
 
-//  Get all emergency requests
-router.get('/', async (req, res) => {
+// Get all emergency requests for the current user or all if admin
+router.get('/', auth, async (req, res) => {
   try {
-    const emergencyRequests = await EmergencyRequest.find();
-    console.log('Found emergency requests:', emergencyRequests.map(req => ({
-      id: req._id,
-      photos: req.photos
-    })));
-
+    let emergencyRequests;
+    if (req.user.role === 'admin') {
+      // Admin: get all requests
+      emergencyRequests = await EmergencyRequest.find({});
+    } else {
+      // Normal user: only their own
+      emergencyRequests = await EmergencyRequest.find({ userId: req.user._id });
+    }
     // Transform photo URLs to include the full server URL
     const transformedRequests = emergencyRequests.map(request => {
       const transformed = {
         ...request.toObject(),
         photos: request.photos ? request.photos.map(photo => {
-          // If the photo URL already includes http, return it as is
           if (photo.startsWith('http')) {
             return photo;
           }
-          // Otherwise, prepend the server URL
           return `http://localhost:5000${photo}`;
         }) : []
       };
-      console.log('Transformed request photos:', {
-        id: transformed._id,
-        photos: transformed.photos
-      });
       return transformed;
     });
-
     res.json(transformedRequests);
   } catch (error) {
-    console.error('Error fetching emergency requests:', error);
     res.status(500).json({ message: error.message });
   }
 });
 
-// Get an emergency request by ID
-router.get('/:id', async (req, res) => {
+// Get an emergency request by ID (admin can view any, users can only view their own)
+router.get('/:id', auth, async (req, res) => {
   try {
-    const emergencyRequest = await EmergencyRequest.findById(req.params.id);
-    if (!emergencyRequest) {
-      return res.status(404).json({ message: 'Emergency request not found' });
+    let emergencyRequest;
+    
+    // Admin can view any emergency request
+    if (req.user.role === 'admin') {
+      emergencyRequest = await EmergencyRequest.findById(req.params.id);
+    } else {
+      // Regular users can only view their own requests
+      emergencyRequest = await EmergencyRequest.findOne({
+        _id: req.params.id,
+        userId: req.user._id
+      });
     }
+    
+    if (!emergencyRequest) {
+      return res.status(404).json({ message: 'Emergency request not found or access denied' });
+    }
+    
     // Transform photo URLs to include the full server URL
     const transformedRequest = {
       ...emergencyRequest.toObject(),
@@ -161,8 +170,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Update an emergency request
-router.put('/:id', upload.array('photos', 5), [
+// Update an emergency request (admin can update any, users can only update their own)
+router.put('/:id', auth, upload.array('photos', 5), [
   body('name').optional().notEmpty().withMessage('Name must not be empty'),
   body('contactNumber').optional().notEmpty().withMessage('Contact number must not be empty'),
   body('location').optional().custom((value) => {
@@ -180,13 +189,29 @@ router.put('/:id', upload.array('photos', 5), [
   body('vehicleColor').optional().notEmpty().withMessage('Vehicle color must not be empty'),
   body('emergencyType').optional().isIn(['breakdown', 'accident', 'flat_tire', 'other']).withMessage('Invalid emergency type'),
   body('description').optional().notEmpty().withMessage('Description must not be empty'),
-  body('status').optional().isIn(['pending', 'confirmed', 'completed']).withMessage('Invalid status')
+  body('status').optional().isIn(['pending', 'Processing', 'Completed']).withMessage('Invalid status')
 ], async (req, res) => {
   try {
-    const emergencyRequest = await EmergencyRequest.findById(req.params.id);
-    if (!emergencyRequest) {
-      return res.status(404).json({ message: 'Emergency request not found' });
+    let emergencyRequest;
+    
+    // Admin can update any emergency request
+    if (req.user.role === 'admin') {
+      emergencyRequest = await EmergencyRequest.findById(req.params.id);
+    } else {
+      // Regular users can only update their own requests
+      emergencyRequest = await EmergencyRequest.findOne({
+        _id: req.params.id,
+        userId: req.user._id
+      });
     }
+    
+    if (!emergencyRequest) {
+      return res.status(404).json({ message: 'Emergency request not found or access denied' });
+    }
+
+    // Track changes
+    const changes = new Map();
+    const oldValues = emergencyRequest.toObject();
 
     // Handle location update
     if (req.body.location) {
@@ -210,11 +235,39 @@ router.put('/:id', upload.array('photos', 5), [
       req.body.photos = photoUrls;
     }
 
+    // Create update object with only the fields that are being updated
+    const updateFields = {};
+    Object.keys(req.body).forEach(key => {
+      if (key !== 'userId' && req.body[key] !== undefined) {
+        updateFields[key] = req.body[key];
+      }
+    });
+
+    // Update the request
     const updatedRequest = await EmergencyRequest.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateFields,
       { new: true }
     );
+
+    // Track changes for each field
+    Object.keys(updateFields).forEach(key => {
+      if (JSON.stringify(oldValues[key]) !== JSON.stringify(updateFields[key])) {
+        changes.set(key, {
+          oldValue: oldValues[key],
+          newValue: updateFields[key]
+        });
+      }
+    });
+
+    // Add update history
+    if (changes.size > 0) {
+      updatedRequest.updateHistory.push({
+        updatedBy: req.user._id,
+        changes: changes
+      });
+      await updatedRequest.save();
+    }
 
     // Transform photo URLs to include the full server URL
     const transformedRequest = {
@@ -234,12 +287,24 @@ router.put('/:id', upload.array('photos', 5), [
   }
 });
 
-// Delete an emergency request
-router.delete('/:id', async (req, res) => {
+// Delete an emergency request (admin can delete any, users can only delete their own)
+router.delete('/:id', auth, async (req, res) => {
   try {
-    const emergencyRequest = await EmergencyRequest.findById(req.params.id);
+    let emergencyRequest;
+    
+    // Admin can delete any emergency request
+    if (req.user.role === 'admin') {
+      emergencyRequest = await EmergencyRequest.findById(req.params.id);
+    } else {
+      // Regular users can only delete their own requests
+      emergencyRequest = await EmergencyRequest.findOne({
+        _id: req.params.id,
+        userId: req.user._id
+      });
+    }
+    
     if (!emergencyRequest) {
-      return res.status(404).json({ message: 'Emergency request not found' });
+      return res.status(404).json({ message: 'Emergency request not found or access denied' });
     }
 
     // Delete associated photos
@@ -253,10 +318,22 @@ router.delete('/:id', async (req, res) => {
     }
 
     await EmergencyRequest.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Emergency request deleted' });
+    res.json({ message: 'Emergency request deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+});
+
+// Add this new route after the existing routes
+router.get('/user', auth, async (req, res) => {
+    try {
+        const emergencies = await EmergencyRequest.find({ userId: req.user._id })
+            .sort({ createdAt: -1 });
+        res.json(emergencies);
+    } catch (error) {
+        console.error('Error fetching user emergencies:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
 });
 
 module.exports = router;

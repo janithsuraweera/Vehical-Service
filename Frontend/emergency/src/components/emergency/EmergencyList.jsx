@@ -7,10 +7,12 @@ import { FaEdit, FaTrash, FaSearch, FaFilter, FaDownload, FaEye, FaEyeSlash, FaM
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { useTheme } from '../../context/ThemeContext';
+import { useAuth } from '../../context/AuthContext';
 
 const EmergencyList = () => {
     const navigate = useNavigate();
     const { darkMode } = useTheme();
+    const { user } = useAuth();
     const [emergencyItems, setEmergencyItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -47,20 +49,30 @@ const EmergencyList = () => {
     }, []);
 
     const fetchData = async () => {
+        setLoading(true);
+        setError(null);
         try {
-            setLoading(true);
-            setError(null);
-            const response = await axios.get('http://localhost:5000/api/emergency');
-            if (response.data && Array.isArray(response.data)) {
-                setEmergencyItems(response.data);
-                setFilteredEmergency(response.data);
-            } else {
-                throw new Error('Invalid data format received from server');
+            const token = localStorage.getItem('token');
+            if (!token) {
+                setError('Please log in to view emergency requests');
+                setLoading(false);
+                return;
             }
+
+            const response = await axios.get('http://localhost:5000/api/emergency', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            setEmergencyItems(response.data);
+            setFilteredEmergency(response.data);
         } catch (error) {
-            console.error("Error fetching emergency items:", error);
-            setError(error.message || "Failed to load emergency list");
-            toast.error("Failed to load emergency list. Please try again later.");
+            console.error('Error fetching emergency requests:', error);
+            if (error.response?.status === 401) {
+                setError('Please log in to view emergency requests');
+            } else {
+                setError('Failed to load emergency requests. Please try again later.');
+            }
         } finally {
             setLoading(false);
         }
@@ -103,9 +115,14 @@ const EmergencyList = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this emergency request?')) {
             try {
-                await axios.delete(`http://localhost:5000/api/emergency/${id}`);
+                const token = localStorage.getItem('token');
+                await axios.delete(`http://localhost:5000/api/emergency/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                setEmergencyItems(emergencyItems.filter(item => item._id !== id));
                 toast.success('Emergency request deleted successfully');
-                await fetchData();
             } catch (error) {
                 console.error('Error deleting emergency request:', error);
                 toast.error('Failed to delete emergency request');
@@ -432,7 +449,7 @@ const EmergencyList = () => {
                                 </thead>
                                 <tbody className={`divide-y ${darkMode ? 'divide-gray-600 bg-gray-800' : 'divide-gray-200 bg-white'}`}>
                                     {filteredEmergency.map((item) => (
-                                        <tr key={item._id} className={`transition-colors duration-200 group ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
+                                        <tr key={item._id} className={`group hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200`}>
                                             <td className={`px-4 py-3 whitespace-nowrap font-medium text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {showRequestNo ? (item.emergencyRequestNo || 'N/A') : ' '}
                                             </td>
@@ -532,26 +549,31 @@ const EmergencyList = () => {
                                             <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300 group-hover:text-white' : 'text-gray-900 group-hover:text-gray-700'}`}>
                                                 {item.time || 'N/A'}
                                             </td>
-                                            <td className="px-4 py-3 whitespace-nowrap">
+                                            <td className="px-4 py-3 whitespace-nowrap text-sm">
                                                 <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                                     <button
-                                                        onClick={() => handleEdit(item._id)}
-                                                        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm group/btn"
-                                                    >
-                                                        <FaEdit className="mr-1 group-hover/btn:rotate-12 transition-transform duration-300" /> Edit
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDelete(item._id)}
-                                                        className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm group/btn"
-                                                    >
-                                                        <FaTrash className="mr-1 group-hover/btn:rotate-12 transition-transform duration-300" /> Delete
-                                                    </button>
-                                                    <button
                                                         onClick={() => navigate(`/emergency/${item._id}`)}
-                                                        className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm group/btn"
+                                                        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm"
+                                                        title="View Details"
                                                     >
-                                                        <FaEye className="mr-1 group-hover/btn:rotate-12 transition-transform duration-300" /> View
+                                                        <FaEye className="mr-1" /> View
                                                     </button>
+                                                    <button
+                                                        onClick={() => navigate(`/update-emergency/${item._id}`)}
+                                                        className="bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-700 hover:to-amber-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm"
+                                                        title="Edit"
+                                                    >
+                                                        <FaEdit className="mr-1" /> Edit
+                                                    </button>
+                                                    {user && user.role === 'admin' && (
+                                                        <button
+                                                            onClick={() => handleDelete(item._id)}
+                                                            className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white px-3 py-1.5 rounded-lg flex items-center shadow-md hover:shadow-lg transition-all duration-300 text-sm"
+                                                            title="Delete"
+                                                        >
+                                                            <FaTrash className="mr-1" /> Delete
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>
