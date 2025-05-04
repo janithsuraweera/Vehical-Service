@@ -121,10 +121,10 @@ const Navbar = () => {
                                             <span className="group-hover:opacity-0 transition-opacity duration-300">Emergency Form</span>
                                             <FaExclamationTriangle className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
                                         </Link>
-                                        <Link to="/my-emergencies" className={getTabStyle('my-emergencies')}>
+                                        {/* <Link to="/my-emergencies" className={getTabStyle('my-emergencies')}>
                                             <span className="group-hover:opacity-0 transition-opacity duration-300">My Emergencies</span>
                                             <FaListAlt className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={18} />
-                                        </Link>
+                                        </Link> */}
                                     </>
                                 )}
                                 {user && user.role !== 'admin' && (
