@@ -56,6 +56,12 @@ const Dashboard = () => {
             title: "Book Service",
             link: "/appointments",
             color: "bg-purple-500 hover:bg-purple-600"
+        },
+        {
+            icon: <FaExclamationTriangle className="w-6 h-6" />,
+            title: "My Emergencies",
+            link: "/emergencylist",
+            color: "bg-orange-500 hover:bg-orange-600"
         }
     ];
 

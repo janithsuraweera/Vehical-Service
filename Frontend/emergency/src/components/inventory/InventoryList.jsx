@@ -5,8 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaEdit, FaTrash, FaSearch, FaFilter, FaPlus, FaDownload } from 'react-icons/fa';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const InventoryList = () => {
     const navigate = useNavigate();
@@ -89,77 +89,88 @@ const InventoryList = () => {
     };
 
     const handleDownload = () => {
-        const doc = new jsPDF();
-        
-        // Add title
-        doc.setFontSize(20);
-        doc.text('Inventory Report', 105, 20, { align: 'center' });
-        
-        // Add date
-        doc.setFontSize(12);
-        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 105, 30, { align: 'center' });
-        
-        // Add company info
-        doc.setFontSize(14);
-        doc.text('Vehicle Service Center', 105, 40, { align: 'center' });
-        
-        // Add table
-        doc.autoTable({
-            startY: 50,
-            head: [['Product ID', 'Name', 'Category', 'Price (Rs.)', 'Quantity', 'Description']],
-            body: filteredInventory.map(item => [
-                item.productId,
-                item.productName,
+        try {
+            const doc = new jsPDF();
+            
+            // Add title
+            doc.setFontSize(20);
+            doc.text('Inventory Report', 105, 20, { align: 'center' });
+            
+            // Add date
+            doc.setFontSize(12);
+            doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 105, 30, { align: 'center' });
+            
+            // Add company info
+            doc.setFontSize(14);
+            doc.text('Vehicle Service Center', 105, 40, { align: 'center' });
+            
+            // Prepare table data
+            const tableData = filteredInventory.map(item => [
+                item.productId || 'N/A',
+                item.productName || 'N/A',
                 item.category || 'N/A',
-                item.productPrice.toFixed(2),
-                item.productQuantity,
+                item.productPrice ? item.productPrice.toFixed(2) : '0.00',
+                item.productQuantity || '0',
                 item.productDescription || 'N/A'
-            ]),
-            theme: 'grid',
-            headStyles: {
-                fillColor: [34, 139, 34], // Green color
-                textColor: 255,
-                fontSize: 10,
-                fontStyle: 'bold'
-            },
-            styles: {
-                fontSize: 9,
-                cellPadding: 3
-            },
-            columnStyles: {
-                0: { cellWidth: 25 }, // Product ID
-                1: { cellWidth: 40 }, // Name
-                2: { cellWidth: 30 }, // Category
-                3: { cellWidth: 25 }, // Price
-                4: { cellWidth: 25 }, // Quantity
-                5: { cellWidth: 45 }  // Description
+            ]);
+
+            // Add table using autoTable
+            autoTable(doc, {
+                startY: 50,
+                head: [['Product ID', 'Name', 'Category', 'Price (Rs.)', 'Quantity', 'Description']],
+                body: tableData,
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [34, 139, 34], // Green color
+                    textColor: 255,
+                    fontSize: 10,
+                    fontStyle: 'bold'
+                },
+                styles: {
+                    fontSize: 9,
+                    cellPadding: 3
+                },
+                columnStyles: {
+                    0: { cellWidth: 25 }, // Product ID
+                    1: { cellWidth: 40 }, // Name
+                    2: { cellWidth: 30 }, // Category
+                    3: { cellWidth: 25 }, // Price
+                    4: { cellWidth: 25 }, // Quantity
+                    5: { cellWidth: 45 }  // Description
+                }
+            });
+
+            // Add summary
+            const finalY = doc.lastAutoTable.finalY || 50;
+            doc.setFontSize(12);
+            doc.text('Summary', 14, finalY + 20);
+            
+            const totalItems = filteredInventory.length;
+            const totalValue = filteredInventory.reduce((sum, item) => 
+                sum + ((item.productPrice || 0) * (item.productQuantity || 0)), 0);
+            const lowStockItems = filteredInventory.filter(item => 
+                (item.productQuantity || 0) < 10).length;
+            
+            doc.setFontSize(10);
+            doc.text(`Total Items: ${totalItems}`, 14, finalY + 30);
+            doc.text(`Total Inventory Value: Rs. ${totalValue.toFixed(2)}`, 14, finalY + 40);
+            doc.text(`Low Stock Items (less than 10): ${lowStockItems}`, 14, finalY + 50);
+            
+            // Add footer
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(8);
+                doc.text(`Page ${i} of ${pageCount}`, 105, 285, { align: 'center' });
             }
-        });
 
-        // Add summary
-        const finalY = doc.lastAutoTable.finalY || 50;
-        doc.setFontSize(12);
-        doc.text('Summary', 14, finalY + 20);
-        
-        const totalItems = filteredInventory.length;
-        const totalValue = filteredInventory.reduce((sum, item) => sum + (item.productPrice * item.productQuantity), 0);
-        const lowStockItems = filteredInventory.filter(item => item.productQuantity < 10).length;
-        
-        doc.setFontSize(10);
-        doc.text(`Total Items: ${totalItems}`, 14, finalY + 30);
-        doc.text(`Total Inventory Value: Rs. ${totalValue.toFixed(2)}`, 14, finalY + 40);
-        doc.text(`Low Stock Items (less than 10): ${lowStockItems}`, 14, finalY + 50);
-        
-        // Add footer
-        const pageCount = doc.internal.getNumberOfPages();
-        for (let i = 1; i <= pageCount; i++) {
-            doc.setPage(i);
-            doc.setFontSize(8);
-            doc.text(`Page ${i} of ${pageCount}`, 105, 285, { align: 'center' });
+            // Save the PDF
+            doc.save('inventory_report.pdf');
+            toast.success('Report downloaded successfully!');
+        } catch (error) {
+            console.error('Error generating report:', error);
+            toast.error('Failed to generate report. Please try again.');
         }
-
-        // Save the PDF
-        doc.save('inventory_report.pdf');
     };
 
     const resetFilters = () => {
