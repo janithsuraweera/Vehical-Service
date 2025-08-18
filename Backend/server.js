@@ -9,6 +9,7 @@ const emergencyRoutes = require('./routes/emergencyRoutes');
 const vehicleRegistrationRequestRoutes = require('./routes/vehicleRegistrationRequestRoutes');
 const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
+const chatbotRoutes = require('./routes/chatbot');
 const fs = require('fs');
 
 require('dotenv').config();
@@ -50,6 +51,7 @@ app.use('/api/emergency', emergencyRoutes);
 app.use('/api/vehicle-registration', vehicleRegistrationRequestRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/chatbot', chatbotRoutes);
 
 app.get('/', (req, res) => {
     res.send('Welcome to Vehicle Service API');
