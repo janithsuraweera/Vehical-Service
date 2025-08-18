@@ -6,7 +6,7 @@ import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ThemeProvider } from './context/ThemeContext';
-import Chatbot from '../../components/Chatbot.jsx';
+import Chatbot from './components/Chatbot';
 
 import SignupForm from './shared/SignupForm';
 import LoginForm from './shared/LoginForm';
