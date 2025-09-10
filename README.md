@@ -13,7 +13,7 @@ This is a full-stack application for managing vehicle emergency services, invent
 - 📋 User Authentication and Protected Routes
 - 📄 PDF Report Generation
 - 📍 Geolocation Support
-- 📊 Dashboard with Service and Inventory Insights
+- 📊 Dashboard with Service and Inventory Insight
 
 ---
 
