@@ -1,5 +1,4 @@
-
-# 🚗 Vehical Service Management System
+# 🚗 Vehical Service Management System [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
 Welcome to the **Vehical Service Management System** repository!  
 This is a full-stack application for managing vehicle emergency services, inventory, reports, and user authentication.
