@@ -8,6 +8,45 @@ This guide explains how to deploy both the frontend and backend to Vercel.
 2. MongoDB Atlas account (or your MongoDB connection string)
 3. OpenAI API key (for vehicle error analysis feature)
 
+## Deploying via Vercel Dashboard (GitHub Import)
+
+මෙම පියවරවල් Vercel වෙබ් අතුරුමුහුණතෙන් GitHub repository එක import කරලා frontend සහ backend වෙන් වෙන්ව deploy කිරීම සදහායි.
+
+### Frontend (Vite) project එක connect කිරීම
+
+1. Vercel වෙබ් අඩවියේ **Add New… → Project** තෝරලා GitHub repo එක (`janithsuraweera/Vehical-Service`) import කරන්න.
+2. **Project Name**: `vehical-service-frontend` වගේ හදුනාගන්න පහසු නමක් දෙන්න.
+3. **Framework Preset** සඳහා `Other` තෝරන්න (Vite auto-detect වෙනවා).
+4. **Root Directory** ක්ෂේත්‍රයට `Frontend/emergency` යොදන්න (Edit → path type చేసి Save).
+5. **Build & Output Settings**:
+   - Build Command: `npm run build`
+   - Install Command: `npm install`
+   - Output Directory: `dist`
+6. **Environment Variables** tab එකේ `Add` දෙලා:
+   - Key: `VITE_API_BASE_URL`
+   - Value: `https://vehical-service-backend.vercel.app` (backend deploy URL එකින් update කරන්න)
+7. **Deploy** බොත්තම click කරන්න. Build සාර්ථක වුනාම production URL එක ලැබේ.
+
+### Backend (Express API) project එක connect කිරීම
+
+1. නැවත **Add New… → Project** → එකම repo එක import කරන්න, නමුත් නව project නමින් `vehical-service-backend`.
+2. **Root Directory** ක්ෂේත්‍රයට `Backend` දමන්න.
+3. **Framework Preset** `Other`.
+4. **Build & Output Settings**:
+   - Build Command: `npm install`
+   - Install Command: `npm install`
+   - Output Directory: (හිස් තබන්න)
+   - Development Command (Advanced settings): `node server.js`
+5. `Backend/vercel.json`හි සඳහන් `@vercel/node` build config එක commit වෙලා තිබිය යුතුයි ( පහළ Backend Deployment කොටස බලන්න).
+6. **Environment Variables** tab එකේ පහත keys set කරන්න:
+   - `MONGODB_URI`
+   - `JWT_SECRET`
+   - `OPENAI_API_KEY`
+   - `PORT` (අවශ්‍ය නම් 5000)
+7. Deploy කැඳවීමෙන් පසු URL එක copy කරගෙන frontend env variable එක update කරන්න.
+
+අලුත් commit push කරන සෑම විටම Vercel auto-build එකක් trigger වෙන නිසා main branch build status ට වෙබ් අතුරුමුහුණතෙන් දැක ගත හැක.
+
 ## Backend Deployment
 
 ### Step 1: Prepare Backend
