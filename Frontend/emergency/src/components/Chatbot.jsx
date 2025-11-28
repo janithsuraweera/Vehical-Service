@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { FaRobot, FaPaperPlane, FaTimes, FaComment, FaRedo, FaHistory } from 'react-icons/fa';
-import { API_ENDPOINTS } from '../emergency/src/config/api';
+import { API_ENDPOINTS } from '../config/api';
 
 const Chatbot = () => {
     const [messages, setMessages] = useState([]);
