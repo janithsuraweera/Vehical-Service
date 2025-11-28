@@ -7,10 +7,19 @@ const auth = require('../middleware/auth');
 const fs = require('fs');
 const OpenAI = require('openai');
 
-// Initialize OpenAI
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-});
+// Lazy initialization of OpenAI client
+let openai = null;
+const getOpenAIClient = () => {
+    if (!openai) {
+        if (!process.env.OPENAI_API_KEY) {
+            throw new Error('OPENAI_API_KEY is not configured. Please set it in your environment variables.');
+        }
+        openai = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY
+        });
+    }
+    return openai;
+};
 
 // Configure multer for image uploads
 const storage = multer.diskStorage({
@@ -180,8 +189,16 @@ router.post('/analyze', auth, async (req, res) => {
             return res.status(400).json({ message: 'ඡායාරූප URL එකක් අවශ්‍යයි' });
         }
 
+        // Check if OpenAI API key is configured
+        if (!process.env.OPENAI_API_KEY) {
+            return res.status(503).json({ 
+                message: 'Image analysis service is not configured. Please set OPENAI_API_KEY environment variable.' 
+            });
+        }
+
         // Call ChatGPT API to analyze the image
-        const response = await openai.chat.completions.create({
+        const openaiClient = getOpenAIClient();
+        const response = await openaiClient.chat.completions.create({
             model: "gpt-4-vision-preview",
             messages: [
                 {
