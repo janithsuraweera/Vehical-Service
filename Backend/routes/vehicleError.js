@@ -5,6 +5,12 @@ const multer = require('multer');
 const path = require('path');
 const auth = require('../middleware/auth');
 const fs = require('fs');
+const OpenAI = require('openai');
+
+// Initialize OpenAI
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+});
 
 // Configure multer for image uploads
 const storage = multer.diskStorage({
@@ -188,7 +194,7 @@ router.post('/analyze', auth, async (req, res) => {
                         {
                             type: "image_url",
                             image_url: {
-                                url: `http://localhost:5000${imageUrl}`
+                                url: `${process.env.API_BASE_URL || 'http://localhost:5000'}${imageUrl}`
                             }
                         }
                     ]

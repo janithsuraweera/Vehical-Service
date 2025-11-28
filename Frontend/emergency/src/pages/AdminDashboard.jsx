@@ -4,6 +4,7 @@ import { Navigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { FaUsers, FaTools, FaClipboardList, FaCar, FaExclamationTriangle, FaChartLine } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { API_ENDPOINTS } from '../config/api';
 
 const AdminDashboard = () => {
     const { user } = useAuth();
@@ -28,10 +29,10 @@ const AdminDashboard = () => {
             };
 
             const [usersRes, vehiclesRes, emergenciesRes, inventoryRes] = await Promise.all([
-                axios.get('http://localhost:5000/api/users/count', { headers }),
-                axios.get('http://localhost:5000/api/vehicle-registration/count', { headers }),
-                axios.get('http://localhost:5000/api/emergency', { headers }),
-                axios.get('http://localhost:5000/api/inventory', { headers })
+                axios.get(API_ENDPOINTS.USER_COUNT, { headers }),
+                axios.get(API_ENDPOINTS.VEHICLE_REGISTRATION_COUNT, { headers }),
+                axios.get(API_ENDPOINTS.EMERGENCY, { headers }),
+                axios.get(API_ENDPOINTS.INVENTORY, { headers })
             ]);
 
             setStats({

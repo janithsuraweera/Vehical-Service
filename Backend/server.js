@@ -7,6 +7,8 @@ const path = require('path');
 const inventoryRoutes = require('./routes/inventoryRoutes');
 const emergencyRoutes = require('./routes/emergencyRoutes');
 const vehicleRegistrationRequestRoutes = require('./routes/vehicleRegistrationRequestRoutes');
+const vehicleErrorRoutes = require('./routes/vehicleError');
+const chatbotRoutes = require('./routes/chatbot');
 const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
 const fs = require('fs');
@@ -48,6 +50,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/emergency', emergencyRoutes);
 app.use('/api/vehicle-registration', vehicleRegistrationRequestRoutes);
+app.use('/api/vehicle-errors', vehicleErrorRoutes);
+app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 
@@ -55,7 +59,13 @@ app.get('/', (req, res) => {
     res.send('Welcome to Vehicle Service API');
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Export app for Vercel serverless functions
+module.exports = app;
+
+// Only start server if not in Vercel environment
+if (process.env.VERCEL !== '1') {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
 
 

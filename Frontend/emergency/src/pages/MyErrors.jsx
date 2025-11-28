@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import { API_ENDPOINTS, getUploadUrl } from '../config/api';
 
 const MyErrors = () => {
     const navigate = useNavigate();
@@ -17,7 +18,7 @@ const MyErrors = () => {
             try {
                 setLoading(true);
                 setError(null);
-                const response = await axios.get('http://localhost:5000/api/vehicle-errors/my-errors', {
+                const response = await axios.get(API_ENDPOINTS.VEHICLE_ERRORS_MY_ERRORS, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
@@ -140,7 +141,7 @@ const MyErrors = () => {
                                             {error.photos.map((photo, index) => (
                                                 <img
                                                     key={index}
-                                                    src={`http://localhost:5000${photo}`}
+                                                    src={getUploadUrl(photo)}
                                                     alt={`Error photo ${index + 1}`}
                                                     className="w-full h-32 object-cover rounded"
                                                 />

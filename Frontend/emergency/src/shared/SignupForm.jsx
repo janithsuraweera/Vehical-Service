@@ -4,6 +4,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FaEye, FaEyeSlash, FaUser, FaLock, FaEnvelope, FaPhone, FaArrowLeft, FaCopy } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { API_ENDPOINTS } from '../config/api';
 
 const SignupForm = () => {
     const [formData, setFormData] = useState({
@@ -161,7 +162,7 @@ const SignupForm = () => {
 
         setIsLoading(true);
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/signup', {
+            const response = await axios.post(API_ENDPOINTS.SIGNUP, {
                 email: formData.email,
                 password: formData.password,
                 name: formData.name,

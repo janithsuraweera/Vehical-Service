@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { FaRobot, FaPaperPlane, FaTimes, FaComment, FaRedo, FaHistory } from 'react-icons/fa';
+import { API_ENDPOINTS } from '../emergency/src/config/api';
 
 const Chatbot = () => {
     const [messages, setMessages] = useState([]);
@@ -47,7 +48,7 @@ const Chatbot = () => {
 
         try {
             // Send message to backend
-            const response = await axios.post('http://localhost:5000/api/chatbot/chat', {
+            const response = await axios.post(API_ENDPOINTS.CHATBOT_CHAT, {
                 message: input
             });
 

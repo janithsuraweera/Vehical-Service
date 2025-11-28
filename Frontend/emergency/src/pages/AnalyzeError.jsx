@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { FaUpload, FaSpinner, FaSearch } from 'react-icons/fa';
+import { API_ENDPOINTS, getUploadUrl } from '../config/api';
 
 const AnalyzeError = () => {
     const navigate = useNavigate();
@@ -38,7 +39,7 @@ const AnalyzeError = () => {
             formData.append('image', selectedImage);
 
             // First, upload the image
-            const uploadResponse = await axios.post('http://localhost:5000/api/vehicle-errors/upload', formData, {
+            const uploadResponse = await axios.post(API_ENDPOINTS.VEHICLE_ERRORS_UPLOAD, formData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'multipart/form-data'
@@ -46,7 +47,7 @@ const AnalyzeError = () => {
             });
 
             // Then, analyze the image using ChatGPT API
-            const analysisResponse = await axios.post('http://localhost:5000/api/vehicle-errors/analyze', {
+            const analysisResponse = await axios.post(API_ENDPOINTS.VEHICLE_ERRORS_ANALYZE, {
                 imageUrl: uploadResponse.data.imageUrl
             }, {
                 headers: {
@@ -74,7 +75,7 @@ const AnalyzeError = () => {
         }
 
         try {
-            await axios.post('http://localhost:5000/api/vehicle-errors/report', {
+            await axios.post(API_ENDPOINTS.VEHICLE_ERRORS_REPORT, {
                 ...analysis,
                 photos: [previewUrl]
             }, {
@@ -178,7 +179,7 @@ const AnalyzeError = () => {
                                 <div key={index} className="border-b pb-4">
                                     <div className="flex items-start space-x-4">
                                         <img
-                                            src={item.imageUrl}
+                                            src={getUploadUrl(item.imageUrl)}
                                             alt={`Analysis ${index + 1}`}
                                             className="h-20 w-20 object-cover rounded"
                                         />

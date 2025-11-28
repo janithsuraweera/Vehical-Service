@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { FaEye, FaEyeSlash, FaUser, FaLock, FaArrowLeft } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { API_ENDPOINTS } from '../config/api';
 
 const LoginForm = () => {
     const [formData, setFormData] = useState({
@@ -29,7 +30,7 @@ const LoginForm = () => {
         setError('');
         
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/login', {
+            const response = await axios.post(API_ENDPOINTS.LOGIN, {
                 email: formData.emailOrUsername.toLowerCase(),
                 password: formData.password
             });
